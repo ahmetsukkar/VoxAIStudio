@@ -20,7 +20,7 @@ model User {
     updatedAt     DateTime  @updatedAt
     sessions      Session[]
     accounts      Account[]
-    creadits       Int       @default(30)
+    credits       Int       @default(30)
     audioProjects AudioProject[]
     uploadedVoices UploadedVoice[]
 
