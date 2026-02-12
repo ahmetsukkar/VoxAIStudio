@@ -1,0 +1,54 @@
+1- Run this command
+-> py -3.11 -m venv venv
+   .\venv\Scripts\Activate
+
+2- Then Run this command
+(venv) ..... -> pip install modal
+(venv) ..... -> pip install -r chatterbox-tts\requirements.txt
+
+3- Run the Modal setup command
+(venv) ..... -> modal setup    // this command will generate an Auth token for your account
+                               // You just need to click on Authorize button
+
+4- -- Write the tts python file --
+
+Finally:  depoly application by this command
+(venv) ..... -> python -m modal deploy -m tts
+
+
+For Test use this command
+
+curl.exe -H "Modal-Key: wk-v9m8xxxxxxxxxxxxxxx" `
+         -H "Modal-Secret: ws-jxxxxxxxxxxxxxxxxxx" `
+         -H "Content-Type: application/json" `
+         -X POST "https://a-sukkar2--vox-ai-studio-chatterboxttsserver-generate-speech.modal.run" `
+         -d "{\"text\": \"Hello World\", \"language\": \"en\"}"
+
+OR
+
+$headers = @{
+  "Modal-Key"    = "wk-v9m8xxxxxxxxxxxxxxx"
+  "Modal-Secret" = "ws-jxxxxxxxxxxxxxxxxxx"
+  "Content-Type" = "application/json"
+}
+
+$body = @{
+  text     = "Hello World"
+  language = "en"
+} | ConvertTo-Json
+
+Invoke-WebRequest -Method Post `
+  -Uri "https://a-sukkar2--vox-ai-studio-chatterboxttsserver-generate-speech.modal.run" `
+  -Headers $headers `
+  -Body $body
+
+
+
+
+
+
+
+
+
+
+
