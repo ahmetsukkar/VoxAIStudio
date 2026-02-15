@@ -4,7 +4,7 @@ import { getUserCredits } from "~/actions/tts";
 
 export default async function Credits() {
   const result = await getUserCredits();
-  const credits = result.success ? (result.credits as number) : 0;
+  const credits = result.success ? (result.credits) : 0;
   return (
     <div className="group flex items-center gap-2">
       <div className="flex items-center gap-1.5">

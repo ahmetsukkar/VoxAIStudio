@@ -20,7 +20,7 @@ model User {
     updatedAt     DateTime  @updatedAt
     sessions      Session[]
     accounts      Account[]
-    credits       Int       @default(30)
+    credits       Decimal       @default(30) @db.Decimal(10, 2)
     audioProjects AudioProject[]
     uploadedVoices UploadedVoice[]
 
@@ -35,7 +35,13 @@ model AudioProject {
   audioUrl    String
   s3Key       String
   language    String
-  voiceS3Key  String?  
+  voiceS3Key  String? 
+  engine      String 
+
+  // Chatterbox parameters (only used when engine = "chatterbox")
+  exaggeration Float?
+  cfgWeight    Float?
+
   userId      String
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())

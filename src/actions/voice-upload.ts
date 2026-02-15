@@ -1,31 +1,25 @@
-// 'use server'
+"use server";
 
-// import { StorageFactory, type StorageProviderType } from "./voice-upload/storage-factory";
+import {
+  StorageFactory,
+  type StorageProviderType,
+} from "./voice-upload/storage-factory";
 
+export async function uploadVoice(
+  storageProvider: StorageProviderType = "aws", // Default provider
+  formData: FormData,
+) {
+  const provider = StorageFactory.getProvider(storageProvider);
+  const result = await provider.uploadVoice(formData);
 
+  return result;
+}
 
-// export async function uploadVoice(
-//   file: File,
-//   userId: string,
-//   storageProvider: StorageProviderType = 'aws' // Default provider
-// ) {
-//   const storage = StorageFactory.getProvider(storageProvider);
-//   const path = `voices/${userId}/${Date.now()}-${file.name}`;
-  
-//   const result = await storage.uploadFile(file, path);
-  
-// //   // Save metadata to database
-// //   await saveVoiceMetadata({
-// //     userId,
-// //     fileUrl: result.fileUrl,
-// //     fileKey: result.fileKey,
-// //     provider: result.provider,
-// //     size: result.size
-// //   });
-  
-//   return result;
-// }
+export async function getUserUploadedVoices(
+  storageProvider: StorageProviderType = "aws",
+) {
+  const provider = StorageFactory.getProvider(storageProvider);
+  const result = await provider.getUserUploadedVoices();
 
-// export async function getUserUploadedVoices(userId: string) {
-//   // Fetch from database
-// }
+  return result;
+}

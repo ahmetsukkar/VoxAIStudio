@@ -1,13 +1,22 @@
+import type { UploadedVoice } from "@prisma/client";
+
 export interface StorageProvider {
-  uploadFile(file: File, path: string): Promise<UploadResult>;
+  uploadVoice(formData: FormData): Promise<UploadVoiceResult>;
+  getUserUploadedVoices(): Promise<GetUserUploadedVoicesResult>;
   deleteFile(fileKey: string): Promise<void>;
-  getSignedUrl(fileKey: string, expiresIn: number): Promise<string>;
   getName(): string;
 }
 
-export interface UploadResult {
-  fileUrl: string;
-  fileKey: string;
-  provider: string;
-  size: number;
+export interface UploadVoiceResult {
+  success: boolean;
+  id?: string;
+  s3Key?: string;
+  url?: string;
+  error?: string;
+}
+
+export interface GetUserUploadedVoicesResult {
+  success: boolean;
+  error?: string;
+  voices: UploadedVoice[];
 }
