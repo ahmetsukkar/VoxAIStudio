@@ -41,7 +41,7 @@ export class ChatterboxProvider implements TTSProvider {
         return { success: false, error: "User not found" };
       }
 
-      if (user.credits < creditsNeeded) {
+      if (Number(user.credits) < creditsNeeded) {
         return {
           success: false,
           error: `Insufficient credits. Need ${creditsNeeded}, have ${user.credits}`,
