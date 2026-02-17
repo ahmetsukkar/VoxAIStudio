@@ -9,11 +9,11 @@ import { Calendar, Clock, Tag, ArrowLeft, Eye } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
 type Props = {
-  params: Promise<{ slug: string }>; // ✅ Changed to Promise
+  params: Promise<{ slug: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params; // ✅ Await params first
+  const { slug } = await params;
   const result = await getBlogPostBySlug(slug);
 
   if (!result.success || !result.data) {
@@ -99,7 +99,7 @@ export default async function BlogPostPage({ params }: Props) {
               <span>•</span>
               <span className="flex items-center gap-1.5">
                 <Calendar className="h-4 w-4" />
-                {new Date(post.publishedAt).toLocaleDateString("en-US", {
+                {new Date(post.publishedAt!).toLocaleDateString("en-US", {
                   month: "long",
                   day: "numeric",
                   year: "numeric",
