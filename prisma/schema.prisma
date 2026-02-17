@@ -23,6 +23,7 @@ model User {
     credits       Decimal       @default(30) @db.Decimal(10, 2)
     audioProjects AudioProject[]
     uploadedVoices UploadedVoice[]
+    blogPosts     BlogPost[]
 
     @@unique([email])
     @@map("user")
@@ -112,3 +113,55 @@ model Verification {
     @@index([identifier])
     @@map("verification")
 }
+
+model BlogPost {
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  title         String
+  excerpt       String   @db.Text
+  content       String   @db.Text
+  category      String
+  tags          String[]
+  
+  // Author info (you can relate to User model if needed)
+  authorName    String
+  authorAvatar  String?
+  
+  // SEO & Metadata
+  metaTitle     String?
+  metaDescription String?
+  keywords      String[]
+  
+  // Images
+  featuredImage String?
+  
+  // Status & Publishing
+  status        BlogStatus @default(DRAFT)
+  featured      Boolean    @default(false)
+  
+  // Analytics
+  views         Int        @default(0)
+  readingTime   String     // e.g., "8 min read"
+  
+  // Timestamps
+  publishedAt   DateTime?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  
+  // Optional: Relate to User if you want multi-author support
+  authorId      String?
+  author        User?      @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  
+  @@index([slug])
+  @@index([category])
+  @@index([status])
+  @@index([publishedAt])
+  @@map("blogpost")
+}
+
+enum BlogStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
