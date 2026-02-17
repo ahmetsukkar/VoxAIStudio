@@ -84,7 +84,7 @@ export default async function BlogPage() {
                           <span className="font-medium">{post.authorName}</span>
                           <span className="flex items-center gap-1">
                             <Calendar className="w-4 h-4" />
-                            {new Date(post.publishedAt).toLocaleDateString('en-US', {
+                            {new Date(post.publishedAt!).toLocaleDateString('en-US', {
                               month: 'short',
                               day: 'numeric',
                               year: 'numeric',
