@@ -15,6 +15,7 @@ export default function DemoSection() {
       audioUrl: "/audio/warm-narrator.wav",
     },
     {
+      id: "energetic-host",
       text: "Alright everyone—big news today! We’re kicking off with the fastest updates and a quick takeaway you can use.",
       voiceType: "Energetic Male Host",
       audioUrl: "/audio/energetic-host.wav",
