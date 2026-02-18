@@ -56,6 +56,9 @@ export const metadata: Metadata = {
     },
   },
   icons: [{ rel: "icon", url: "/vox_studio_icon.svg" }],
+  other: {
+    "google-site-verification": "xOfGmkzisjeSsDHEOZhyACxSQYESDZZD1hkpYgOhJFk",
+  },
 };
 
 const geist = Geist({
