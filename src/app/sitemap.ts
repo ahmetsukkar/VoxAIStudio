@@ -28,7 +28,7 @@ export default async function sitemap() {
     postsResult.success && postsResult.data
       ? postsResult.data.map((post) => ({
           url: `${baseUrl}/blog/${post.slug}`,
-          lastModified: post.updatedAt ?? post.publishedAt ?? new Date(),
+          lastModified: post.updatedAt ?? post.publishedAt! ?? new Date(),
         }))
       : [];
 
