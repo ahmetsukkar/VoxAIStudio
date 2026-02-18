@@ -1,19 +1,61 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import "~/styles/globals.css";
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { Toaster } from "~/components/ui/sonner";
 import { CookieBanner } from "~/components/cookie-banner";
+import { env } from "~/env";
 
 
 export const metadata: Metadata = {
-  title: "Vox AI Studio",
-  description: "Transform Text into Natural Speech with AI",
-  icons: [
-    {
-      rel: "icon",
-      url: "/vox_studio_icon.svg",
-    },
+  metadataBase: new URL(env.BETTER_AUTH_WWWURL),
+  title: {
+    default: "Vox AI Studio",
+    template: "%s | Vox AI Studio",
+  },
+  description:
+    "Transform any text into natural, human-like speech with AI. Clone voices, generate audio, and power your projects with Vox AI Studio.",
+  keywords: [
+    "text to speech",
+    "AI voice generator",
+    "voice cloning",
+    "TTS",
+    "AI audio",
   ],
+  authors: [{ name: "Vox AI Studio", url: env.BETTER_AUTH_WWWURL }],
+  creator: "Vox AI Studio",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: env.BETTER_AUTH_WWWURL,
+    siteName: "Vox AI Studio",
+    title: "Vox AI Studio — AI Text to Speech & Voice Cloning",
+    description: "Transform any text into natural, human-like speech with AI.",
+    images: [
+      {
+        url: "/images/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Vox AI Studio",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Vox AI Studio — AI Text to Speech & Voice Cloning",
+    description: "Transform any text into natural, human-like speech with AI.",
+    images: ["/images/og-image.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+    },
+  },
+  icons: [{ rel: "icon", url: "/vox_studio_icon.svg" }],
 };
 
 const geist = Geist({
