@@ -32,6 +32,7 @@ export async function getPublishedBlogPosts() {
         authorAvatar: true,
         featuredImage: true,
         readingTime: true,
+        updatedAt: true,
         publishedAt: true,
         featured: true,
         views: true,
