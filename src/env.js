@@ -9,7 +9,6 @@ export const env = createEnv({
   server: {
     DATABASE_URL: z.string().url(),
     BETTER_AUTH_SECRET: z.string(),
-    BETTER_AUTH_ADDRESS: z.string().url(),
     BETTER_AUTH_WWWURL: z.string().url(),
     BETTER_AUTH_URL: z.string().url(),
     POLAR_ACCESS_TOKEN: z.string(),
@@ -47,7 +46,6 @@ export const env = createEnv({
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
     BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
-    BETTER_AUTH_ADDRESS: process.env.BETTER_AUTH_ADDRESS,
     BETTER_AUTH_WWWURL: process.env.BETTER_AUTH_WWWURL,
     BETTER_AUTH_URL: process.env.BETTER_AUTH_URL,
     POLAR_ACCESS_TOKEN: process.env.POLAR_ACCESS_TOKEN,
