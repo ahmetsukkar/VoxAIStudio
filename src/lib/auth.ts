@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { PrismaClient } from "@prisma/client";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
-// If your Prisma file is located elsewhere, you can change the path
 import {
   polar,
   checkout,
@@ -23,9 +21,22 @@ const polarClient = new Polar({
   server: "sandbox",
 });
 
-const prisma = new PrismaClient();
+//const prisma = new PrismaClient();
 export const auth = betterAuth({
-  database: prismaAdapter(prisma, {
+  user: {
+    deleteUser: {
+      enabled: true,
+    },
+  },
+  baseURL: env.BETTER_AUTH_URL,
+  advanced: {
+    crossSubDomainCookies: {
+      enabled: true,
+    },
+    useSecureCookies: true,
+  },
+  trustedOrigins: [env.BETTER_AUTH_URL],
+  database: prismaAdapter(db, {
     provider: "postgresql", // or "mysql", "postgresql", ...etc
   }),
   emailAndPassword: {
