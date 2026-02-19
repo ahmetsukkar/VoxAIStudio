@@ -1,8 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+"use client";
+
 import Link from "next/link";
-import { AudioWaveform, ArrowRight } from "lucide-react";
+import { AudioWaveform, ArrowRight, LayoutDashboard } from "lucide-react";
 import { Button } from "./ui/button";
+import { authClient } from "~/lib/auth-client";
 
 export default function Navigation() {
+  const { data: session, isPending } = authClient.useSession();
+  const isLoggedIn = !!session?.user;
   return (
     <nav className="sticky top-0 z-50 border-b border-slate-200/60 bg-slate-50/95 backdrop-blur supports-[backdrop-filter]:bg-slate-50/80">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -17,37 +24,65 @@ export default function Navigation() {
               </span>
             </Link>
           </div>
-          
+
           <div className="hidden items-center space-x-8 md:flex">
-            <Link href="/#features" className="text-slate-600 transition-colors hover:text-indigo-600">
+            <Link
+              href="/#features"
+              className="text-slate-600 transition-colors hover:text-indigo-600"
+            >
               Features
             </Link>
-            <Link href="/#pricing" className="text-slate-600 transition-colors hover:text-indigo-600">
+            <Link
+              href="/#pricing"
+              className="text-slate-600 transition-colors hover:text-indigo-600"
+            >
               Pricing
             </Link>
-            <Link href="/#testimonials" className="text-slate-600 transition-colors hover:text-indigo-600">
+            <Link
+              href="/#testimonials"
+              className="text-slate-600 transition-colors hover:text-indigo-600"
+            >
               Reviews
             </Link>
-            <Link href="/blog" className="text-slate-600 transition-colors hover:text-indigo-600">
+            <Link
+              href="/blog"
+              className="text-slate-600 transition-colors hover:text-indigo-600"
+            >
               Blog
             </Link>
-            <Link href="/legal/about" className="text-slate-600 transition-colors hover:text-indigo-600">
+            <Link
+              href="/legal/about"
+              className="text-slate-600 transition-colors hover:text-indigo-600"
+            >
               About
             </Link>
           </div>
-          
+
           <div className="flex items-center gap-3">
-            <Link href="/auth/sign-in">
-              <Button variant="ghost" size="sm" className="cursor-pointer">
-                Sign In
-              </Button>
-            </Link>
-            <Link href="/dashboard">
-              <Button size="sm" className="cursor-pointer gap-2">
-                Try Free
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
+            {isPending ? (
+              <div className="h-9 w-32 animate-pulse rounded-lg bg-gray-100" />
+            ) : isLoggedIn ? (
+              <Link href="/dashboard">
+                <Button size="sm" className="cursor-pointer gap-2">
+                  <LayoutDashboard className="h-4 w-4" />
+                  My Dashboard
+                </Button>
+              </Link>
+            ) : (
+              <>
+                <Link href="/auth/sign-in">
+                  <Button variant="ghost" size="sm" className="cursor-pointer">
+                    Sign In
+                  </Button>
+                </Link>
+                <Link href="/auth/sign-up">
+                  <Button size="sm" className="cursor-pointer gap-2">
+                    Try Free
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>
