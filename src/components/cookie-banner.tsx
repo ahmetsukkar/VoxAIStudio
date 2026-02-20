@@ -3,11 +3,31 @@
 import { useState, useEffect } from "react";
 import CookieConsent from "react-cookie-consent";
 
+type ConsentStatus = "granted" | "denied";
+
+interface ConsentParams {
+  analytics_storage: ConsentStatus;
+  ad_storage: ConsentStatus;
+  ad_user_data: ConsentStatus;
+  ad_personalization: ConsentStatus;
+}
+
+type GtagFunction = (
+  command: string,
+  action: string,
+  params: ConsentParams
+) => void;
+
+function updateConsent(params: ConsentParams) {
+  if (typeof window !== "undefined" && typeof window.gtag === "function") {
+    (window.gtag as GtagFunction)("consent", "update", params);
+  }
+}
+
 export function CookieBanner() {
   const [showBanner, setShowBanner] = useState(false);
 
   useEffect(() => {
-    // Only show banner on client side
     setShowBanner(true);
   }, []);
 
@@ -43,17 +63,26 @@ export function CookieBanner() {
       }}
       expires={365}
       onAccept={() => {
-        // Enable Google Analytics and AdSense cookies
-        console.log("Cookies accepted");
+        updateConsent({
+          analytics_storage: "granted",
+          ad_storage: "granted",
+          ad_user_data: "granted",
+          ad_personalization: "granted",
+        });
       }}
       onDecline={() => {
-        // Disable non-essential cookies
-        console.log("Non-essential cookies rejected");
+        updateConsent({
+          analytics_storage: "denied",
+          ad_storage: "denied",
+          ad_user_data: "denied",
+          ad_personalization: "denied",
+        });
       }}
     >
       <span style={{ fontSize: "14px", lineHeight: "1.6" }}>
-        We use cookies to improve your experience, analyze site traffic, and serve personalized advertisements through{" "}
-        <strong>Google AdSense</strong>. By clicking "Accept All Cookies", you consent to our use of cookies.{" "}
+        We use cookies to improve your experience, analyze site traffic, and
+        serve personalized advertisements through <strong>Google AdSense</strong>
+        . By clicking "Accept All Cookies", you consent to our use of cookies.{" "}
         <a
           href="/legal/privacy"
           style={{ color: "#a78bfa", textDecoration: "underline" }}

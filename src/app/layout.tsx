@@ -4,9 +4,9 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { Toaster } from "~/components/ui/sonner";
 import { CookieBanner } from "~/components/cookie-banner";
-import { GoogleAnalytics } from '@next/third-parties/google'
+import { GoogleAnalytics } from "@next/third-parties/google";
+import Script from "next/script"
 import { env } from "~/env";
-
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.BETTER_AUTH_WWWURL),
@@ -74,6 +74,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={geist.variable}>
+      <head>
+        <Script id="google-consent-init" strategy="beforeInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('consent', 'default', {
+              'analytics_storage': 'denied',
+              'ad_storage': 'denied',
+              'ad_user_data': 'denied',
+              'ad_personalization': 'denied',
+              'wait_for_update': 500
+            });
+          `}
+        </Script>
+      </head>
       <body>
         {children}
         <CookieBanner />
