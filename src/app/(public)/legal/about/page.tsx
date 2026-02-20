@@ -101,7 +101,7 @@ export default function AboutPage() {
             </p>
             <p>
               📧 Email: <a href="mailto:support@voxaistudio.com" className="text-indigo-600 hover:underline">support@voxaistudio.com</a><br />
-              🌐 Website: <a href="https://publish-vox-studio-app.vercel.app" className="text-indigo-600 hover:underline">https://publish-vox-studio-app.vercel.app</a>
+              🌐 Website: <a href="https://www.voxaistudio.com" className="text-indigo-600 hover:underline">https://www.voxaistudio.com</a>
             </p>
           </section>
 

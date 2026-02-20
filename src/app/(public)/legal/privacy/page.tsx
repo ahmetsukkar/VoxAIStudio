@@ -14,7 +14,7 @@ export default function PrivacyPage() {
         <h1 className="mb-4 text-4xl font-bold text-slate-800">
           Privacy Policy
         </h1>
-        <p className="mb-8 text-slate-600">Last Updated: January 31, 2026</p>
+        <p className="mb-8 text-slate-600">Last Updated: February 20, 2026</p>
 
         <div className="prose prose-slate max-w-none space-y-6 text-slate-700">
           <section>
@@ -257,9 +257,19 @@ export default function PrivacyPage() {
               Payment Processors
             </h3>
             <p>
-              If you upgrade to a paid plan, payment information is processed by
-              third-party payment providers. We do not store your credit card
-              information.
+              We use Polar (https://polar.sh) to process payments. Polar handles
+              all payment transactions securely. We do not store your credit
+              card or payment information on our servers.
+            </p>
+
+            <h3 className="mt-4 text-xl font-semibold text-slate-800">
+              Data Storage
+            </h3>
+            <p>
+              Generated audio files are stored securely on Amazon Web Services
+              (AWS) Simple Storage Service (S3). Files are retained for [X
+              days/until deleted by user] and are accessible only to the account
+              owner.
             </p>
 
             <h3 className="mt-4 text-xl font-semibold text-slate-800">
@@ -271,7 +281,7 @@ export default function PrivacyPage() {
             </p>
           </section>
 
-          <section>
+          <section id="cookies">
             <h2 className="text-2xl font-semibold text-slate-800">
               Cookies and Tracking
             </h2>
@@ -334,10 +344,10 @@ export default function PrivacyPage() {
             <p className="mt-4">
               To exercise these rights, contact us at:{" "}
               <a
-                href="mailto:privacy@voxaistudio.com"
+                href="mailto:support@voxaistudio.com"
                 className="text-indigo-600 hover:underline"
               >
-                privacy@voxaistudio.com
+                support@voxaistudio.com
               </a>
             </p>
           </section>
@@ -420,19 +430,19 @@ export default function PrivacyPage() {
               <p>
                 <strong>Email:</strong>{" "}
                 <a
-                  href="mailto:privacy@voxaistudio.com"
+                  href="mailto:support@voxaistudio.com"
                   className="text-indigo-600 hover:underline"
                 >
-                  privacy@voxaistudio.com
+                  support@voxaistudio.com
                 </a>
               </p>
               <p>
                 <strong>Website:</strong>{" "}
                 <a
-                  href="https://publish-vox-studio-app.vercel.app"
+                  href="https://www.voxaistudio.com"
                   className="text-indigo-600 hover:underline"
                 >
-                  https://publish-vox-studio-app.vercel.app
+                  https://www.voxaistudio.com
                 </a>
               </p>
               <p className="mt-4">

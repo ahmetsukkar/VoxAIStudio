@@ -15,7 +15,7 @@ export default function TermsPage() {
         <h1 className="mb-4 text-4xl font-bold text-slate-800">
           Terms of Service
         </h1>
-        <p className="mb-8 text-slate-600">Last Updated: January 29, 2026</p>
+        <p className="mb-8 text-slate-600">Last Updated: February 20, 2026</p>
 
         <div className="prose prose-slate max-w-none space-y-6 text-slate-700">
           <section>
@@ -24,7 +24,7 @@ export default function TermsPage() {
             </h2>
             <p>
               Welcome to Vox AI Studio. By accessing or using our Text-to-Speech
-              platform at https://publish-vox-studio-app.vercel.app
+              platform at https://www.voxaistudio.com
               (&quot;Service&quot;), you agree to be bound by these Terms of
               Service (&quot;Terms&quot;). If you do not agree to these Terms,
               please do not use our Service.
@@ -411,10 +411,10 @@ export default function TermsPage() {
             <p className="mt-2">
               <strong>Email:</strong>{" "}
               <a
-                href="mailto:copyright@voxaistudio.com"
+                href="mailto:support@voxaistudio.com"
                 className="text-indigo-600 hover:underline"
               >
-                copyright@voxaistudio.com
+                support@voxaistudio.com
               </a>
             </p>
             <p className="mt-2">Include:</p>
@@ -515,10 +515,10 @@ export default function TermsPage() {
               <p>
                 <strong>Website:</strong>{" "}
                 <a
-                  href="https://publish-vox-studio-app.vercel.app"
+                  href="https://www.voxaistudio.com"
                   className="text-indigo-600 hover:underline"
                 >
-                  https://publish-vox-studio-app.vercel.app
+                  https://www.voxaistudio.com
                 </a>
               </p>
               <p className="mt-4">
