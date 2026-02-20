@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { Toaster } from "~/components/ui/sonner";
 import { CookieBanner } from "~/components/cookie-banner";
+import { GoogleAnalytics } from '@next/third-parties/google'
 import { env } from "~/env";
 
 
@@ -78,6 +79,7 @@ export default function RootLayout({
         <CookieBanner />
         <Toaster />
       </body>
+      <GoogleAnalytics gaId={env.GOOGLE_ANALYTICS_ID} />
     </html>
   );
 }

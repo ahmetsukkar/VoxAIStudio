@@ -22,6 +22,7 @@ export const env = createEnv({
     MODAL_API_SECRET: z.string(),
     GOOGLE_CLIENT_ID: z.string(),
     GOOGLE_CLIENT_SECRET: z.string(),
+    GOOGLE_ANALYTICS_ID: z.string(),
     GOOGLE_TTS_API_KEY: z.string(),
     GEMINI_API_KEY: z.string(),
     NODE_ENV: z
@@ -59,6 +60,7 @@ export const env = createEnv({
     MODAL_API_SECRET: process.env.MODAL_API_SECRET,
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+    GOOGLE_ANALYTICS_ID: process.env.GOOGLE_ANALYTICS_ID,
     GOOGLE_TTS_API_KEY: process.env.GOOGLE_TTS_API_KEY,
     GEMINI_API_KEY: process.env.GEMINI_API_KEY,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
