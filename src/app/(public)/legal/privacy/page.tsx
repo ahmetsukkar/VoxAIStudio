@@ -267,9 +267,8 @@ export default function PrivacyPage() {
             </h3>
             <p>
               Generated audio files are stored securely on Amazon Web Services
-              (AWS) Simple Storage Service (S3). Files are retained for [X
-              days/until deleted by user] and are accessible only to the account
-              owner.
+              (AWS) Simple Storage Service (S3). Files are retained for 30 days
+              after last access and are accessible only to the account owner.
             </p>
 
             <h3 className="mt-4 text-xl font-semibold text-slate-800">

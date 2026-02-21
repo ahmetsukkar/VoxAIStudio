@@ -4,9 +4,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getBlogPostBySlug, getPublishedBlogPosts } from "~/lib/blog";
-import { Calendar, Clock, Tag, ArrowLeft, Eye } from "lucide-react";
+import {
+  getBlogPostBySlug,
+  getPublishedBlogPosts,
+  getAdjacentPosts,
+  getRelatedPosts,
+} from "~/lib/blog";
+import { Calendar, Clock, Tag, ArrowLeft, Eye, ChevronLeft, ChevronRight, Share2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import ShareButtons from "~/components/blog/ShareButtons";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -17,9 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const result = await getBlogPostBySlug(slug);
 
   if (!result.success || !result.data) {
-    return {
-      title: "Post Not Found",
-    };
+    return { title: "Post Not Found" };
   }
 
   const post = result.data;
@@ -42,19 +46,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export async function generateStaticParams() {
   const result = await getPublishedBlogPosts();
-
-  // Add explicit check for result.data
   if (!result.success || !result.data) return [];
-
-  return result.data.map((post) => ({
-    slug: post.slug,
-  }));
+  return result.data.map((post) => ({ slug: post.slug }));
 }
 
 export default async function BlogPostPage({ params }: Props) {
-  const { slug } = await params; // ✅ Await params first
-  console.log("🌐 Page received slug:", slug);
-
+  const { slug } = await params;
   const result = await getBlogPostBySlug(slug);
 
   if (!result.success || !result.data) {
@@ -62,6 +59,14 @@ export default async function BlogPostPage({ params }: Props) {
   }
 
   const post = result.data;
+
+  const [adjacentResult, relatedResult] = await Promise.all([
+    getAdjacentPosts(slug, post.publishedAt!),
+    getRelatedPosts(slug, post.category),
+  ]);
+
+  const { prevPost, nextPost } = adjacentResult.data ?? { prevPost: null, nextPost: null };
+  const relatedPosts = relatedResult.data ?? [];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -91,9 +96,7 @@ export default async function BlogPostPage({ params }: Props) {
               </span>
             </div>
 
-            <h1 className="mb-4 text-4xl font-bold md:text-5xl">
-              {post.title}
-            </h1>
+            <h1 className="mb-4 text-4xl font-bold md:text-5xl">{post.title}</h1>
 
             <div className="flex items-center gap-4 text-purple-100">
               <span className="font-medium">{post.authorName}</span>
@@ -121,7 +124,17 @@ export default async function BlogPostPage({ params }: Props) {
             </p>
 
             {/* Main Content */}
-            <div className="prose prose-lg prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-p:text-gray-700 prose-a:text-purple-600 prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-900 prose-ul:my-6 prose-li:my-2 max-w-none">
+            <div className="prose prose-lg max-w-none
+              prose-headings:font-bold prose-headings:text-gray-900
+              prose-h1:text-3xl prose-h1:mt-8 prose-h1:mb-4
+              prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4 prose-h2:border-b prose-h2:border-gray-100 prose-h2:pb-2
+              prose-h3:text-xl prose-h3:mt-6 prose-h3:mb-3
+              prose-p:text-gray-700 prose-p:leading-relaxed
+              prose-a:text-purple-600 prose-a:no-underline hover:prose-a:underline
+              prose-strong:text-gray-900
+              prose-ul:my-4 prose-li:my-1
+              prose-code:bg-gray-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-purple-700
+              prose-blockquote:border-l-4 prose-blockquote:border-purple-400 prose-blockquote:bg-purple-50 prose-blockquote:py-1">
               <ReactMarkdown>{post.content}</ReactMarkdown>
             </div>
 
@@ -141,16 +154,83 @@ export default async function BlogPostPage({ params }: Props) {
                 </div>
               </div>
             )}
+
+            {/* Share Buttons */}
+            <div className="mt-8 border-t border-gray-200 pt-8">
+              <p className="mb-3 text-sm font-semibold text-gray-600 uppercase tracking-wide">
+                Share this article
+              </p>
+              <ShareButtons title={post.title} slug={post.slug} />
+            </div>
           </div>
+
+          {/* Prev / Next Navigation */}
+          {(prevPost ?? nextPost) && (
+            <div className="mt-8 grid gap-4 sm:grid-cols-2">
+              {prevPost ? (
+                <Link
+                  href={`/blog/${prevPost.slug}`}
+                  className="group flex flex-col gap-2 rounded-xl bg-white p-6 shadow-md transition-all hover:shadow-lg hover:-translate-y-0.5"
+                >
+                  <span className="flex items-center gap-1 text-sm text-purple-500 font-medium">
+                    <ChevronLeft className="h-4 w-4" />
+                    Previous Article
+                  </span>
+                  <span className="font-semibold text-gray-900 group-hover:text-purple-600 transition-colors line-clamp-2">
+                    {prevPost.title}
+                  </span>
+                  <span className="text-sm text-gray-500">{prevPost.readingTime}</span>
+                </Link>
+              ) : <div />}
+
+              {nextPost ? (
+                <Link
+                  href={`/blog/${nextPost.slug}`}
+                  className="group flex flex-col gap-2 rounded-xl bg-white p-6 shadow-md transition-all hover:shadow-lg hover:-translate-y-0.5 sm:text-right"
+                >
+                  <span className="flex items-center gap-1 text-sm text-purple-500 font-medium sm:justify-end">
+                    Next Article
+                    <ChevronRight className="h-4 w-4" />
+                  </span>
+                  <span className="font-semibold text-gray-900 group-hover:text-purple-600 transition-colors line-clamp-2">
+                    {nextPost.title}
+                  </span>
+                  <span className="text-sm text-gray-500">{nextPost.readingTime}</span>
+                </Link>
+              ) : <div />}
+            </div>
+          )}
+
+          {/* Related Posts */}
+          {relatedPosts.length > 0 && (
+            <div className="mt-12">
+              <h2 className="mb-6 text-2xl font-bold text-gray-900">Related Articles</h2>
+              <div className="grid gap-6 sm:grid-cols-3">
+                {relatedPosts.map((related) => (
+                  <Link
+                    key={related.slug}
+                    href={`/blog/${related.slug}`}
+                    className="group flex flex-col gap-3 rounded-xl bg-white p-6 shadow-md transition-all hover:shadow-lg hover:-translate-y-0.5"
+                  >
+                    <span className="text-xs font-semibold uppercase tracking-wide text-purple-500">
+                      {related.category}
+                    </span>
+                    <span className="font-semibold text-gray-900 group-hover:text-purple-600 transition-colors line-clamp-2">
+                      {related.title}
+                    </span>
+                    <p className="text-sm text-gray-500 line-clamp-2">{related.excerpt}</p>
+                    <span className="mt-auto text-xs text-gray-400">{related.readingTime}</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* CTA Section */}
           <div className="mt-12 rounded-xl bg-gradient-to-br from-purple-600 to-blue-500 p-8 text-center text-white shadow-lg">
-            <h2 className="mb-4 text-3xl font-bold">
-              Ready to Create Professional Voiceovers?
-            </h2>
+            <h2 className="mb-4 text-3xl font-bold">Ready to Create Professional Voiceovers?</h2>
             <p className="mb-6 text-xl text-purple-100">
-              Try Vox AI Studio and transform your text into natural-sounding
-              speech in seconds.
+              Try Vox AI Studio and transform your text into natural-sounding speech in seconds.
             </p>
             <Link
               href="/dashboard"

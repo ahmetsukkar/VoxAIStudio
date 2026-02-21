@@ -238,3 +238,60 @@ export async function searchBlogPosts(query: string) {
     return { success: false, error: "Failed to search posts" };
   }
 }
+
+export async function getAdjacentPosts(slug: string, publishedAt: Date) {
+  try {
+    const [prevPost, nextPost] = await Promise.all([
+      prisma.blogPost.findFirst({
+        where: {
+          status: "PUBLISHED",
+          publishedAt: { lt: publishedAt },
+        },
+        orderBy: { publishedAt: "desc" },
+        select: { slug: true, title: true, category: true, readingTime: true },
+      }),
+      prisma.blogPost.findFirst({
+        where: {
+          status: "PUBLISHED",
+          publishedAt: { gt: publishedAt },
+        },
+        orderBy: { publishedAt: "asc" },
+        select: { slug: true, title: true, category: true, readingTime: true },
+      }),
+    ]);
+
+    return { success: true, data: { prevPost, nextPost } };
+  } catch (error) {
+    console.error("Error fetching adjacent posts:", error);
+    return { success: false, data: { prevPost: null, nextPost: null } };
+  }
+}
+
+export async function getRelatedPosts(slug: string, category: string) {
+  try {
+    const posts = await prisma.blogPost.findMany({
+      where: {
+        status: "PUBLISHED",
+        category,
+        slug: { not: slug },
+      },
+      orderBy: { publishedAt: "desc" },
+      take: 3,
+      select: {
+        slug: true,
+        title: true,
+        excerpt: true,
+        category: true,
+        readingTime: true,
+        publishedAt: true,
+        authorName: true,
+      },
+    });
+
+    return { success: true, data: posts };
+  } catch (error) {
+    console.error("Error fetching related posts:", error);
+    return { success: false, data: [] };
+  }
+}
+

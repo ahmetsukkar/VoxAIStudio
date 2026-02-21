@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createBlogPost } from "~/lib/blog";
 import { ArrowLeft, Save, Eye, Loader2 } from "lucide-react";
 import Link from "next/link";
+import ReactMarkdown from "react-markdown";
 
 interface CreateBlogFormProps {
   userName: string;
@@ -257,12 +258,14 @@ export default function CreateBlogForm({
                   placeholder="# Your Blog Post Title&#10;&#10;Write your content here using Markdown...&#10;&#10;## Section 1&#10;Your content here...&#10;&#10;## Section 2&#10;More content..."
                 />
               ) : (
-                <div className="prose prose-lg min-h-[500px] w-full max-w-none rounded-lg border border-gray-300 bg-gray-50 px-4 py-3">
-                  <div
-                    dangerouslySetInnerHTML={{
-                      __html: formData.content.replace(/\n/g, "<br />"),
-                    }}
-                  />
+                <div className="prose prose-lg prose-headings:font-bold prose-headings:text-gray-900 prose-h1:text-3xl prose-h1:mt-8 prose-h1:mb-4 prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4 prose-h2:border-b prose-h2:border-gray-100 prose-h2:pb-2 prose-h3:text-xl prose-h3:mt-6 prose-h3:mb-3 prose-p:text-gray-700 prose-p:leading-relaxed prose-ul:list-disc prose-ul:pl-6 prose-ul:my-4 prose-ol:list-decimal prose-ol:pl-6 prose-ol:my-4 prose-li:my-1 prose-strong:text-gray-900 prose-a:text-purple-600 hover:prose-a:underline prose-code:bg-gray-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-purple-700 min-h-[500px] w-full max-w-none rounded-lg border border-gray-300 bg-white px-6 py-4">
+                  {formData.content ? (
+                    <ReactMarkdown>{formData.content}</ReactMarkdown>
+                  ) : (
+                    <p className="text-gray-400 italic">
+                      Nothing to preview yet. Start writing in Edit mode.
+                    </p>
+                  )}
                 </div>
               )}
               <p className="mt-1 text-sm text-gray-500">
