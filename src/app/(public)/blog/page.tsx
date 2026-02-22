@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { Calendar, Clock, Tag, TrendingUp } from 'lucide-react';
 import { getBlogCategories, getFeaturedBlogPosts, getPublishedBlogPosts } from '~/lib/blog';
 
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: 'Blog - Vox AI Studio | AI Voice & Text-to-Speech Insights',

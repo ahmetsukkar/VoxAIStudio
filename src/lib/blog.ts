@@ -3,8 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 "use server";
 
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import { db } from "~/server/db";
 
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
@@ -14,7 +13,7 @@ import type { BlogStatus } from "~/types/blog";
 // Get all published blog posts
 export async function getPublishedBlogPosts() {
   try {
-    const posts = await prisma.blogPost.findMany({
+    const posts = await db.blogPost.findMany({
       where: {
         status: "PUBLISHED",
       },
@@ -49,7 +48,7 @@ export async function getPublishedBlogPosts() {
 // Get featured blog posts
 export async function getFeaturedBlogPosts() {
   try {
-    const posts = await prisma.blogPost.findMany({
+    const posts = await db.blogPost.findMany({
       where: {
         status: "PUBLISHED",
         featured: true,
@@ -81,39 +80,38 @@ export async function getFeaturedBlogPosts() {
 // Get single blog post by slug - FIXED VERSION
 export async function getBlogPostBySlug(slug: string) {
   try {
-    console.log('🔍 Fetching blog post with slug:', slug); // Debug log
-    
-    const post = await prisma.blogPost.findFirst({
+    console.log("🔍 Fetching blog post with slug:", slug); // Debug log
+
+    const post = await db.blogPost.findFirst({
       where: {
-        slug: slug,  // Make sure we're using the slug parameter
-        status: 'PUBLISHED',
+        slug: slug, // Make sure we're using the slug parameter
+        status: "PUBLISHED",
       },
     });
 
-    console.log('📝 Found post:', post?.title ?? 'NOT FOUND'); // Debug log
+    console.log("📝 Found post:", post?.title ?? "NOT FOUND"); // Debug log
 
     if (!post) {
-      return { success: false, error: 'Post not found' };
+      return { success: false, error: "Post not found" };
     }
 
     // Increment views
-    await prisma.blogPost.update({
+    await db.blogPost.update({
       where: { id: post.id },
       data: { views: { increment: 1 } },
     });
 
     return { success: true, data: post };
   } catch (error) {
-    console.error('❌ Error fetching blog post:', error);
-    return { success: false, error: 'Failed to fetch blog post' };
+    console.error("❌ Error fetching blog post:", error);
+    return { success: false, error: "Failed to fetch blog post" };
   }
 }
-
 
 // Get posts by category
 export async function getBlogPostsByCategory(category: string) {
   try {
-    const posts = await prisma.blogPost.findMany({
+    const posts = await db.blogPost.findMany({
       where: {
         status: "PUBLISHED",
         category,
@@ -133,7 +131,7 @@ export async function getBlogPostsByCategory(category: string) {
 // Get all categories
 export async function getBlogCategories() {
   try {
-    const categories = await prisma.blogPost.findMany({
+    const categories = await db.blogPost.findMany({
       where: {
         status: "PUBLISHED",
       },
@@ -180,7 +178,7 @@ export async function createBlogPost(formData: FormData) {
     const status = formData.get("status") as BlogStatus;
 
     // Check if slug already exists
-    const existingPost = await prisma.blogPost.findUnique({
+    const existingPost = await db.blogPost.findUnique({
       where: { slug },
     });
 
@@ -189,7 +187,7 @@ export async function createBlogPost(formData: FormData) {
     }
 
     // Create blog post with author assignment
-    const post = await prisma.blogPost.create({
+    const post = await db.blogPost.create({
       data: {
         title,
         slug,
@@ -207,6 +205,7 @@ export async function createBlogPost(formData: FormData) {
     });
 
     revalidatePath("/blog");
+    revalidatePath(`/blog/${slug}`);
     return { success: true, data: post };
   } catch (error) {
     console.error("Error creating blog post:", error);
@@ -217,7 +216,7 @@ export async function createBlogPost(formData: FormData) {
 // Search blog posts
 export async function searchBlogPosts(query: string) {
   try {
-    const posts = await prisma.blogPost.findMany({
+    const posts = await db.blogPost.findMany({
       where: {
         status: "PUBLISHED",
         OR: [
@@ -242,7 +241,7 @@ export async function searchBlogPosts(query: string) {
 export async function getAdjacentPosts(slug: string, publishedAt: Date) {
   try {
     const [prevPost, nextPost] = await Promise.all([
-      prisma.blogPost.findFirst({
+      db.blogPost.findFirst({
         where: {
           status: "PUBLISHED",
           publishedAt: { lt: publishedAt },
@@ -250,7 +249,7 @@ export async function getAdjacentPosts(slug: string, publishedAt: Date) {
         orderBy: { publishedAt: "desc" },
         select: { slug: true, title: true, category: true, readingTime: true },
       }),
-      prisma.blogPost.findFirst({
+      db.blogPost.findFirst({
         where: {
           status: "PUBLISHED",
           publishedAt: { gt: publishedAt },
@@ -269,7 +268,7 @@ export async function getAdjacentPosts(slug: string, publishedAt: Date) {
 
 export async function getRelatedPosts(slug: string, category: string) {
   try {
-    const posts = await prisma.blogPost.findMany({
+    const posts = await db.blogPost.findMany({
       where: {
         status: "PUBLISHED",
         category,
@@ -294,4 +293,3 @@ export async function getRelatedPosts(slug: string, category: string) {
     return { success: false, data: [] };
   }
 }
-

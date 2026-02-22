@@ -6,13 +6,14 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   getBlogPostBySlug,
-  getPublishedBlogPosts,
   getAdjacentPosts,
   getRelatedPosts,
 } from "~/lib/blog";
 import { Calendar, Clock, Tag, ArrowLeft, Eye, ChevronLeft, ChevronRight, Share2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import ShareButtons from "~/components/blog/ShareButtons";
+
+export const revalidate = 3600;
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -42,12 +43,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       images: ["/images/og-image.png"],
     },
   };
-}
-
-export async function generateStaticParams() {
-  const result = await getPublishedBlogPosts();
-  if (!result.success || !result.data) return [];
-  return result.data.map((post) => ({ slug: post.slug }));
 }
 
 export default async function BlogPostPage({ params }: Props) {
