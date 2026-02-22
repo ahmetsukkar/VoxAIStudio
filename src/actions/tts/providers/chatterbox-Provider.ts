@@ -2,9 +2,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import {
   S3_BUCKET_URL,
+  type ChatterboxOptions,
   type GenerateSpeechResult,
-  type TTSOptions,
   type TTSProvider,
+  type TTSOptions,
 } from "./base-tts-provider";
 import { headers } from "next/headers";
 import { db } from "~/server/db";
@@ -12,26 +13,27 @@ import { auth } from "~/lib/auth";
 import { env } from "~/env";
 
 export class ChatterboxProvider implements TTSProvider {
-    
   calculateExactPoints(charCount: number): number {
     return (1 / 1000) * charCount;
   }
 
   async generateSpeech(data: TTSOptions): Promise<GenerateSpeechResult> {
+    // Cast to the correct type for this engine
+    const options = data as ChatterboxOptions;
+
     try {
       const session = await auth.api.getSession({
         headers: await headers(),
       });
-
       if (!session?.user?.id) {
         return { success: false, error: "Unauthorized" };
       }
-      if (!data.text || !data.voice_S3_key || !data.language) {
+
+      if (!options.text || !options.voice_S3_key || !options.language) {
         return { success: false, error: "Missing required fields" };
       }
 
-      const creditsNeeded = this.calculateExactPoints(data.text.length);
-
+      const creditsNeeded = this.calculateExactPoints(options.text.length);
       const user = await db.user.findUnique({
         where: { id: session.user.id },
         select: { credits: true },
@@ -56,11 +58,11 @@ export class ChatterboxProvider implements TTSProvider {
           "Modal-Secret": env.MODAL_API_SECRET,
         },
         body: JSON.stringify({
-          text: data.text,
-          voice_S3_key: data.voice_S3_key,
-          language: data.language,
-          exaggeration: data.exaggeration ?? 0.5,
-          cfg_weight: data.cfg_weight ?? 0.5,
+          text: options.text,
+          voice_S3_key: options.voice_S3_key,
+          language: options.language,
+          exaggeration: options.exaggeration ?? 0.5,
+          cfg_weight: options.cfg_weight ?? 0.5,
         }),
       });
 
@@ -69,7 +71,6 @@ export class ChatterboxProvider implements TTSProvider {
       }
 
       const result = (await response.json()) as { s3_Key: string };
-
       const audioUrl = `${S3_BUCKET_URL}/${result.s3_Key}`;
 
       await db.user.update({
@@ -79,14 +80,14 @@ export class ChatterboxProvider implements TTSProvider {
 
       const audioProject = await db.audioProject.create({
         data: {
-          text: data.text,
+          text: options.text,
           audioUrl,
           s3Key: result.s3_Key,
-          language: data.language,
-          voiceS3Key: data.voice_S3_key,
+          language: options.language,
+          voiceS3Key: options.voice_S3_key,
           engine: "chatterbox",
-          exaggeration: data.exaggeration,
-          cfgWeight: data.cfg_weight,
+          exaggeration: options.exaggeration,
+          cfgWeight: options.cfg_weight,
           userId: session.user.id,
         },
       });

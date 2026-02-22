@@ -12,6 +12,14 @@ import {
   generateSpeech as generateSpeechAction,
   getUserAudioProjects,
 } from "~/actions/tts";
+import type { TTSProviderType } from "~/actions/tts/tts-factory";
+import type {
+  GeminiEmotion,
+  GeminiModel,
+  GeminiPace,
+  GeminiStyle,
+} from "~/data/GeminiOptions";
+
 import { uploadVoice, getUserUploadedVoices } from "~/actions/voice-upload";
 import { toast } from "sonner";
 import type { GeneratedAudio, UploadedVoice } from "~/types/tts";
@@ -34,6 +42,8 @@ export default function CreatePage() {
     VoiceFiles[0]?.s3_key ?? "samples/voices/Kore.wav",
   );
 
+  const [selectedEngine, setSelectedEngine] =
+    useState<TTSProviderType>("chatterbox");
   const [exaggeration, setExaggeration] = useState(0.5);
   const [cfgWeight, setCfgWeight] = useState(0.5);
   const [generatedAudios, setGeneratedAudios] = useState<GeneratedAudio[]>([]);
@@ -41,6 +51,16 @@ export default function CreatePage() {
   const [userUploadedVoices, setUserUploadedVoices] = useState<UploadedVoice[]>(
     [],
   );
+
+  // Gemini-specific states
+  const [geminiVoice, setGeminiVoice] = useState("Kore");
+  const [geminiModel, setGeminiModel] = useState<GeminiModel>(
+    "gemini-2.5-flash-preview-tts",
+  );
+  const [geminiEmotion, setGeminiEmotion] = useState<GeminiEmotion>("neutral");
+  const [geminiStyle, setGeminiStyle] = useState<GeminiStyle>("conversational");
+  const [geminiPace, setGeminiPace] = useState<GeminiPace>("normal");
+
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const fetchUserUploadedVoices = async () => {
@@ -92,13 +112,25 @@ export default function CreatePage() {
     }
     setIsGenerating(true);
     try {
-      const result = await generateSpeechAction("chatterbox", {
-        text: text,
-        voice_S3_key: selectedVoice,
-        language: selectedLanguage,
-        exaggeration: exaggeration,
-        cfg_weight: cfgWeight,
-      });
+      const result = await generateSpeechAction(
+        selectedEngine,
+        selectedEngine === "chatterbox"
+          ? {
+              text,
+              voice_S3_key: selectedVoice,
+              language: selectedLanguage,
+              exaggeration,
+              cfg_weight: cfgWeight,
+            }
+          : {
+              text,
+              voice_name: geminiVoice,
+              gemini_model: geminiModel,
+              gemini_emotion: geminiEmotion,
+              gemini_style: geminiStyle,
+              gemini_pace: geminiPace,
+            },
+      );
 
       if (!result.success || !result.audioUrl || !result.s3_key) {
         throw new Error(result.error ?? "Generation failed");
@@ -224,6 +256,8 @@ export default function CreatePage() {
               <SpeechSettings
                 languages={Languages}
                 voiceFiles={VoiceFiles}
+                selectedEngine={selectedEngine}
+                setSelectedEngine={setSelectedEngine}
                 selectedLanguage={selectedLanguage}
                 setSelectedLanguage={setSelectedLanguage}
                 selectedVoice={selectedVoice}
@@ -238,6 +272,16 @@ export default function CreatePage() {
                 text={text}
                 isGenerating={isGenerating}
                 onGenerate={generateSpeech}
+                geminiVoice={geminiVoice}
+                setGeminiVoice={setGeminiVoice}
+                geminiModel={geminiModel}
+                setGeminiModel={setGeminiModel}
+                geminiEmotion={geminiEmotion}
+                setGeminiEmotion={setGeminiEmotion}
+                geminiStyle={geminiStyle}
+                setGeminiStyle={setGeminiStyle}
+                geminiPace={geminiPace}
+                setGeminiPace={setGeminiPace}
               />
             </div>
             <div className="order-1 space-y-2 sm:space-y-3 lg:order-2 lg:col-span-2">
