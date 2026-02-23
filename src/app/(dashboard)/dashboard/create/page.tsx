@@ -13,53 +13,42 @@ import {
   getUserAudioProjects,
 } from "~/actions/tts";
 import type { TTSProviderType } from "~/actions/tts/tts-factory";
-import type {
-  GeminiEmotion,
-  GeminiModel,
-  GeminiPace,
-  GeminiStyle,
-} from "~/data/GeminiOptions";
-
-import { uploadVoice, getUserUploadedVoices } from "~/actions/voice-upload";
+import type { EngineOptionsMap } from "~/types/engines";
+import { getUserUploadedVoices } from "~/actions/voice-upload";
 import { toast } from "sonner";
 import type { GeneratedAudio, UploadedVoice } from "~/types/tts";
-
 import { Languages } from "~/data/Languages";
 import { VoiceFiles } from "~/data/VoiceFiles";
-
 import SpeechSettings from "~/components/create/speech-settings";
 import TextInput from "~/components/create/text-input";
 import AudioHistory from "~/components/create/audio-history";
+import { GeminiVoices } from "~/data/GeminiOptions";
 
 export default function CreatePage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [isUploadingVoice, setIsUploadingVoice] = useState(false);
   const [text, setText] = useState("");
-  const [selectedLanguage, setSelectedLanguage] = useState("en");
-  const [selectedVoice, setSelectedVoice] = useState(
-    VoiceFiles[0]?.s3_key ?? "samples/voices/Kore.wav",
-  );
-
-  const [selectedEngine, setSelectedEngine] =
-    useState<TTSProviderType>("chatterbox");
-  const [exaggeration, setExaggeration] = useState(0.5);
-  const [cfgWeight, setCfgWeight] = useState(0.5);
+  const [selectedEngine, setSelectedEngine] = useState<TTSProviderType>("chatterbox");
   const [generatedAudios, setGeneratedAudios] = useState<GeneratedAudio[]>([]);
   const [currentAudio, setCurrentAudio] = useState<GeneratedAudio | null>(null);
-  const [userUploadedVoices, setUserUploadedVoices] = useState<UploadedVoice[]>(
-    [],
-  );
+  const [userUploadedVoices, setUserUploadedVoices] = useState<UploadedVoice[]>([]);
 
-  // Gemini-specific states
-  const [geminiVoice, setGeminiVoice] = useState("Kore");
-  const [geminiModel, setGeminiModel] = useState<GeminiModel>(
-    "gemini-2.5-flash-preview-tts",
-  );
-  const [geminiEmotion, setGeminiEmotion] = useState<GeminiEmotion>("neutral");
-  const [geminiStyle, setGeminiStyle] = useState<GeminiStyle>("conversational");
-  const [geminiPace, setGeminiPace] = useState<GeminiPace>("normal");
+  const [engineOptions, setEngineOptions] = useState<EngineOptionsMap>({
+    chatterbox: {
+      language: "en",
+      voice: VoiceFiles[0]?.s3_key ?? "samples/voices/Charon.wav",
+      exaggeration: 0.5,
+      cfgWeight: 0.5,
+    },
+    gemini: {
+      voice: GeminiVoices[0]?.name ?? "Zephyr",
+      model: "gemini-2.5-flash-preview-tts",
+      emotion: "neutral",
+      style: "conversational",
+      pace: "normal",
+    },
+  });
 
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -78,6 +67,7 @@ export default function CreatePage() {
           getUserAudioProjects(),
           getUserUploadedVoices(),
         ]);
+
         if (projectsResult.success && projectsResult.audioProjects) {
           const mappedProjects = projectsResult.audioProjects.map(
             (project) => ({
@@ -110,6 +100,7 @@ export default function CreatePage() {
       toast.error("Please enter some text!");
       return;
     }
+
     setIsGenerating(true);
     try {
       const result = await generateSpeechAction(
@@ -117,18 +108,18 @@ export default function CreatePage() {
         selectedEngine === "chatterbox"
           ? {
               text,
-              voice_S3_key: selectedVoice,
-              language: selectedLanguage,
-              exaggeration,
-              cfg_weight: cfgWeight,
+              voice_S3_key: engineOptions.chatterbox.voice,
+              language: engineOptions.chatterbox.language,
+              exaggeration: engineOptions.chatterbox.exaggeration,
+              cfg_weight: engineOptions.chatterbox.cfgWeight,
             }
           : {
               text,
-              voice_name: geminiVoice,
-              gemini_model: geminiModel,
-              gemini_emotion: geminiEmotion,
-              gemini_style: geminiStyle,
-              gemini_pace: geminiPace,
+              voice_name: engineOptions.gemini.voice,
+              gemini_model: engineOptions.gemini.model,
+              gemini_emotion: engineOptions.gemini.emotion,
+              gemini_style: engineOptions.gemini.style,
+              gemini_pace: engineOptions.gemini.pace,
             },
       );
 
@@ -142,7 +133,7 @@ export default function CreatePage() {
         s3_key: result.s3_key,
         audioUrl: result.audioUrl,
         text: text,
-        language: selectedLanguage,
+        language: engineOptions.chatterbox.language,
         timestamp: new Date(),
       };
 
@@ -188,46 +179,9 @@ export default function CreatePage() {
     toast.success("Download started!");
   };
 
-  const handleVoiceUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    if (!file.type.startsWith("audio/")) {
-      toast.error("Please select an audio file!");
-      return;
-    }
-
-    if (file.size > 10 * 1024 * 1024) {
-      toast.error("File size must be less than 10MB!");
-      return;
-    }
-
-    setIsUploadingVoice(true);
-    try {
-      const formData = new FormData();
-      formData.append("voice", file);
-
-      const result = await uploadVoice("aws", formData);
-
-      if (!result.success) {
-        throw new Error(result.error ?? "Upload failed");
-      }
-
-      toast.success("Voice uploaded successfully!");
-
-      await fetchUserUploadedVoices();
-    } catch (error) {
-      console.error("Upload error:", error);
-      toast.error("Failed to upload voice file");
-    } finally {
-      setIsUploadingVoice(false);
-    }
-  };
-
   if (isLoading) {
     return (
-      <div className="flex min-h-[400px] items-center justify-center">
+      <div className="flex h-screen items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     );
@@ -258,30 +212,13 @@ export default function CreatePage() {
                 voiceFiles={VoiceFiles}
                 selectedEngine={selectedEngine}
                 setSelectedEngine={setSelectedEngine}
-                selectedLanguage={selectedLanguage}
-                setSelectedLanguage={setSelectedLanguage}
-                selectedVoice={selectedVoice}
-                setSelectedVoice={setSelectedVoice}
-                exaggeration={exaggeration}
-                setExaggeration={setExaggeration}
-                cfgWeight={cfgWeight}
-                setCfgWeight={setCfgWeight}
+                engineOptions={engineOptions}
+                setEngineOptions={setEngineOptions}
                 userUploadedVoices={userUploadedVoices}
-                isUploadingVoice={isUploadingVoice}
-                handleVoiceUpload={handleVoiceUpload}
+                onVoiceUploaded={fetchUserUploadedVoices}
                 text={text}
                 isGenerating={isGenerating}
                 onGenerate={generateSpeech}
-                geminiVoice={geminiVoice}
-                setGeminiVoice={setGeminiVoice}
-                geminiModel={geminiModel}
-                setGeminiModel={setGeminiModel}
-                geminiEmotion={geminiEmotion}
-                setGeminiEmotion={setGeminiEmotion}
-                geminiStyle={geminiStyle}
-                setGeminiStyle={setGeminiStyle}
-                geminiPace={geminiPace}
-                setGeminiPace={setGeminiPace}
               />
             </div>
             <div className="order-1 space-y-2 sm:space-y-3 lg:order-2 lg:col-span-2">

@@ -1,39 +1,66 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 "use client";
 
 import { Globe, Volume2, Upload, Loader2 } from "lucide-react";
 import type { Language, VoiceFile, UploadedVoice } from "~/types/tts";
+import type { ChatterboxOptions } from "~/types/engines";
+import { toast } from "sonner";
+import { useState } from "react";
+import { uploadVoice } from "~/actions/voice-upload";
 
 interface ChatterboxSettingsProps {
   languages: Language[];
   voiceFiles: VoiceFile[];
-  selectedLanguage: string;
-  setSelectedLanguage: (lang: string) => void;
-  selectedVoice: string;
-  setSelectedVoice: (voice: string) => void;
-  exaggeration: number;
-  setExaggeration: (value: number) => void;
-  cfgWeight: number;
-  setCfgWeight: (value: number) => void;
+  options: ChatterboxOptions;
+  setOptions: (options: ChatterboxOptions) => void;
   userUploadedVoices: UploadedVoice[];
-  isUploadingVoice: boolean;
-  handleVoiceUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onVoiceUploaded: () => void;
 }
 
 export default function ChatterboxSettings({
   languages,
   voiceFiles,
-  selectedLanguage,
-  setSelectedLanguage,
-  selectedVoice,
-  setSelectedVoice,
-  exaggeration,
-  setExaggeration,
-  cfgWeight,
-  setCfgWeight,
+  options,
+  setOptions,
   userUploadedVoices,
-  isUploadingVoice,
-  handleVoiceUpload,
+  onVoiceUploaded,
 }: ChatterboxSettingsProps) {
+  const [isUploadingVoice, setIsUploadingVoice] = useState(false);
+
+  const handleVoiceUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("audio/")) {
+      toast.error("Please select an audio file!");
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("File size must be less than 10MB!");
+      return;
+    }
+
+    setIsUploadingVoice(true);
+    try {
+      const formData = new FormData();
+      formData.append("voice", file);
+      const result = await uploadVoice("aws", formData);
+      if (!result.success) {
+        throw new Error(result.error ?? "Upload failed");
+      }
+      toast.success("Voice uploaded successfully!");
+      onVoiceUploaded(); // tell page.tsx to refresh the list
+    } catch (error) {
+      console.error("Upload error:", error);
+      toast.error("Failed to upload voice file");
+    } finally {
+      setIsUploadingVoice(false);
+    }
+  };
+
   return (
     <div className="space-y-4">
       {/* Language */}
@@ -42,8 +69,10 @@ export default function ChatterboxSettings({
           <Globe className="h-3 w-3" /> Language
         </label>
         <select
-          value={selectedLanguage}
-          onChange={(e) => setSelectedLanguage(e.target.value)}
+          value={options.language}
+          onChange={(e) =>
+            setOptions({ ...options, language: e.target.value })
+          }
           className="border-input bg-background w-full rounded-md border px-2 py-1.5 text-xs"
         >
           {languages.map((lang) => (
@@ -60,8 +89,10 @@ export default function ChatterboxSettings({
           <Volume2 className="h-3 w-3" /> Voice
         </label>
         <select
-          value={selectedVoice}
-          onChange={(e) => setSelectedVoice(e.target.value)}
+          value={options.voice}
+          onChange={(e) =>
+            setOptions({ ...options, voice: e.target.value })
+          }
           className="border-input bg-background w-full rounded-md border px-2 py-1.5 text-xs"
         >
           {userUploadedVoices.map((voice) => (
@@ -83,8 +114,9 @@ export default function ChatterboxSettings({
           <Upload className="h-3 w-3" /> Upload Your Voice
         </label>
         {isUploadingVoice ? (
-          <div className="flex items-center gap-2 text-xs">
-            <Loader2 className="h-3 w-3 animate-spin" /> Uploading...
+          <div className="flex items-center gap-1.5 text-xs">
+            <Loader2 className="h-3 w-3 animate-spin" />
+            Uploading...
           </div>
         ) : (
           <input
@@ -95,23 +127,26 @@ export default function ChatterboxSettings({
           />
         )}
         <p className="text-muted-foreground text-xs">
-          Upload a clear voice sample (WAV/MP3). Uploaded voices appear in the dropdown above.
+          Upload a clear voice sample (WAV/MP3). Uploaded voices appear in the
+          dropdown above.
         </p>
       </div>
 
       {/* Exaggeration */}
       <div className="space-y-1.5">
         <label className="flex items-center justify-between text-xs font-medium">
-          <span className="flex items-center gap-1.5">Emotion/Intensity</span>
-          <span className="text-muted-foreground">{exaggeration.toFixed(1)}</span>
+          <span>Emotion/Intensity</span>
+          <span>&nbsp;{options.exaggeration.toFixed(1)}</span>
         </label>
         <input
           type="range"
           min="0"
           max="1"
           step="0.1"
-          value={exaggeration}
-          onChange={(e) => setExaggeration(parseFloat(e.target.value))}
+          value={options.exaggeration}
+          onChange={(e) =>
+            setOptions({ ...options, exaggeration: parseFloat(e.target.value) })
+          }
           className="w-full cursor-pointer"
         />
         <div className="text-muted-foreground flex justify-between text-xs">
@@ -123,16 +158,18 @@ export default function ChatterboxSettings({
       {/* CFG Weight */}
       <div className="space-y-1.5">
         <label className="flex items-center justify-between text-xs font-medium">
-          <span className="flex items-center gap-1.5">Pacing Control</span>
-          <span className="text-muted-foreground">{cfgWeight.toFixed(1)}</span>
+          <span>Pacing Control</span>
+          <span>&nbsp;{options.cfgWeight.toFixed(1)}</span>
         </label>
         <input
           type="range"
           min="0"
           max="1"
           step="0.1"
-          value={cfgWeight}
-          onChange={(e) => setCfgWeight(parseFloat(e.target.value))}
+          value={options.cfgWeight}
+          onChange={(e) =>
+            setOptions({ ...options, cfgWeight: parseFloat(e.target.value) })
+          }
           className="w-full cursor-pointer"
         />
         <div className="text-muted-foreground flex justify-between text-xs">

@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import type {
-  GeminiOptions,
   GenerateSpeechResult,
+  GeminiRequestOptions,
   TTSOptions,
   TTSProvider,
 } from "./base-tts-provider";
@@ -87,7 +87,7 @@ export class GeminiProvider implements TTSProvider {
   }
 
   async generateSpeech(data: TTSOptions): Promise<GenerateSpeechResult> {
-    const options = data as GeminiOptions;
+    const options = data as GeminiRequestOptions;
 
     try {
       // 1. Auth check

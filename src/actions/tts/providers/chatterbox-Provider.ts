@@ -2,8 +2,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import {
   S3_BUCKET_URL,
-  type ChatterboxOptions,
   type GenerateSpeechResult,
+  type ChatterboxRequestOptions,
   type TTSProvider,
   type TTSOptions,
 } from "./base-tts-provider";
@@ -19,7 +19,7 @@ export class ChatterboxProvider implements TTSProvider {
 
   async generateSpeech(data: TTSOptions): Promise<GenerateSpeechResult> {
     // Cast to the correct type for this engine
-    const options = data as ChatterboxOptions;
+    const options = data as ChatterboxRequestOptions;
 
     try {
       const session = await auth.api.getSession({

@@ -10,7 +10,7 @@ export interface GenerateSpeechResult {
 }
 
 // Chatterbox-specific options
-export interface ChatterboxOptions {
+export interface ChatterboxRequestOptions  {
   text: string;
   language: string;
   voice_S3_key: string;
@@ -19,7 +19,7 @@ export interface ChatterboxOptions {
 }
 
 // Gemini-specific options
-export interface GeminiOptions {
+export interface GeminiRequestOptions  {
   text: string;
   voice_name: string;
   gemini_model?: "gemini-2.5-flash-preview-tts" | "gemini-2.5-pro-preview-tts";
@@ -29,7 +29,7 @@ export interface GeminiOptions {
 }
 
 // Union — what tts.ts accepts
-export type TTSOptions = ChatterboxOptions | GeminiOptions;
+export type TTSOptions = ChatterboxRequestOptions | GeminiRequestOptions ;
 
 // Every provider must implement this
 export interface TTSProvider {
