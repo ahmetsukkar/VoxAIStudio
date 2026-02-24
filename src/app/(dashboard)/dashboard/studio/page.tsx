@@ -19,9 +19,9 @@ import { toast } from "sonner";
 import type { GeneratedAudio, UploadedVoice } from "~/types/tts";
 import { Languages } from "~/data/Languages";
 import { VoiceFiles } from "~/data/VoiceFiles";
-import SpeechSettings from "~/components/create/speech-settings";
-import TextInput from "~/components/create/text-input";
-import AudioHistory from "~/components/create/audio-history";
+import SpeechSettings from "~/components/studio/tts/speech-settings";
+import TextInput from "~/components/studio/tts/text-input";
+import AudioHistory from "~/components/studio/tts/audio-history";
 import { GeminiVoices } from "~/data/GeminiOptions";
 
 export default function CreatePage() {
@@ -29,10 +29,13 @@ export default function CreatePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
   const [text, setText] = useState("");
-  const [selectedEngine, setSelectedEngine] = useState<TTSProviderType>("chatterbox");
+  const [selectedEngine, setSelectedEngine] =
+    useState<TTSProviderType>("chatterbox");
   const [generatedAudios, setGeneratedAudios] = useState<GeneratedAudio[]>([]);
   const [currentAudio, setCurrentAudio] = useState<GeneratedAudio | null>(null);
-  const [userUploadedVoices, setUserUploadedVoices] = useState<UploadedVoice[]>([]);
+  const [userUploadedVoices, setUserUploadedVoices] = useState<UploadedVoice[]>(
+    [],
+  );
 
   const [engineOptions, setEngineOptions] = useState<EngineOptionsMap>({
     chatterbox: {
@@ -193,13 +196,7 @@ export default function CreatePage() {
       <SignedIn>
         <div className="border-b border-gray-200 bg-white py-2">
           <div className="mx-auto max-w-7xl text-center">
-            <h1 className="from-primary to-primary/70 mb-1 bg-gradient-to-r bg-clip-text text-lg font-bold text-transparent">
-              Text-to-Speech Generator
-            </h1>
-            <p className="text-muted-foreground mx-auto max-w-xl text-xs">
-              Generate natural-sounding speech in 23 languages with voice
-              cloning
-            </p>
+            [ 🎙️ Text to Speech ] [ 🎭 Dialogue Studio ]
           </div>
         </div>
         {/* Main Content Area */}

@@ -182,7 +182,7 @@ export default function Dashboard() {
             <CardContent>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 <Button
-                  onClick={() => router.push("/dashboard/create")}
+                  onClick={() => router.push("/dashboard/studio")}
                   className="group h-auto flex-col gap-2 bg-purple-600 p-6 hover:bg-purple-700"
                 >
                   <Mic className="h-8 w-8 transition-transform group-hover:scale-110" />
@@ -255,7 +255,7 @@ export default function Dashboard() {
                       Start generating speech with AI voice cloning
                     </p>
                     <Button
-                      onClick={() => router.push("/dashboard/create")}
+                      onClick={() => router.push("/dashboard/studio")}
                       className="gap-2 bg-purple-600 hover:bg-purple-700"
                     >
                       <Mic className="h-4 w-4" />

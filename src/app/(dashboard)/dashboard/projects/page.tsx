@@ -139,7 +139,7 @@ export default function Projects() {
               </p>
             </div>
             <Button
-              onClick={() => router.push("/dashboard/create")}
+              onClick={() => router.push("/dashboard/studio")}
               className="gap-2 self-start sm:self-auto"
             >
               <Plus className="h-4 w-4" />
@@ -191,7 +191,7 @@ export default function Projects() {
                   </p>
                   {!searchQuery && (
                     <Button
-                      onClick={() => router.push("/dashboard/create")}
+                      onClick={() => router.push("/dashboard/studio")}
                       className="gap-2"
                     >
                       <Plus className="h-4 w-4" />

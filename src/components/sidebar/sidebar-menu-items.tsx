@@ -24,8 +24,8 @@ export default function SidebarMenuItems() {
       active: false,
     },
     {
-      title: "Create",
-      url: "/dashboard/create",
+      title: "Studio",
+      url: "/dashboard/studio",
       icon: Wand2,
       active: false,
     },

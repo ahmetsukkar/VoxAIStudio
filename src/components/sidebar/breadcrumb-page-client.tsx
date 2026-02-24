@@ -11,7 +11,7 @@ export default function BreadcrumbPageClient() {
     switch (path) {
       case "/dashboard":
         return "Dashboard";
-      case "/dashboard/create":
+      case "/dashboard/studio":
         return "Create";
       case "/dashboard/projects":
         return "Projects";
