@@ -1,22 +1,29 @@
-import type { GeminiEmotion, GeminiStyle, GeminiPace, GeminiModel } from "~/data/GeminiOptions";
+import type {
+  GeminiEmotion,
+  GeminiStyle,
+  GeminiPace,
+  GeminiModel,
+} from "~/data/GeminiOptions";
+
+export type SpeakerId = "s1" | "s2";
 
 export interface DialogueSpeaker {
-  id: "s1" | "s2";
-  name: string;           // editable, default "John" / "Mary"
-  voice: string;          // from GeminiVoices
-  color: "blue" | "green"; // fixed per speaker, for avatar
+  id: SpeakerId;
+  name: string;
+  voice: string;
+  color: "blue" | "green";
 }
 
 export interface DialogueLine {
   id: string;
-  speakerId: "s1" | "s2";
+  speakerId: SpeakerId;
   text: string;
-  emotion: GeminiEmotion; // per-line, default "neutral"
+  emotion: GeminiEmotion;
 }
 
 export interface DialogueSettings {
-  model: GeminiModel;     // Flash/Pro toggle
+  model: GeminiModel;
   style: GeminiStyle;
   pace: GeminiPace;
-  reverb: boolean;        // toggle on/off
+  reverb: boolean;
 }
