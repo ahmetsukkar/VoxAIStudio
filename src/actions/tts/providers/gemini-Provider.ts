@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import type {
   GenerateSpeechResult,
   GeminiRequestOptions,
@@ -10,10 +9,16 @@ import { headers } from "next/headers";
 import { db } from "~/server/db";
 import { auth } from "~/lib/auth";
 import { env } from "~/env";
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, Modality } from "@google/genai";
 import { v4 as uuidv4 } from "uuid";
 import { uploadGeneratedAudio } from "./s3-upload-helper";
-import type { GeminiEmotion, GeminiStyle, GeminiPace } from "~/data/GeminiOptions";
+import type {
+  GeminiEmotion,
+  GeminiModel,
+  GeminiPace,
+  GeminiStyle,
+} from "~/data/GeminiOptions";
+import { calcGeminiTTSCredits } from "~/lib/credits/calculate";
 
 function pcmToWav(
   pcmBuffer: Buffer,
@@ -41,32 +46,48 @@ function pcmToWav(
 
 function getEmotionInstruction(emotion: GeminiEmotion): string {
   switch (emotion) {
-    case "whispering": return "Speak in a very quiet, breathy whisper. Very low energy.";
-    case "sad":        return "Speak in a slow, mournful, and sad tone.";
-    case "cheerful":   return "Speak in a very happy, bright, and smiling tone.";
-    case "angry":      return "Speak in a sharp, loud, and aggressive angry tone.";
-    case "excited":    return "Speak with high energy and enthusiasm.";
-    case "emotional":  return "Speak with deep feeling and emotional resonance.";
-    default:           return "Speak in a natural, neutral tone.";
+    case "whispering":
+      return "Speak in a very quiet, breathy whisper. Very low energy.";
+    case "sad":
+      return "Speak in a slow, mournful, and sad tone.";
+    case "cheerful":
+      return "Speak in a very happy, bright, and smiling tone.";
+    case "angry":
+      return "Speak in a sharp, loud, and aggressive angry tone.";
+    case "excited":
+      return "Speak with high energy and enthusiasm.";
+    case "emotional":
+      return "Speak with deep feeling and emotional resonance.";
+    default:
+      return "Speak in a natural, neutral tone.";
   }
 }
 
 function getStyleInstruction(style: GeminiStyle): string {
   switch (style) {
-    case "newsreader":       return "Deliver in a clear, authoritative news reader style.";
-    case "storytelling":     return "Use a warm, engaging storytelling tone with natural rhythm.";
-    case "podcast":          return "Sound like a relaxed, friendly podcast host.";
-    case "audiobook":        return "Read clearly and expressively like a professional audiobook narrator.";
-    case "customer-support": return "Use a calm, helpful, and professional customer support tone.";
-    default:                 return "Use a natural, conversational delivery.";
+    case "newsreader":
+      return "Deliver in a clear, authoritative news reader style.";
+    case "storytelling":
+      return "Use a warm, engaging storytelling tone with natural rhythm.";
+    case "podcast":
+      return "Sound like a relaxed, friendly podcast host.";
+    case "audiobook":
+      return "Read clearly and expressively like a professional audiobook narrator.";
+    case "customer-support":
+      return "Use a calm, helpful, and professional customer support tone.";
+    default:
+      return "Use a natural, conversational delivery.";
   }
 }
 
 function getPaceInstruction(pace: GeminiPace): string {
   switch (pace) {
-    case "slow": return "Speak slowly and deliberately.";
-    case "fast": return "Speak at a fast, energetic pace.";
-    default:     return "Speak at a normal, natural pace.";
+    case "slow":
+      return "Speak slowly and deliberately.";
+    case "fast":
+      return "Speak at a fast, energetic pace.";
+    default:
+      return "Speak at a normal, natural pace.";
   }
 }
 
@@ -76,14 +97,13 @@ function buildPrompt(
   style: GeminiStyle = "conversational",
   pace: GeminiPace = "normal",
 ): string {
-  const emotionInstruction = getEmotionInstruction(emotion);
-  const styleInstruction   = getStyleInstruction(style);
-  const paceInstruction    = getPaceInstruction(pace);
-  return `${emotionInstruction} ${styleInstruction} ${paceInstruction}\n\nText: ${text}`;
+  return `${getEmotionInstruction(emotion)} ${getStyleInstruction(style)} ${getPaceInstruction(pace)}\n\nText: ${text}`;
 }
+
 export class GeminiProvider implements TTSProvider {
-  calculateExactPoints(charCount: number): number {
-    return (5 / 1000) * charCount;
+  getCredits(options: TTSOptions): number {
+    const o = options as GeminiRequestOptions;
+    return calcGeminiTTSCredits(o.text?.length ?? 0, o.gemini_model);
   }
 
   async generateSpeech(data: TTSOptions): Promise<GenerateSpeechResult> {
@@ -103,8 +123,11 @@ export class GeminiProvider implements TTSProvider {
         return { success: false, error: "Text is required" };
       }
 
-      // 3. Check credits
-      const creditsNeeded = this.calculateExactPoints(options.text.length);
+      // 3. Check credits (model-aware)
+      const model = (options.gemini_model ??
+        "gemini-2.5-flash-preview-tts") as GeminiModel;
+      const creditsNeeded = this.getCredits(options);
+
       const user = await db.user.findUnique({
         where: { id: session.user.id },
         select: { credits: true },
@@ -117,11 +140,11 @@ export class GeminiProvider implements TTSProvider {
       if (Number(user.credits) < creditsNeeded) {
         return {
           success: false,
-          error: `Insufficient credits. Need ${creditsNeeded.toFixed(2)}, have ${user.credits}`,
+          error: `Insufficient credits. Need ${creditsNeeded}, have ${user.credits}`,
         };
       }
 
-      // 4. Build the full prompt with emotion + style + pace instructions
+      // 4. Build prompt
       const finalText = buildPrompt(
         options.text,
         options.gemini_emotion as GeminiEmotion,
@@ -133,10 +156,10 @@ export class GeminiProvider implements TTSProvider {
       const ai = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
 
       const response = await ai.models.generateContent({
-        model: options.gemini_model ?? "gemini-2.5-flash-preview-tts",
+        model,
         contents: [{ parts: [{ text: finalText }] }],
         config: {
-          responseModalities: ["AUDIO"],
+          responseModalities: [Modality.AUDIO],
           speechConfig: {
             voiceConfig: {
               prebuiltVoiceConfig: {
@@ -186,7 +209,6 @@ export class GeminiProvider implements TTSProvider {
         audioUrl,
         projectId: audioProject.id,
       };
-
     } catch (error) {
       console.error("Gemini TTS error:", error);
       return { success: false, error: "Internal server error" };

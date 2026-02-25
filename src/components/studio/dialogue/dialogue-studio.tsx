@@ -6,6 +6,7 @@ import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
 import { toast } from "sonner";
 import { GeminiVoices } from "~/data/GeminiOptions";
+import { calcGeminiDialogueCredits } from "~/lib/credits/calculate";
 import type {
   DialogueSpeaker,
   DialogueLine,
@@ -16,15 +17,20 @@ import DialogueLineItem from "./dialogue-line-item";
 import DialogueSettingsPanel from "./dialogue-settings";
 import { generateDialogue } from "~/actions/tts/dialogue";
 
-const CREDITS_PER_CHAR: Record<string, number> = {
-  "gemini-2.5-flash-preview-tts": 6,
-  "gemini-2.5-pro-preview-tts": 10,
-};
-
 export default function DialogueStudio() {
   const [speakers, setSpeakers] = useState<DialogueSpeaker[]>([
-    { id: "s1", name: "John", voice: GeminiVoices[0]?.name ?? "Zephyr", color: "blue" },
-    { id: "s2", name: "Mary", voice: GeminiVoices[3]?.name ?? "Kore", color: "green" },
+    {
+      id: "s1",
+      name: "John",
+      voice: GeminiVoices[0]?.name ?? "Zephyr",
+      color: "blue",
+    },
+    {
+      id: "s2",
+      name: "Mary",
+      voice: GeminiVoices[3]?.name ?? "Kore",
+      color: "green",
+    },
   ]);
 
   const [lines, setLines] = useState<DialogueLine[]>([
@@ -43,12 +49,10 @@ export default function DialogueStudio() {
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
 
   const totalChars = lines.reduce((sum, l) => sum + l.text.length, 0);
-  const creditsNeeded = totalChars * (CREDITS_PER_CHAR[settings.model] ?? 6);
+  const creditsNeeded = calcGeminiDialogueCredits(lines, settings);
 
   const updateSpeaker = (updated: DialogueSpeaker) => {
-    setSpeakers((prev) =>
-      prev.map((s) => (s.id === updated.id ? updated : s)),
-    );
+    setSpeakers((prev) => prev.map((s) => (s.id === updated.id ? updated : s)));
   };
 
   const updateLine = (updated: DialogueLine) => {
@@ -60,15 +64,23 @@ export default function DialogueStudio() {
   };
 
   const addLine = () => {
-    setLines((prev) => [
-      ...prev,
-      {
-        id: `l${Date.now()}`,
-        speakerId: "s1",
-        text: "",
-        emotion: "neutral" as const,
-      },
-    ]);
+    setLines((prev) => {
+      const lastLine = prev[prev.length - 1];
+      const lastSpeaker = lastLine?.speakerId ?? speakers[0]?.id;
+      const lastIndex = speakers.findIndex((s) => s.id === lastSpeaker);
+      const nextSpeaker =
+        speakers[(lastIndex + 1) % speakers.length]?.id ?? "s1";
+
+      return [
+        ...prev,
+        {
+          id: `l${Date.now()}`,
+          speakerId: nextSpeaker as "s1" | "s2",
+          text: "",
+          emotion: "neutral" as const,
+        },
+      ];
+    });
   };
 
   const handleGenerate = async () => {
@@ -102,10 +114,8 @@ export default function DialogueStudio() {
   return (
     <div className="mx-auto max-w-7xl px-2 py-4 sm:px-4 sm:py-6">
       <div className="grid grid-cols-1 gap-2 sm:gap-4 lg:grid-cols-3">
-
         {/* Left Sidebar */}
         <div className="order-2 space-y-2 sm:space-y-3 lg:order-1 lg:col-span-1">
-
           {/* Audio Player */}
           <Card className="shadow-lg">
             <CardContent className="p-2 sm:p-3">
@@ -137,12 +147,9 @@ export default function DialogueStudio() {
 
         {/* Main Area */}
         <div className="order-1 space-y-4 lg:order-2 lg:col-span-2">
-
           {/* Section 1 — Speakers */}
           <div className="space-y-2">
-            <h3 className="text-sm font-bold">
-              1. Define Speakers
-            </h3>
+            <h3 className="text-sm font-bold">1. Define Speakers</h3>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {speakers.map((speaker) => (
                 <SpeakerCard
@@ -156,9 +163,7 @@ export default function DialogueStudio() {
 
           {/* Section 2 — Dialogue Lines */}
           <div className="space-y-2">
-            <h3 className="text-sm font-bold">
-              2. Dialogue Lines
-            </h3>
+            <h3 className="text-sm font-bold">2. Dialogue Lines</h3>
             <Card>
               <CardContent className="space-y-4 p-3 sm:p-4">
                 {lines.map((line) => (
@@ -172,7 +177,6 @@ export default function DialogueStudio() {
                   />
                 ))}
 
-                {/* Add Line */}
                 <Button
                   variant="outline"
                   className="w-full border-dashed"

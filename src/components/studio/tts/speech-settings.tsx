@@ -4,12 +4,11 @@ import { Settings, Loader2 } from "lucide-react";
 import { Card, CardContent } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import type { Language, VoiceFile, UploadedVoice } from "~/types/tts";
-import type { TTSProviderType } from "~/actions/tts/tts-factory";
-import { calculateCredit } from "~/actions/tts";
-import { useEffect, useState } from "react";
+import { type TTSProviderType } from "~/actions/tts/tts-factory";
 import ChatterboxSettings from "./engines/chatterbox-settings";
 import GeminiSettings from "./engines/gemini-settings";
 import type { EngineOptionsMap } from "~/types/engines";
+import { calcTTSCredits } from "~/lib/credits/calculate";
 
 interface SpeechSettingsProps {
   languages: Language[];
@@ -38,15 +37,12 @@ export default function SpeechSettings({
   isGenerating,
   onGenerate,
 }: SpeechSettingsProps) {
-  const [creditsNeeded, setCreditsNeeded] = useState(0);
 
-  useEffect(() => {
-    async function run() {
-      const value = await calculateCredit(selectedEngine, text.length);
-      setCreditsNeeded(value);
-    }
-    void run();
-  }, [text, selectedEngine]);
+  const creditsNeeded = calcTTSCredits(
+    selectedEngine,
+    text,
+    engineOptions.gemini.model,
+  );
 
   return (
     <Card className="shadow-lg">

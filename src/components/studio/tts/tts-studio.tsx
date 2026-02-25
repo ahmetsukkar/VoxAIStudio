@@ -23,7 +23,7 @@ import TextInput from "~/components/studio/tts/text-input";
 import AudioHistory from "~/components/studio/tts/audio-history";
 import { GeminiVoices } from "~/data/GeminiOptions";
 
-export default function CreatePage() {
+export default function TTSStudio() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -164,7 +164,6 @@ export default function CreatePage() {
 
   const playAudio = (audio: GeneratedAudio) => {
     setCurrentAudio(audio);
-    // Auto-play after setting the audio
     setTimeout(() => {
       if (audioRef.current) {
         audioRef.current.load();

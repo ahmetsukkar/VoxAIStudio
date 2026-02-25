@@ -23,16 +23,6 @@ export async function generateSpeech(
   return result;
 }
 
-export async function calculateCredit(
-  providerType: TTSProviderType,
-  charCount: number,
-) {
-  const provider = TTSFactory.getProvider(providerType);
-  const result = provider.calculateExactPoints(charCount);
-
-  return result;
-}
-
 export const getUserAudioProjects = cache(async () => {
   try {
     const session = await auth.api.getSession({

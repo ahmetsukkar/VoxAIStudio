@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 "use server";
 
 import { GoogleGenAI, Modality } from "@google/genai";
@@ -12,14 +13,8 @@ import type {
   DialogueLine,
   DialogueSettings,
 } from "~/types/dialogue";
+import { calcGeminiDialogueCredits } from "~/lib/credits/calculate";
 
-// ─── Credit rates ─────────────────────────────────────────────────────────────
-const CREDITS_PER_CHAR: Record<string, number> = {
-  "gemini-2.5-flash-preview-tts": 6,
-  "gemini-2.5-pro-preview-tts": 10,
-};
-
-// ─── Prompt builder ───────────────────────────────────────────────────────────
 function buildPrompt(
   text: string,
   emotion: string,
@@ -27,28 +22,28 @@ function buildPrompt(
   pace: string,
 ): string {
   const emotionMap: Record<string, string> = {
-    neutral:    "Speak in a natural, neutral tone.",
-    cheerful:   "Speak in a very happy, bright, and cheerful tone.",
-    sad:        "Speak in a slow, mournful, and sad tone.",
-    angry:      "Speak in a sharp, loud, and aggressive angry tone.",
-    excited:    "Speak with high energy and enthusiasm.",
+    neutral: "Speak in a natural, neutral tone.",
+    cheerful: "Speak in a very happy, bright, and cheerful tone.",
+    sad: "Speak in a slow, mournful, and sad tone.",
+    angry: "Speak in a sharp, loud, and aggressive angry tone.",
+    excited: "Speak with high energy and enthusiasm.",
     whispering: "Speak in a very quiet, breathy whisper.",
-    emotional:  "Speak with deep feeling and emotional resonance.",
+    emotional: "Speak with deep feeling and emotional resonance.",
   };
 
   const styleMap: Record<string, string> = {
-    conversational:     "Use a natural conversational style.",
-    newsreader:         "Use a clear, professional news reader style.",
-    storytelling:       "Use an engaging storytelling style.",
-    podcast:            "Use a relaxed, podcast hosting style.",
-    audiobook:          "Use a smooth, audiobook narration style.",
+    conversational: "Use a natural conversational style.",
+    newsreader: "Use a clear, professional news reader style.",
+    storytelling: "Use an engaging storytelling style.",
+    podcast: "Use a relaxed, podcast hosting style.",
+    audiobook: "Use a smooth, audiobook narration style.",
     "customer-support": "Use a friendly, helpful customer support style.",
   };
 
   const paceMap: Record<string, string> = {
     normal: "Speak at a normal pace.",
-    slow:   "Speak slowly and clearly.",
-    fast:   "Speak at a faster pace.",
+    slow: "Speak slowly and clearly.",
+    fast: "Speak at a faster pace.",
   };
 
   return `${emotionMap[emotion] ?? emotionMap.neutral} ${styleMap[style] ?? styleMap.conversational} ${paceMap[pace] ?? paceMap.normal} Text: ${text}`;
@@ -56,31 +51,41 @@ function buildPrompt(
 
 // ─── WAV encoder ──────────────────────────────────────────────────────────────
 function encodeWav(pcmChunks: Uint8Array[]): Buffer {
-  const sampleRate    = 24000;
-  const numChannels   = 1;
+  const sampleRate = 24000;
+  const numChannels = 1;
   const bitsPerSample = 16;
 
   const totalPcmLength = pcmChunks.reduce((sum, c) => sum + c.byteLength, 0);
   const fileSize = 44 + totalPcmLength;
-  const buffer   = Buffer.alloc(fileSize);
+  const buffer = Buffer.alloc(fileSize);
   let offset = 0;
 
-  // RIFF header
-  buffer.write("RIFF",                                     offset); offset += 4;
-  buffer.writeUInt32LE(fileSize - 8,                       offset); offset += 4;
-  buffer.write("WAVE",                                     offset); offset += 4;
-  // fmt chunk
-  buffer.write("fmt ",                                     offset); offset += 4;
-  buffer.writeUInt32LE(16,                                 offset); offset += 4;
-  buffer.writeUInt16LE(1,                                  offset); offset += 2;
-  buffer.writeUInt16LE(numChannels,                        offset); offset += 2;
-  buffer.writeUInt32LE(sampleRate,                         offset); offset += 4;
-  buffer.writeUInt32LE(sampleRate * numChannels * (bitsPerSample / 8), offset); offset += 4;
-  buffer.writeUInt16LE(numChannels * (bitsPerSample / 8),  offset); offset += 2;
-  buffer.writeUInt16LE(bitsPerSample,                      offset); offset += 2;
-  // data chunk
-  buffer.write("data",                                     offset); offset += 4;
-  buffer.writeUInt32LE(totalPcmLength,                     offset); offset += 4;
+  buffer.write("RIFF", offset);
+  offset += 4;
+  buffer.writeUInt32LE(fileSize - 8, offset);
+  offset += 4;
+  buffer.write("WAVE", offset);
+  offset += 4;
+  buffer.write("fmt ", offset);
+  offset += 4;
+  buffer.writeUInt32LE(16, offset);
+  offset += 4;
+  buffer.writeUInt16LE(1, offset);
+  offset += 2;
+  buffer.writeUInt16LE(numChannels, offset);
+  offset += 2;
+  buffer.writeUInt32LE(sampleRate, offset);
+  offset += 4;
+  buffer.writeUInt32LE(sampleRate * numChannels * (bitsPerSample / 8), offset);
+  offset += 4;
+  buffer.writeUInt16LE(numChannels * (bitsPerSample / 8), offset);
+  offset += 2;
+  buffer.writeUInt16LE(bitsPerSample, offset);
+  offset += 2;
+  buffer.write("data", offset);
+  offset += 4;
+  buffer.writeUInt32LE(totalPcmLength, offset);
+  offset += 4;
 
   for (const chunk of pcmChunks) {
     Buffer.from(chunk).copy(buffer, offset);
@@ -115,15 +120,17 @@ export async function generateDialogue({
     // 2. Validate
     const filledLines = lines.filter((l) => l.text.trim().length > 0);
     if (filledLines.length === 0) {
-      return { success: false, error: "Add at least one dialogue line with text." };
+      return {
+        success: false,
+        error: "Add at least one dialogue line with text.",
+      };
     }
 
     // 3. Credits check
-    const totalChars    = filledLines.reduce((sum, l) => sum + l.text.length, 0);
-    const creditsNeeded = totalChars * (CREDITS_PER_CHAR[settings.model] ?? 6);
+    const creditsNeeded = calcGeminiDialogueCredits(filledLines, settings);
 
     const user = await db.user.findUnique({
-      where:  { id: session.user.id },
+      where: { id: session.user.id },
       select: { credits: true },
     });
 
@@ -176,12 +183,8 @@ export async function generateDialogue({
         };
       }
 
-      // Decode base64 → raw PCM bytes
-      const binaryString = atob(base64Audio);
-      const pcm = new Uint8Array(binaryString.length);
-      for (let i = 0; i < binaryString.length; i++) {
-        pcm[i] = binaryString.charCodeAt(i);
-      }
+      // ✅ Node.js safe — no atob()
+      const pcm = new Uint8Array(Buffer.from(base64Audio, "base64"));
       pcmChunks.push(pcm);
     }
 
@@ -193,13 +196,13 @@ export async function generateDialogue({
     const wavBuffer = encodeWav(pcmChunks);
 
     // 7. Upload to S3
-    const s3Key   = `generated/dialogue/${uuidv4()}.wav`;
+    const s3Key = `generated/dialogue/${uuidv4()}.wav`;
     const audioUrl = await uploadGeneratedAudio(wavBuffer, s3Key);
 
     // 8. Deduct credits
     await db.user.update({
       where: { id: session.user.id },
-      data:  { credits: { decrement: creditsNeeded } },
+      data: { credits: { decrement: creditsNeeded } },
     });
 
     // 9. Save to DB
@@ -212,13 +215,13 @@ export async function generateDialogue({
 
     await db.audioProject.create({
       data: {
-        text:      fullText,
+        text: fullText,
         audioUrl,
         s3Key,
-        language:  "multilingual",
+        language: "multilingual",
         voiceS3Key: "dialogue",
-        engine:    "gemini-dialogue",
-        userId:    session.user.id,
+        engine: "gemini-dialogue",
+        userId: session.user.id,
       },
     });
 

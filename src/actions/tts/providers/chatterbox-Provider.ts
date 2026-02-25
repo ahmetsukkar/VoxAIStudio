@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import {
@@ -11,10 +12,12 @@ import { headers } from "next/headers";
 import { db } from "~/server/db";
 import { auth } from "~/lib/auth";
 import { env } from "~/env";
+import { calcChatterboxCredits } from "~/lib/credits/calculate";
 
 export class ChatterboxProvider implements TTSProvider {
-  calculateExactPoints(charCount: number): number {
-    return (1 / 1000) * charCount;
+  getCredits(options: TTSOptions): number {
+    const o = options as ChatterboxRequestOptions;
+    return calcChatterboxCredits(o.text?.length ?? 0);
   }
 
   async generateSpeech(data: TTSOptions): Promise<GenerateSpeechResult> {
@@ -33,7 +36,7 @@ export class ChatterboxProvider implements TTSProvider {
         return { success: false, error: "Missing required fields" };
       }
 
-      const creditsNeeded = this.calculateExactPoints(options.text.length);
+      const creditsNeeded = this.getCredits(options);
       const user = await db.user.findUnique({
         where: { id: session.user.id },
         select: { credits: true },

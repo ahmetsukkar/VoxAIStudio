@@ -1,8 +1,10 @@
-import type { GenerateSpeechResult, TTSOptions, TTSProvider } from "./base-tts-provider";
+import { CREDITS_PER_CHAR } from "~/config/credits";
+import type { ChatterboxRequestOptions, GenerateSpeechResult, TTSOptions, TTSProvider } from "./base-tts-provider";
 
 export class GoogleCloudProvider implements TTSProvider {
-  calculateExactPoints(charCount: number): number {
-    return (5 / 1000) * charCount;
+  getCredits(options: TTSOptions): number {
+    const o = options as ChatterboxRequestOptions;
+    return (o.text?.length ?? 0) * CREDITS_PER_CHAR.chatterbox;
   }
   async generateSpeech(options: TTSOptions): Promise<GenerateSpeechResult> {
     // googleCloud-specific implementation
