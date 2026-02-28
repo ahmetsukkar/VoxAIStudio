@@ -25,5 +25,4 @@ export interface DialogueSettings {
   model: GeminiModel;
   style: GeminiStyle;
   pace: GeminiPace;
-  reverb: boolean;
 }

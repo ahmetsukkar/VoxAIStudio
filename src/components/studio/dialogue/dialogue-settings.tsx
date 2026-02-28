@@ -1,6 +1,6 @@
 "use client";
 
-import { Cpu, Gauge, Mic2, Waves } from "lucide-react";
+import { Cpu, Gauge, Mic2 } from "lucide-react";
 import { Card, CardContent } from "~/components/ui/card";
 import { Switch } from "~/components/ui/switch";
 import { Label } from "~/components/ui/label";
@@ -37,11 +37,18 @@ export default function DialogueSettingsPanel({
             <Cpu className="h-3 w-3" /> Model
           </Label>
           <div className="flex items-center justify-between rounded-md border px-3 py-2">
-            <span className="text-xs">
-              {settings.model === "gemini-2.5-flash-preview-tts"
-                ? "Flash — Fast & Affordable"
-                : "Pro — Highest Quality"}
-            </span>
+            <div className="space-y-0.5">
+              <p className="text-xs font-semibold">
+                {settings.model === "gemini-2.5-flash-preview-tts"
+                  ? "Flash — Recommended"
+                  : "Pro — Long-form Content"}
+              </p>
+              <p className="text-muted-foreground text-xs">
+                {settings.model === "gemini-2.5-flash-preview-tts"
+                  ? "Best for dialogues & short lines"
+                  : "Better for audiobooks & speeches"}
+              </p>
+            </div>
             <Switch
               checked={settings.model === "gemini-2.5-pro-preview-tts"}
               onCheckedChange={(checked) =>
@@ -102,34 +109,16 @@ export default function DialogueSettingsPanel({
           </select>
         </div>
 
-        {/* Reverb Toggle */}
-        <div className="space-y-1.5">
-          <Label className="flex items-center gap-1.5 text-xs font-medium">
-            <Waves className="h-3 w-3" /> Reverb
-          </Label>
-          <div className="flex items-center justify-between rounded-md border px-3 py-2">
-            <span className="text-xs">
-              {settings.reverb ? "On" : "Off"}
-            </span>
-            <Switch
-              checked={settings.reverb}
-              onCheckedChange={(checked) =>
-                onChange({ ...settings, reverb: checked })
-              }
-            />
-          </div>
-        </div>
-
         {/* Credits Estimate */}
         {totalChars > 0 && (
-          <div className="rounded-md bg-blue-50 px-3 py-2 text-center">
-            <p className="text-xs text-blue-700">
-              Cost:{" "}
-              <span className="font-bold">
-                {creditsNeeded} credit{creditsNeeded !== 1 ? "s" : ""}
-              </span>{" "}
-              ({totalChars} characters)
-            </p>
+          <div className="text-muted-foreground flex items-center justify-between rounded-md border px-3 py-2 text-xs">
+            <span>Estimated cost</span>
+            <span className="text-foreground font-semibold">
+              {creditsNeeded} credit{creditsNeeded !== 1 ? "s" : ""}
+              <span className="text-muted-foreground ml-1 font-normal">
+                ({totalChars} chars)
+              </span>
+            </span>
           </div>
         )}
       </CardContent>
