@@ -1,17 +1,19 @@
 "use client";
 
-import { Volume2, Cpu, Smile, Mic2, Timer } from "lucide-react";
+import { Cpu, Smile, Volume2, Timer, Mic2 } from "lucide-react";
+import { Label } from "~/components/ui/label";
+import { Switch } from "~/components/ui/switch";
 import {
-  GeminiVoices,
   GeminiEmotions,
   GeminiStyles,
   GeminiPaces,
   type GeminiEmotion,
   type GeminiStyle,
   type GeminiPace,
-  type GeminiModel,
 } from "~/data/GeminiOptions";
 import type { GeminiOptions } from "~/types/engines";
+import VoicePicker from "./voice-picker";
+import { CREDITS_PER_CHAR } from "~/config/credits";
 
 interface GeminiSettingsProps {
   options: GeminiOptions;
@@ -22,52 +24,57 @@ export default function GeminiSettings({
   options,
   setOptions,
 }: GeminiSettingsProps) {
+  const isPro = options.model === "gemini-2.5-pro-preview-tts";
+
   return (
     <div className="space-y-4">
-      {/* Model */}
+
+      {/* Model Toggle — Flash / Pro */}
       <div className="space-y-1.5">
-        <label className="flex items-center gap-1.5 text-xs font-medium">
+        <Label className="flex items-center gap-1.5 text-xs font-medium">
           <Cpu className="h-3 w-3" /> Model
-        </label>
-        <select
-          value={options.model}
-          onChange={(e) =>
-            setOptions({ ...options, model: e.target.value as GeminiModel })
-          }
-          className="border-input bg-background w-full rounded-md border px-2 py-1.5 text-xs"
-        >
-          <option value="gemini-2.5-flash-preview-tts">
-            Gemini 2.5 Flash — Fast &amp; Affordable
-          </option>
-          <option value="gemini-2.5-pro-preview-tts">
-            Gemini 2.5 Pro — Highest Quality
-          </option>
-        </select>
+        </Label>
+        <div className="flex items-center justify-between rounded-md border px-3 py-2">
+          <div className="flex flex-col">
+            <span className="text-xs font-medium">
+              {isPro ? "Pro — Highest Quality" : "Flash — Fast & Affordable"}
+            </span>
+            <span className="text-muted-foreground text-[10px]">
+              {isPro
+                ? `${CREDITS_PER_CHAR.geminiProTTS} credits / char`
+                : `${CREDITS_PER_CHAR.geminiFlashTTS} credits / char`}
+            </span>
+          </div>
+          <Switch
+            checked={isPro}
+            onCheckedChange={(checked) =>
+              setOptions({
+                ...options,
+                model: checked
+                  ? "gemini-2.5-pro-preview-tts"
+                  : "gemini-2.5-flash-preview-tts",
+              })
+            }
+          />
+        </div>
       </div>
 
-      {/* Voice */}
+      {/* Voice Picker */}
       <div className="space-y-1.5">
-        <label className="flex items-center gap-1.5 text-xs font-medium">
+        <Label className="flex items-center gap-1.5 text-xs font-medium">
           <Mic2 className="h-3 w-3" /> Voice
-        </label>
-        <select
+        </Label>
+        <VoicePicker
           value={options.voice}
-          onChange={(e) => setOptions({ ...options, voice: e.target.value })}
-          className="border-input bg-background w-full rounded-md border px-2 py-1.5 text-xs"
-        >
-          {GeminiVoices.map((voice) => (
-            <option key={voice.name} value={voice.name}>
-              {voice.name} — {voice.description}
-            </option>
-          ))}
-        </select>
+          onChange={(voice) => setOptions({ ...options, voice })}
+        />
       </div>
 
       {/* Emotion */}
       <div className="space-y-1.5">
-        <label className="flex items-center gap-1.5 text-xs font-medium">
+        <Label className="flex items-center gap-1.5 text-xs font-medium">
           <Smile className="h-3 w-3" /> Emotion
-        </label>
+        </Label>
         <select
           value={options.emotion}
           onChange={(e) =>
@@ -85,9 +92,9 @@ export default function GeminiSettings({
 
       {/* Style */}
       <div className="space-y-1.5">
-        <label className="flex items-center gap-1.5 text-xs font-medium">
+        <Label className="flex items-center gap-1.5 text-xs font-medium">
           <Volume2 className="h-3 w-3" /> Style
-        </label>
+        </Label>
         <select
           value={options.style}
           onChange={(e) =>
@@ -105,9 +112,9 @@ export default function GeminiSettings({
 
       {/* Pace */}
       <div className="space-y-1.5">
-        <label className="flex items-center gap-1.5 text-xs font-medium">
+        <Label className="flex items-center gap-1.5 text-xs font-medium">
           <Timer className="h-3 w-3" /> Pace
-        </label>
+        </Label>
         <select
           value={options.pace}
           onChange={(e) =>
@@ -127,10 +134,10 @@ export default function GeminiSettings({
       <div className="bg-muted rounded-md p-2 text-xs">
         <p className="font-medium">Gemini TTS</p>
         <p className="text-muted-foreground">
-          Language is auto-detected from your text. Costs 5 credits per 1,000
-          characters.
+          Language is auto-detected from your text.
         </p>
       </div>
+
     </div>
   );
 }
