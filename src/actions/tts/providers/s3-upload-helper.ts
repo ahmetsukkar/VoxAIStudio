@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { env } from "~/env";
 import { S3_BUCKET_URL } from "./base-tts-provider";

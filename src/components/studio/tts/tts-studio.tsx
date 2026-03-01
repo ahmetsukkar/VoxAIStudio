@@ -6,11 +6,7 @@
 import { Loader2 } from "lucide-react";
 import { authClient } from "~/lib/auth-client";
 import { useEffect, useState, useRef } from "react";
-import { useRouter } from "next/navigation";
-import {
-  generateSpeech as generateSpeechAction,
-  getUserAudioProjects,
-} from "~/actions/tts";
+import { generateSpeech as generateSpeechAction } from "~/actions/tts";
 import type { TTSProviderType } from "~/actions/tts/tts-factory";
 import type { EngineOptionsMap } from "~/types/engines";
 import { getUserUploadedVoices } from "~/actions/voice-upload";
@@ -20,21 +16,20 @@ import { Languages } from "~/data/Languages";
 import { VoiceFiles } from "~/data/VoiceFiles";
 import SpeechSettings from "~/components/studio/tts/speech-settings";
 import TextInput from "~/components/studio/tts/text-input";
-import AudioHistory from "~/components/studio/tts/audio-history";
+import RecentGenerations from "~/components/studio/recent-generations";
 import { GeminiVoices } from "~/data/GeminiOptions";
 
 export default function TTSStudio() {
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
   const [text, setText] = useState("");
   const [selectedEngine, setSelectedEngine] =
     useState<TTSProviderType>("chatterbox");
-  const [generatedAudios, setGeneratedAudios] = useState<GeneratedAudio[]>([]);
   const [currentAudio, setCurrentAudio] = useState<GeneratedAudio | null>(null);
   const [userUploadedVoices, setUserUploadedVoices] = useState<UploadedVoice[]>(
     [],
   );
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const [engineOptions, setEngineOptions] = useState<EngineOptionsMap>({
     chatterbox: {
@@ -64,32 +59,17 @@ export default function TTSStudio() {
   useEffect(() => {
     const initializeData = async () => {
       try {
-        const [, projectsResult, voicesResult] = await Promise.all([
+        const [, voicesResult] = await Promise.all([
           authClient.getSession(),
-          getUserAudioProjects(),
           getUserUploadedVoices(),
         ]);
-
-        if (projectsResult.success && projectsResult.audioProjects) {
-          const mappedProjects = projectsResult.audioProjects.map(
-            (project) => ({
-              s3_key: project.s3Key,
-              audioUrl: project.audioUrl,
-              text: project.text,
-              language: project.language,
-              timestamp: new Date(project.createdAt),
-            }),
-          );
-          setGeneratedAudios(mappedProjects);
-        }
 
         if (voicesResult.success) {
           setUserUploadedVoices(voicesResult.voices);
         }
-
-        setIsLoading(false);
       } catch (error) {
         console.error("Error initializing data:", error);
+      } finally {
         setIsLoading(false);
       }
     };
@@ -129,25 +109,25 @@ export default function TTSStudio() {
         throw new Error(result.error ?? "Generation failed");
       }
 
-      router.refresh();
-
       const newAudio: GeneratedAudio = {
         s3_key: result.s3_key,
         audioUrl: result.audioUrl,
-        text: text,
+        text,
         language: engineOptions.chatterbox.language,
         timestamp: new Date(),
       };
 
       setCurrentAudio(newAudio);
-      setGeneratedAudios([newAudio, ...generatedAudios].slice(0, 20));
+
+      // Trigger RecentGenerations to re-fetch
+      setRefreshTrigger((prev) => prev + 1);
 
       setTimeout(() => {
         if (audioRef.current) {
           audioRef.current.load();
-          audioRef.current.play().catch((error) => {
-            console.error("Autoplay failed:", error);
-          });
+          audioRef.current
+            .play()
+            .catch((e) => console.error("Autoplay failed:", e));
         }
       }, 100);
 
@@ -160,19 +140,6 @@ export default function TTSStudio() {
     } finally {
       setIsGenerating(false);
     }
-  };
-
-  const playAudio = (audio: GeneratedAudio) => {
-    setCurrentAudio(audio);
-    setTimeout(() => {
-      if (audioRef.current) {
-        audioRef.current.load();
-        audioRef.current.play().catch((error) => {
-          console.error("Autoplay failed:", error);
-        });
-      }
-    }, 100);
-    toast.info(`Now playing...`);
   };
 
   const downloadAudio = (audio: GeneratedAudio) => {
@@ -191,7 +158,7 @@ export default function TTSStudio() {
   return (
     <div className="mx-auto max-w-7xl px-2 py-4 sm:px-4 sm:py-6">
       <div className="grid grid-cols-1 gap-2 sm:gap-4 lg:grid-cols-3">
-        {/* Left Side - Controls (1/3 width) */}
+        {/* Left — Settings */}
         <div className="order-2 space-y-2 sm:space-y-3 lg:order-1 lg:col-span-1">
           <SpeechSettings
             languages={Languages}
@@ -207,6 +174,8 @@ export default function TTSStudio() {
             onGenerate={generateSpeech}
           />
         </div>
+
+        {/* Right — Text input + player */}
         <div className="order-1 space-y-2 sm:space-y-3 lg:order-2 lg:col-span-2">
           <TextInput
             text={text}
@@ -217,14 +186,9 @@ export default function TTSStudio() {
           />
         </div>
       </div>
-      <div className="pt-4">
-        <AudioHistory
-          generatedAudios={generatedAudios}
-          languages={Languages}
-          onPlay={playAudio}
-          onDownload={downloadAudio}
-        />
-      </div>
+
+      {/* Recent Generations — TTS only */}
+      <RecentGenerations group="tts" refreshTrigger={refreshTrigger} />
     </div>
   );
 }

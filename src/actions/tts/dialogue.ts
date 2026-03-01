@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
 "use server";
 
 import { GoogleGenAI, Modality } from "@google/genai";
@@ -14,88 +13,9 @@ import type {
   DialogueSettings,
 } from "~/types/dialogue";
 import { calcGeminiDialogueCredits } from "~/lib/credits/calculate";
+import { buildTTSPrompt } from "~/lib/tts/prompt-builder";
+import { encodeWav } from "~/lib/audio/wav-encoder";
 
-function buildPrompt(
-  text: string,
-  emotion: string,
-  style: string,
-  pace: string,
-): string {
-  const emotionMap: Record<string, string> = {
-    neutral: "Speak in a natural, neutral tone.",
-    cheerful: "Speak in a very happy, bright, and cheerful tone.",
-    sad: "Speak in a slow, mournful, and sad tone.",
-    angry: "Speak in a sharp, loud, and aggressive angry tone.",
-    excited: "Speak with high energy and enthusiasm.",
-    whispering: "Speak in a very quiet, breathy whisper.",
-    emotional: "Speak with deep feeling and emotional resonance.",
-  };
-
-  const styleMap: Record<string, string> = {
-    conversational: "Use a natural conversational style.",
-    newsreader: "Use a clear, professional news reader style.",
-    storytelling: "Use an engaging storytelling style.",
-    podcast: "Use a relaxed, podcast hosting style.",
-    audiobook: "Use a smooth, audiobook narration style.",
-    "customer-support": "Use a friendly, helpful customer support style.",
-  };
-
-  const paceMap: Record<string, string> = {
-    normal: "Speak at a normal pace.",
-    slow: "Speak slowly and clearly.",
-    fast: "Speak at a faster pace.",
-  };
-
-  return `${emotionMap[emotion] ?? emotionMap.neutral} ${styleMap[style] ?? styleMap.conversational} ${paceMap[pace] ?? paceMap.normal} Text: ${text}`;
-}
-
-// ─── WAV encoder ──────────────────────────────────────────────────────────────
-function encodeWav(pcmChunks: Uint8Array[]): Buffer {
-  const sampleRate = 24000;
-  const numChannels = 1;
-  const bitsPerSample = 16;
-
-  const totalPcmLength = pcmChunks.reduce((sum, c) => sum + c.byteLength, 0);
-  const fileSize = 44 + totalPcmLength;
-  const buffer = Buffer.alloc(fileSize);
-  let offset = 0;
-
-  buffer.write("RIFF", offset);
-  offset += 4;
-  buffer.writeUInt32LE(fileSize - 8, offset);
-  offset += 4;
-  buffer.write("WAVE", offset);
-  offset += 4;
-  buffer.write("fmt ", offset);
-  offset += 4;
-  buffer.writeUInt32LE(16, offset);
-  offset += 4;
-  buffer.writeUInt16LE(1, offset);
-  offset += 2;
-  buffer.writeUInt16LE(numChannels, offset);
-  offset += 2;
-  buffer.writeUInt32LE(sampleRate, offset);
-  offset += 4;
-  buffer.writeUInt32LE(sampleRate * numChannels * (bitsPerSample / 8), offset);
-  offset += 4;
-  buffer.writeUInt16LE(numChannels * (bitsPerSample / 8), offset);
-  offset += 2;
-  buffer.writeUInt16LE(bitsPerSample, offset);
-  offset += 2;
-  buffer.write("data", offset);
-  offset += 4;
-  buffer.writeUInt32LE(totalPcmLength, offset);
-  offset += 4;
-
-  for (const chunk of pcmChunks) {
-    Buffer.from(chunk).copy(buffer, offset);
-    offset += chunk.byteLength;
-  }
-
-  return buffer;
-}
-
-// ─── Main server action ───────────────────────────────────────────────────────
 export async function generateDialogue({
   speakers,
   lines,
@@ -138,7 +58,7 @@ export async function generateDialogue({
     if (Number(user.credits) < creditsNeeded) {
       return {
         success: false,
-        error: `Insufficient credits. Need ${creditsNeeded}, have ${user.credits}`,
+        error: `Insufficient credits. Need ${creditsNeeded}, have ${String(user.credits)}`,
       };
     }
 
@@ -153,7 +73,7 @@ export async function generateDialogue({
       const speaker = speakersMap[line.speakerId];
       if (!speaker) continue;
 
-      const prompt = buildPrompt(
+      const prompt = buildTTSPrompt(
         line.text,
         line.emotion,
         settings.style,
@@ -183,7 +103,6 @@ export async function generateDialogue({
         };
       }
 
-      // ✅ Node.js safe — no atob()
       const pcm = new Uint8Array(Buffer.from(base64Audio, "base64"));
       pcmChunks.push(pcm);
     }

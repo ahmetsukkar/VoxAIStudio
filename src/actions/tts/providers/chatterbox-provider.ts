@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import {
   S3_BUCKET_URL,
   type GenerateSpeechResult,
@@ -49,7 +46,7 @@ export class ChatterboxProvider implements TTSProvider {
       if (Number(user.credits) < creditsNeeded) {
         return {
           success: false,
-          error: `Insufficient credits. Need ${creditsNeeded}, have ${user.credits}`,
+          error: `Insufficient credits. Need ${creditsNeeded}, have ${String(user.credits)}`,
         };
       }
 

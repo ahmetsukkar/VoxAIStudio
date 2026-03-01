@@ -1,7 +1,7 @@
 import type { TTSProvider } from "./providers/base-tts-provider";
-import { ChatterboxProvider } from "./providers/chatterbox-Provider";
-import { GeminiProvider } from "./providers/gemini-Provider";
-import { GoogleCloudProvider } from "./providers/googleCloud-Provider";
+import { ChatterboxProvider } from "./providers/chatterbox-provider";
+import { GeminiProvider } from "./providers/gemini-provider";
+import { GoogleCloudProvider } from "./providers/google-cloud-provider";
 
 export type TTSProviderType = "chatterbox" | "googleCloud" | "gemini";
 

@@ -1,26 +1,62 @@
 "use client";
 
-import { Music, Play, Download } from "lucide-react";
+import { useEffect, useState, useCallback, useRef } from "react";
+import { Music, Play, Download, Loader2 } from "lucide-react";
 import { Button } from "~/components/ui/button";
+import Link from "next/link";
+import { getRecentGenerations, type EngineGroup } from "~/actions/tts";
+import type { AudioProject } from "@prisma/client";
 
-import type { GeneratedAudio, Language } from "~/types/tts";
-
-interface AudioHistoryProps {
-  generatedAudios: GeneratedAudio[];
-  languages: Language[];
-  onPlay: (audio: GeneratedAudio) => void;
-  onDownload: (audio: GeneratedAudio) => void;
+interface RecentGenerationsProps {
+  group: EngineGroup;
+  refreshTrigger?: number;
 }
 
-export default function AudioHistory({
-  generatedAudios,
-  languages,
-  onPlay,
-  onDownload,
-}: AudioHistoryProps) {
+export default function RecentGenerations({
+  group,
+  refreshTrigger = 0,
+}: RecentGenerationsProps) {
+  const [projects, setProjects]   = useState<AudioProject[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const audioRef                  = useRef<HTMLAudioElement | null>(null);
+  const [playingId, setPlayingId] = useState<string | null>(null);
+
+  const fetchProjects = useCallback(async () => {
+    setIsLoading(true);
+    const result = await getRecentGenerations(group, 4);
+    if (result.success) setProjects(result.projects);
+    setIsLoading(false);
+  }, [group]);
+
+  useEffect(() => {
+    void fetchProjects();
+  }, [fetchProjects, refreshTrigger]);
+
+  const handlePlay = (project: AudioProject) => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
+    if (playingId === project.id) {
+      setPlayingId(null);
+      return;
+    }
+    const audio = new Audio(project.audioUrl);
+    audioRef.current = audio;
+    setPlayingId(project.id);
+    audio.play().catch(() => setPlayingId(null));
+    audio.onended = () => setPlayingId(null);
+  };
+
+  const handleDownload = (project: AudioProject) => {
+    window.open(project.audioUrl, "_blank");
+  };
+
+  // ── Exact same outer wrapper as audio-history.tsx ──
   return (
     <div className="border-t border-gray-200 bg-white px-2 py-3 sm:px-4 sm:py-4">
       <div className="mx-auto max-w-7xl">
+
+        {/* Exact same header */}
         <div className="mb-6 text-center">
           <div className="mb-2 inline-flex items-center gap-2">
             <div className="h-6 w-0.5 rounded-full bg-gradient-to-b from-blue-500 to-purple-600"></div>
@@ -30,15 +66,25 @@ export default function AudioHistory({
             <div className="h-6 w-0.5 rounded-full bg-gradient-to-b from-purple-600 to-blue-500"></div>
           </div>
           <p className="text-muted-foreground mx-auto max-w-md text-sm">
-            Your speech generation history
+            {group === "dialogue"
+              ? "Your dialogue generation history"
+              : "Your speech generation history"}
           </p>
         </div>
-        {generatedAudios.length > 0 ? (
+
+        {/* Loading state */}
+        {isLoading ? (
+          <div className="flex items-center justify-center py-16">
+            <Loader2 className="text-muted-foreground h-8 w-8 animate-spin" />
+          </div>
+
+        ) : projects.length > 0 ? (
           <>
+            {/* Exact same grid + card styles */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {generatedAudios.map((audio, index) => (
+              {projects.map((project) => (
                 <div
-                  key={index}
+                  key={project.id}
                   className="group relative overflow-hidden rounded-xl border-2 border-gray-200 bg-white p-4 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:border-blue-300 hover:shadow-xl"
                 >
                   <div className="mb-3 flex items-start justify-between">
@@ -48,32 +94,31 @@ export default function AudioHistory({
                       </div>
                       <div>
                         <p className="text-xs font-semibold text-gray-900">
-                          {
-                            languages.find((l) => l.code === audio.language)
-                              ?.name
-                          }
+                          {project.language}
                         </p>
                         <p className="text-xs text-gray-500">
-                          {new Date(audio.timestamp).toLocaleTimeString()}
+                          {new Date(project.createdAt).toLocaleTimeString()}
                         </p>
                       </div>
                     </div>
                   </div>
+
                   <p className="mb-3 line-clamp-3 text-xs text-gray-700">
-                    {audio.text}
+                    {project.text}
                   </p>
+
                   <div className="flex gap-2">
                     <Button
-                      onClick={() => onPlay(audio)}
+                      onClick={() => handlePlay(project)}
                       variant="outline"
                       size="sm"
                       className="h-7 flex-1 gap-1 px-2 text-xs"
                     >
                       <Play className="h-3 w-3" />
-                      Play
+                      {playingId === project.id ? "Stop" : "Play"}
                     </Button>
                     <Button
-                      onClick={() => onDownload(audio)}
+                      onClick={() => handleDownload(project)}
                       variant="outline"
                       size="sm"
                       className="h-7 gap-1 px-2 text-xs"
@@ -84,8 +129,20 @@ export default function AudioHistory({
                 </div>
               ))}
             </div>
+
+            {/* View More link */}
+            <div className="mt-6 text-center">
+              <Link
+                href="/dashboard/projects"
+                className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1 text-sm underline-offset-4 hover:underline"
+              >
+                View all in Projects →
+              </Link>
+            </div>
           </>
+
         ) : (
+          /* Exact same empty state */
           <div className="py-16 text-center">
             <div className="relative mx-auto mb-8">
               <div className="absolute inset-0 flex items-center justify-center">
@@ -95,17 +152,19 @@ export default function AudioHistory({
                 <Music className="h-10 w-10 text-gray-400" />
               </div>
             </div>
-
             <div className="space-y-3">
               <h3 className="text-xl font-bold text-gray-900">
                 No generations yet
               </h3>
               <p className="text-muted-foreground mx-auto max-w-md text-lg leading-relaxed">
-                Start by entering some text and generating your first speech
+                {group === "dialogue"
+                  ? "Start by creating your first dialogue"
+                  : "Start by entering some text and generating your first speech"}
               </p>
             </div>
           </div>
         )}
+
       </div>
     </div>
   );

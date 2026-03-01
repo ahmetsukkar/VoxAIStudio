@@ -7,11 +7,21 @@ import type {
 
 export type SpeakerId = "s1" | "s2";
 
+export type SpeakerColor = "blue" | "green";
+
+export const speakerColors: Record<
+  SpeakerColor,
+  { bg: string; border: string }
+> = {
+  blue: { bg: "bg-blue-500", border: "border-blue-500" },
+  green: { bg: "bg-green-500", border: "border-green-500" },
+};
+
 export interface DialogueSpeaker {
   id: SpeakerId;
   name: string;
   voice: string;
-  color: "blue" | "green";
+  color: SpeakerColor;
 }
 
 export interface DialogueLine {

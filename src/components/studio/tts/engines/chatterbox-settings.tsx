@@ -1,8 +1,13 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 "use client";
 
 import { Globe, Volume2, Upload, Loader2 } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
 import type { Language, VoiceFile, UploadedVoice } from "~/types/tts";
 import type { ChatterboxOptions } from "~/types/engines";
 import { toast } from "sonner";
@@ -52,7 +57,7 @@ export default function ChatterboxSettings({
         throw new Error(result.error ?? "Upload failed");
       }
       toast.success("Voice uploaded successfully!");
-      onVoiceUploaded(); // tell page.tsx to refresh the list
+      onVoiceUploaded();
     } catch (error) {
       console.error("Upload error:", error);
       toast.error("Failed to upload voice file");
@@ -68,19 +73,21 @@ export default function ChatterboxSettings({
         <label className="flex items-center gap-1.5 text-xs font-medium">
           <Globe className="h-3 w-3" /> Language
         </label>
-        <select
+        <Select
           value={options.language}
-          onChange={(e) =>
-            setOptions({ ...options, language: e.target.value })
-          }
-          className="border-input bg-background w-full rounded-md border px-2 py-1.5 text-xs"
+          onValueChange={(value) => setOptions({ ...options, language: value })}
         >
-          {languages.map((lang) => (
-            <option key={lang.code} value={lang.code}>
-              {lang.flag} {lang.name}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger className="h-8 w-full text-xs">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {languages.map((lang) => (
+              <SelectItem key={lang.code} value={lang.code} className="text-xs">
+                {lang.flag} {lang.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Voice */}
@@ -88,24 +95,26 @@ export default function ChatterboxSettings({
         <label className="flex items-center gap-1.5 text-xs font-medium">
           <Volume2 className="h-3 w-3" /> Voice
         </label>
-        <select
+        <Select
           value={options.voice}
-          onChange={(e) =>
-            setOptions({ ...options, voice: e.target.value })
-          }
-          className="border-input bg-background w-full rounded-md border px-2 py-1.5 text-xs"
+          onValueChange={(value) => setOptions({ ...options, voice: value })}
         >
-          {userUploadedVoices.map((voice) => (
-            <option key={voice.id} value={voice.s3Key}>
-              🎤 {voice.name}
-            </option>
-          ))}
-          {voiceFiles.map((voice) => (
-            <option key={voice.s3_key} value={voice.s3_key}>
-              {voice.name}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger className="h-8 w-full text-xs">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {userUploadedVoices.map((voice) => (
+              <SelectItem key={voice.id} value={voice.s3Key} className="text-xs">
+                🎤 {voice.name}
+              </SelectItem>
+            ))}
+            {voiceFiles.map((voice) => (
+              <SelectItem key={voice.s3_key} value={voice.s3_key} className="text-xs">
+                {voice.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Voice Upload */}

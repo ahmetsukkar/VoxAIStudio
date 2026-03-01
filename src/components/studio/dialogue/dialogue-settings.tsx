@@ -1,11 +1,24 @@
 "use client";
 
-import { Cpu, Gauge, Mic2 } from "lucide-react";
+import { Cpu, Gauge, Info, Mic2 } from "lucide-react";
 import { Card, CardContent } from "~/components/ui/card";
 import { Switch } from "~/components/ui/switch";
 import { Label } from "~/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
 import { GeminiStyles, GeminiPaces } from "~/data/GeminiOptions";
 import type { DialogueSettings } from "~/types/dialogue";
+import { CREDITS_PER_CHAR } from "~/config/credits";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/popover";
 
 interface DialogueSettingsProps {
   settings: DialogueSettings;
@@ -20,6 +33,8 @@ export default function DialogueSettingsPanel({
   creditsNeeded,
   totalChars,
 }: DialogueSettingsProps) {
+  const isPro = settings.model === "gemini-2.5-pro-preview-tts";
+
   return (
     <Card className="shadow-lg">
       <CardContent className="space-y-4 p-2 sm:p-3">
@@ -35,6 +50,38 @@ export default function DialogueSettingsPanel({
         <div className="space-y-1.5">
           <Label className="flex items-center gap-1.5 text-xs font-medium">
             <Cpu className="h-3 w-3" /> Model
+            <Popover>
+              <PopoverTrigger asChild>
+                <span className="text-muted-foreground hover:text-foreground ml-0.5 cursor-pointer transition-colors">
+                  <Info className="h-3.5 w-3.5" />
+                </span>
+              </PopoverTrigger>
+              <PopoverContent side="right" className="w-64 p-3" sideOffset={6}>
+                <p className="text-foreground mb-2 text-xs font-semibold">
+                  Flash vs Pro
+                </p>
+                <div className="space-y-2">
+                  <div className="bg-muted rounded-md p-2">
+                    <p className="text-foreground text-xs font-medium">
+                      ⚡ Flash — Fast & Affordable
+                    </p>
+                    <p className="text-muted-foreground mt-0.5 text-[11px]">
+                      {CREDITS_PER_CHAR.geminiFlashTTS} credits / char · Best
+                      for short clips, dialogues, and quick generations.
+                    </p>
+                  </div>
+                  <div className="bg-muted rounded-md p-2">
+                    <p className="text-foreground text-xs font-medium">
+                      ✨ Pro — Highest Quality
+                    </p>
+                    <p className="text-muted-foreground mt-0.5 text-[11px]">
+                      {CREDITS_PER_CHAR.geminiProTTS} credits / char · Best for
+                      audiobooks, long narrations, and professional content.
+                    </p>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
           </Label>
           <div className="flex items-center justify-between rounded-md border px-3 py-2">
             <div className="space-y-0.5">
@@ -44,9 +91,12 @@ export default function DialogueSettingsPanel({
                   : "Pro — Long-form Content"}
               </p>
               <p className="text-muted-foreground text-xs">
-                {settings.model === "gemini-2.5-flash-preview-tts"
-                  ? "Best for dialogues & short lines"
-                  : "Better for audiobooks & speeches"}
+                {isPro
+                  ? "Better for audiobooks & speeches"
+                  : "Best for dialogues & short lines"}{" "}
+                {isPro
+                  ? `(${CREDITS_PER_CHAR.geminiProDialogue} credits / char)`
+                  : `(${CREDITS_PER_CHAR.geminiFlashDialogue} credits / char)`}
               </p>
             </div>
             <Switch
@@ -68,22 +118,26 @@ export default function DialogueSettingsPanel({
           <Label className="flex items-center gap-1.5 text-xs font-medium">
             <Mic2 className="h-3 w-3" /> Style
           </Label>
-          <select
+          <Select
             value={settings.style}
-            onChange={(e) =>
+            onValueChange={(value) =>
               onChange({
                 ...settings,
-                style: e.target.value as DialogueSettings["style"],
+                style: value as DialogueSettings["style"],
               })
             }
-            className="border-input bg-background w-full rounded-md border px-2 py-1.5 text-xs"
           >
-            {GeminiStyles.map((s) => (
-              <option key={s.value} value={s.value}>
-                {s.label}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger className="h-8 w-full text-xs">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {GeminiStyles.map((s) => (
+                <SelectItem key={s.value} value={s.value} className="text-xs">
+                  {s.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         {/* Pace */}
@@ -91,22 +145,26 @@ export default function DialogueSettingsPanel({
           <Label className="flex items-center gap-1.5 text-xs font-medium">
             <Gauge className="h-3 w-3" /> Pace
           </Label>
-          <select
+          <Select
             value={settings.pace}
-            onChange={(e) =>
+            onValueChange={(value) =>
               onChange({
                 ...settings,
-                pace: e.target.value as DialogueSettings["pace"],
+                pace: value as DialogueSettings["pace"],
               })
             }
-            className="border-input bg-background w-full rounded-md border px-2 py-1.5 text-xs"
           >
-            {GeminiPaces.map((p) => (
-              <option key={p.value} value={p.value}>
-                {p.label}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger className="h-8 w-full text-xs">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {GeminiPaces.map((p) => (
+                <SelectItem key={p.value} value={p.value} className="text-xs">
+                  {p.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         {/* Credits Estimate */}

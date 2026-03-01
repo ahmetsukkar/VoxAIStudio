@@ -2,8 +2,16 @@
 
 import { Trash2 } from "lucide-react";
 import { Button } from "~/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
 import { GeminiEmotions } from "~/data/GeminiOptions";
-import type { DialogueLine, DialogueSpeaker } from "~/types/dialogue";
+import type { DialogueLine, DialogueSpeaker, SpeakerId } from "~/types/dialogue";
+import { speakerColors } from "~/types/dialogue";
 
 interface DialogueLineItemProps {
   line: DialogueLine;
@@ -13,10 +21,7 @@ interface DialogueLineItemProps {
   onDelete: () => void;
 }
 
-const colorMap = {
-  blue:  "bg-blue-500",
-  green: "bg-green-500",
-};
+const MAX_LINE_CHARS = 500;
 
 export default function DialogueLineItem({
   line,
@@ -26,7 +31,9 @@ export default function DialogueLineItem({
   onDelete,
 }: DialogueLineItemProps) {
   const speaker = speakers.find((s) => s.id === line.speakerId);
-  const avatarColor = speaker ? colorMap[speaker.color] : "bg-gray-400";
+  const avatarColor = speaker ? speakerColors[speaker.color].bg : "bg-gray-400";
+  const charsLeft = MAX_LINE_CHARS - line.text.length;
+  const isNearLimit = charsLeft <= 50;
 
   return (
     <div className="flex gap-3">
@@ -39,38 +46,46 @@ export default function DialogueLineItem({
 
       {/* Content */}
       <div className="flex-1 space-y-2">
-        {/* Speaker + Emotion selectors */}
+        {/* Speaker + Emotion + Delete */}
         <div className="flex items-center gap-2">
-          <select
+          <Select
             value={line.speakerId}
-            onChange={(e) =>
-              onChange({ ...line, speakerId: e.target.value as "s1" | "s2" })
+            onValueChange={(value) =>
+              onChange({ ...line, speakerId: value as SpeakerId })
             }
-            className="border-input bg-background rounded-md border px-2 py-1 text-xs font-semibold"
           >
-            {speakers.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.name}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger className="h-7 w-auto text-xs font-semibold">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {speakers.map((s) => (
+                <SelectItem key={s.id} value={s.id} className="text-xs">
+                  {s.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
-          <select
+          <Select
             value={line.emotion}
-            onChange={(e) =>
+            onValueChange={(value) =>
               onChange({
                 ...line,
-                emotion: e.target.value as DialogueLine["emotion"],
+                emotion: value as DialogueLine["emotion"],
               })
             }
-            className="border-input bg-background rounded-md border px-2 py-1 text-xs"
           >
-            {GeminiEmotions.map((em) => (
-              <option key={em.value} value={em.value}>
-                {em.label}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger className="h-7 w-auto text-xs">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {GeminiEmotions.map((em) => (
+                <SelectItem key={em.value} value={em.value} className="text-xs">
+                  {em.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
           {canDelete && (
             <Button
@@ -89,9 +104,19 @@ export default function DialogueLineItem({
           value={line.text}
           onChange={(e) => onChange({ ...line, text: e.target.value })}
           rows={2}
+          maxLength={MAX_LINE_CHARS}
           placeholder="Enter dialogue text..."
           className="border-input bg-background w-full rounded-md border px-3 py-2 text-sm focus:outline-none"
         />
+
+        {/* Character counter */}
+        <p
+          className={`text-right text-xs ${
+            isNearLimit ? "text-orange-500" : "text-muted-foreground"
+          }`}
+        >
+          {line.text.length} / {MAX_LINE_CHARS}
+        </p>
       </div>
     </div>
   );

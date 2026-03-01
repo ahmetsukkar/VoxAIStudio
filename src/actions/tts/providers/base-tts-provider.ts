@@ -1,5 +1,12 @@
 export const S3_BUCKET_URL = "https://vox-ai-studio.s3.us-east-1.amazonaws.com";
 
+import type {
+  GeminiEmotion,
+  GeminiModel,
+  GeminiPace,
+  GeminiStyle,
+} from "~/data/GeminiOptions";
+
 // Shared result shape for all engines
 export interface GenerateSpeechResult {
   success: boolean;
@@ -22,10 +29,10 @@ export interface ChatterboxRequestOptions {
 export interface GeminiRequestOptions {
   text: string;
   voice_name: string;
-  gemini_model?: "gemini-2.5-flash-preview-tts" | "gemini-2.5-pro-preview-tts";
-  gemini_emotion?: string;
-  gemini_style?: string;
-  gemini_pace?: string;
+  gemini_model?: GeminiModel;
+  gemini_emotion?: GeminiEmotion;
+  gemini_style?: GeminiStyle;
+  gemini_pace?: GeminiPace;
 }
 
 // Union — what tts.ts accepts

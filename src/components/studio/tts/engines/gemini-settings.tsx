@@ -1,8 +1,20 @@
 "use client";
 
-import { Cpu, Smile, Volume2, Timer, Mic2 } from "lucide-react";
+import { Cpu, Smile, Volume2, Timer, Mic2, Info } from "lucide-react";
 import { Label } from "~/components/ui/label";
 import { Switch } from "~/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/popover";
 import {
   GeminiEmotions,
   GeminiStyles,
@@ -28,25 +40,62 @@ export default function GeminiSettings({
 
   return (
     <div className="space-y-4">
-
       {/* Model Toggle — Flash / Pro */}
       <div className="space-y-1.5">
         <Label className="flex items-center gap-1.5 text-xs font-medium">
           <Cpu className="h-3 w-3" /> Model
+          <Popover>
+            <PopoverTrigger asChild>
+              <span className="text-muted-foreground hover:text-foreground ml-0.5 cursor-pointer transition-colors">
+                <Info className="h-3.5 w-3.5" />
+              </span>
+            </PopoverTrigger>
+            <PopoverContent side="right" className="w-64 p-3" sideOffset={6}>
+              <p className="text-foreground mb-2 text-xs font-semibold">
+                Flash vs Pro
+              </p>
+              <div className="space-y-2">
+                <div className="bg-muted rounded-md p-2">
+                  <p className="text-foreground text-xs font-medium">
+                    ⚡ Flash — Fast & Affordable
+                  </p>
+                  <p className="text-muted-foreground mt-0.5 text-[11px]">
+                    {CREDITS_PER_CHAR.geminiFlashTTS} credits / char · Best for
+                    short clips, dialogues, and quick generations.
+                  </p>
+                </div>
+                <div className="bg-muted rounded-md p-2">
+                  <p className="text-foreground text-xs font-medium">
+                    ✨ Pro — Highest Quality
+                  </p>
+                  <p className="text-muted-foreground mt-0.5 text-[11px]">
+                    {CREDITS_PER_CHAR.geminiProTTS} credits / char · Best for
+                    audiobooks, long narrations, and professional content.
+                  </p>
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
         </Label>
+
         <div className="flex items-center justify-between rounded-md border px-3 py-2">
-          <div className="flex flex-col">
-            <span className="text-xs font-medium">
-              {isPro ? "Pro — Highest Quality" : "Flash — Fast & Affordable"}
-            </span>
-            <span className="text-muted-foreground text-[10px]">
+          <div className="space-y-0.5">
+            <p className="text-xs font-semibold">
+              {options.model === "gemini-2.5-flash-preview-tts"
+                ? "Flash — Recommended"
+                : "Pro — Long-form Content"}
+            </p>
+            <p className="text-muted-foreground text-xs">
               {isPro
-                ? `${CREDITS_PER_CHAR.geminiProTTS} credits / char`
-                : `${CREDITS_PER_CHAR.geminiFlashTTS} credits / char`}
-            </span>
+                ? "Better for audiobooks & speeches"
+                : "Best for dialogues & short lines"}{" "}
+              {isPro
+                ? `(${CREDITS_PER_CHAR.geminiProTTS} credits / char)`
+                : `(${CREDITS_PER_CHAR.geminiFlashTTS} credits / char)`}
+            </p>
           </div>
           <Switch
-            checked={isPro}
+            checked={options.model === "gemini-2.5-pro-preview-tts"}
             onCheckedChange={(checked) =>
               setOptions({
                 ...options,
@@ -75,19 +124,27 @@ export default function GeminiSettings({
         <Label className="flex items-center gap-1.5 text-xs font-medium">
           <Smile className="h-3 w-3" /> Emotion
         </Label>
-        <select
+        <Select
           value={options.emotion}
-          onChange={(e) =>
-            setOptions({ ...options, emotion: e.target.value as GeminiEmotion })
+          onValueChange={(value) =>
+            setOptions({ ...options, emotion: value as GeminiEmotion })
           }
-          className="border-input bg-background w-full rounded-md border px-2 py-1.5 text-xs"
         >
-          {GeminiEmotions.map((emotion) => (
-            <option key={emotion.value} value={emotion.value}>
-              {emotion.label}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger className="h-8 w-full text-xs">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {GeminiEmotions.map((emotion) => (
+              <SelectItem
+                key={emotion.value}
+                value={emotion.value}
+                className="text-xs"
+              >
+                {emotion.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Style */}
@@ -95,19 +152,27 @@ export default function GeminiSettings({
         <Label className="flex items-center gap-1.5 text-xs font-medium">
           <Volume2 className="h-3 w-3" /> Style
         </Label>
-        <select
+        <Select
           value={options.style}
-          onChange={(e) =>
-            setOptions({ ...options, style: e.target.value as GeminiStyle })
+          onValueChange={(value) =>
+            setOptions({ ...options, style: value as GeminiStyle })
           }
-          className="border-input bg-background w-full rounded-md border px-2 py-1.5 text-xs"
         >
-          {GeminiStyles.map((style) => (
-            <option key={style.value} value={style.value}>
-              {style.label}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger className="h-8 w-full text-xs">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {GeminiStyles.map((style) => (
+              <SelectItem
+                key={style.value}
+                value={style.value}
+                className="text-xs"
+              >
+                {style.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Pace */}
@@ -115,19 +180,27 @@ export default function GeminiSettings({
         <Label className="flex items-center gap-1.5 text-xs font-medium">
           <Timer className="h-3 w-3" /> Pace
         </Label>
-        <select
+        <Select
           value={options.pace}
-          onChange={(e) =>
-            setOptions({ ...options, pace: e.target.value as GeminiPace })
+          onValueChange={(value) =>
+            setOptions({ ...options, pace: value as GeminiPace })
           }
-          className="border-input bg-background w-full rounded-md border px-2 py-1.5 text-xs"
         >
-          {GeminiPaces.map((pace) => (
-            <option key={pace.value} value={pace.value}>
-              {pace.label}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger className="h-8 w-full text-xs">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {GeminiPaces.map((pace) => (
+              <SelectItem
+                key={pace.value}
+                value={pace.value}
+                className="text-xs"
+              >
+                {pace.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Info box */}
@@ -137,7 +210,6 @@ export default function GeminiSettings({
           Language is auto-detected from your text.
         </p>
       </div>
-
     </div>
   );
 }

@@ -3,6 +3,14 @@
 import { Settings, Loader2 } from "lucide-react";
 import { Card, CardContent } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
+import { Label } from "~/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
 import type { Language, VoiceFile, UploadedVoice } from "~/types/tts";
 import { type TTSProviderType } from "~/actions/tts/tts-factory";
 import ChatterboxSettings from "./engines/chatterbox-settings";
@@ -37,7 +45,6 @@ export default function SpeechSettings({
   isGenerating,
   onGenerate,
 }: SpeechSettingsProps) {
-
   const creditsNeeded = calcTTSCredits(
     selectedEngine,
     text,
@@ -61,17 +68,25 @@ export default function SpeechSettings({
 
           {/* Engine Selector */}
           <div className="space-y-1.5">
-            <label className="text-xs font-medium">Engine</label>
-            <select
+            <Label className="text-xs font-medium">Engine</Label>
+            <Select
               value={selectedEngine}
-              onChange={(e) =>
-                setSelectedEngine(e.target.value as TTSProviderType)
+              onValueChange={(value) =>
+                setSelectedEngine(value as TTSProviderType)
               }
-              className="border-input bg-background w-full rounded-md border px-2 py-1.5 text-xs"
             >
-              <option value="chatterbox">Chatterbox — Voice Cloning</option>
-              <option value="gemini">Gemini 2.5 Flash TTS</option>
-            </select>
+              <SelectTrigger className="h-8 w-full text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="chatterbox" className="text-xs">
+                  Chatterbox — Voice Cloning
+                </SelectItem>
+                <SelectItem value="gemini" className="text-xs">
+                  Gemini 2.5 Flash TTS
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Engine-specific settings */}

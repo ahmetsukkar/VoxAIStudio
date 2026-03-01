@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 "use server";
 
 import type { TTSOptions } from "./tts/providers/base-tts-provider";
@@ -69,7 +67,6 @@ export const getUserCredits = cache(async () => {
   }
 });
 
-
 export async function deleteAudioProject(id: string) {
   try {
     const session = await auth.api.getSession({
@@ -96,5 +93,34 @@ export async function deleteAudioProject(id: string) {
   } catch (error) {
     console.error("Error deleting audio project:", error);
     return { success: false, error: "Failed to delete audio project" };
+  }
+}
+
+export type EngineGroup = "tts" | "dialogue";
+
+//const TTS_ENGINES    = ["chatterbox", "gemini-2.5-flash-preview-tts", "gemini-2.5-pro-preview-tts"];
+const TTS_ENGINES    = ["chatterbox", "gemini"];
+const DIALOGUE_ENGINES = ["gemini-dialogue"];
+
+export async function getRecentGenerations(group: EngineGroup, limit = 4) {
+  try {
+    const session = await auth.api.getSession({ headers: await headers() });
+    if (!session?.user?.id) return { success: false, error: "Unauthorized", projects: [] };
+
+    const engines = group === "dialogue" ? DIALOGUE_ENGINES : TTS_ENGINES;
+
+    const projects = await db.audioProject.findMany({
+      where: {
+        userId: session.user.id,
+        engine: { in: engines },
+      },
+      orderBy: { createdAt: "desc" },
+      take: limit,
+    });
+
+    return { success: true, projects };
+  } catch (error) {
+    console.error("Error fetching recent generations:", error);
+    return { success: false, error: "Failed to fetch", projects: [] };
   }
 }

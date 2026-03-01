@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import type {
   GenerateSpeechResult,
   GeminiRequestOptions,
@@ -12,93 +11,10 @@ import { env } from "~/env";
 import { GoogleGenAI, Modality } from "@google/genai";
 import { v4 as uuidv4 } from "uuid";
 import { uploadGeneratedAudio } from "./s3-upload-helper";
-import type {
-  GeminiEmotion,
-  GeminiModel,
-  GeminiPace,
-  GeminiStyle,
-} from "~/data/GeminiOptions";
+import type { GeminiModel } from "~/data/GeminiOptions";
 import { calcGeminiTTSCredits } from "~/lib/credits/calculate";
-
-function pcmToWav(
-  pcmBuffer: Buffer,
-  sampleRate = 24000,
-  channels = 1,
-  bitDepth = 16,
-): Buffer {
-  const dataSize = pcmBuffer.length;
-  const header = Buffer.alloc(44);
-  header.write("RIFF", 0);
-  header.writeUInt32LE(36 + dataSize, 4);
-  header.write("WAVE", 8);
-  header.write("fmt ", 12);
-  header.writeUInt32LE(16, 16);
-  header.writeUInt16LE(1, 20);
-  header.writeUInt16LE(channels, 22);
-  header.writeUInt32LE(sampleRate, 24);
-  header.writeUInt32LE(sampleRate * channels * (bitDepth / 8), 28);
-  header.writeUInt16LE(channels * (bitDepth / 8), 32);
-  header.writeUInt16LE(bitDepth, 34);
-  header.write("data", 36);
-  header.writeUInt32LE(dataSize, 40);
-  return Buffer.concat([header, pcmBuffer]);
-}
-
-function getEmotionInstruction(emotion: GeminiEmotion): string {
-  switch (emotion) {
-    case "whispering":
-      return "Speak in a very quiet, breathy whisper. Very low energy.";
-    case "sad":
-      return "Speak in a slow, mournful, and sad tone.";
-    case "cheerful":
-      return "Speak in a very happy, bright, and smiling tone.";
-    case "angry":
-      return "Speak in a sharp, loud, and aggressive angry tone.";
-    case "excited":
-      return "Speak with high energy and enthusiasm.";
-    case "emotional":
-      return "Speak with deep feeling and emotional resonance.";
-    default:
-      return "Speak in a natural, neutral tone.";
-  }
-}
-
-function getStyleInstruction(style: GeminiStyle): string {
-  switch (style) {
-    case "newsreader":
-      return "Deliver in a clear, authoritative news reader style.";
-    case "storytelling":
-      return "Use a warm, engaging storytelling tone with natural rhythm.";
-    case "podcast":
-      return "Sound like a relaxed, friendly podcast host.";
-    case "audiobook":
-      return "Read clearly and expressively like a professional audiobook narrator.";
-    case "customer-support":
-      return "Use a calm, helpful, and professional customer support tone.";
-    default:
-      return "Use a natural, conversational delivery.";
-  }
-}
-
-function getPaceInstruction(pace: GeminiPace): string {
-  switch (pace) {
-    case "slow":
-      return "Speak slowly and deliberately.";
-    case "fast":
-      return "Speak at a fast, energetic pace.";
-    default:
-      return "Speak at a normal, natural pace.";
-  }
-}
-
-function buildPrompt(
-  text: string,
-  emotion: GeminiEmotion = "neutral",
-  style: GeminiStyle = "conversational",
-  pace: GeminiPace = "normal",
-): string {
-  return `${getEmotionInstruction(emotion)} ${getStyleInstruction(style)} ${getPaceInstruction(pace)}\n\nText: ${text}`;
-}
+import { buildTTSPrompt } from "~/lib/tts/prompt-builder";
+import { encodeWav } from "~/lib/audio/wav-encoder";
 
 export class GeminiProvider implements TTSProvider {
   getCredits(options: TTSOptions): number {
@@ -124,8 +40,7 @@ export class GeminiProvider implements TTSProvider {
       }
 
       // 3. Check credits (model-aware)
-      const model = (options.gemini_model ??
-        "gemini-2.5-flash-preview-tts") as GeminiModel;
+      const model = options.gemini_model ?? "gemini-2.5-flash-preview-tts";
       const creditsNeeded = this.getCredits(options);
 
       const user = await db.user.findUnique({
@@ -140,16 +55,16 @@ export class GeminiProvider implements TTSProvider {
       if (Number(user.credits) < creditsNeeded) {
         return {
           success: false,
-          error: `Insufficient credits. Need ${creditsNeeded}, have ${user.credits}`,
+          error: `Insufficient credits. Need ${creditsNeeded}, have ${String(user.credits)}`,
         };
       }
 
       // 4. Build prompt
-      const finalText = buildPrompt(
+      const finalText = buildTTSPrompt(
         options.text,
-        options.gemini_emotion as GeminiEmotion,
-        options.gemini_style as GeminiStyle,
-        options.gemini_pace as GeminiPace,
+        options.gemini_emotion,
+        options.gemini_style,
+        options.gemini_pace,
       );
 
       // 5. Call Gemini TTS
@@ -180,7 +95,7 @@ export class GeminiProvider implements TTSProvider {
 
       // 7. Convert PCM → WAV and upload to S3
       const pcmBuffer = Buffer.from(rawBase64, "base64");
-      const wavBuffer = pcmToWav(pcmBuffer);
+      const wavBuffer = encodeWav([new Uint8Array(pcmBuffer)]);
       const s3Key = `generated/gemini/${uuidv4()}.wav`;
       const audioUrl = await uploadGeneratedAudio(wavBuffer, s3Key);
 
