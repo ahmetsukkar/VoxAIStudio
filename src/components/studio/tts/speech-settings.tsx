@@ -67,7 +67,7 @@ export default function SpeechSettings({
           </div>
 
           {/* Engine Selector */}
-          <div className="space-y-1.5">
+          {/* <div className="space-y-1.5">
             <Label className="text-xs font-medium">Engine</Label>
             <Select
               value={selectedEngine}
@@ -87,7 +87,7 @@ export default function SpeechSettings({
                 </SelectItem>
               </SelectContent>
             </Select>
-          </div>
+          </div> */}
 
           {/* Engine-specific settings */}
           {selectedEngine === "chatterbox" && (

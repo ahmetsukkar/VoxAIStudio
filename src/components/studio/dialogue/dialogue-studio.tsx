@@ -24,7 +24,7 @@ export default function DialogueStudio() {
     {
       id: "s1",
       name: "John",
-      voice: GeminiVoices[0]?.name ?? "Zephyr",
+      voice: GeminiVoices[1]?.name ?? "Puck",
       color: "blue",
     },
     {
@@ -201,7 +201,6 @@ export default function DialogueStudio() {
 
           {/* Section 1 — Speakers */}
           <div className="space-y-2">
-            <h3 className="text-sm font-bold">1. Define Speakers</h3>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {speakers.map((speaker) => (
                 <SpeakerCard
@@ -215,7 +214,6 @@ export default function DialogueStudio() {
 
           {/* Section 2 — Dialogue Lines */}
           <div className="space-y-2">
-            <h3 className="text-sm font-bold">2. Dialogue Lines</h3>
             <Card>
               <CardContent className="space-y-4 p-3 sm:p-4">
                 {lines.map((line) => (

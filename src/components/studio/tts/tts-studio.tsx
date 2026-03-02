@@ -24,7 +24,7 @@ export default function TTSStudio() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [text, setText] = useState("");
   const [selectedEngine, setSelectedEngine] =
-    useState<TTSProviderType>("chatterbox");
+    useState<TTSProviderType>("gemini");
   const [currentAudio, setCurrentAudio] = useState<GeneratedAudio | null>(null);
   const [userUploadedVoices, setUserUploadedVoices] = useState<UploadedVoice[]>(
     [],

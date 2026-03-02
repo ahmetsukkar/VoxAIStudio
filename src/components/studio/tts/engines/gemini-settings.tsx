@@ -88,7 +88,8 @@ export default function GeminiSettings({
             <p className="text-muted-foreground text-xs">
               {isPro
                 ? "Better for audiobooks & speeches"
-                : "Best for dialogues & short lines"}{" "}
+                : "Best for dialogues & short lines"}
+              <br />
               {isPro
                 ? `(${CREDITS_PER_CHAR.geminiProTTS} credits / char)`
                 : `(${CREDITS_PER_CHAR.geminiFlashTTS} credits / char)`}
@@ -204,12 +205,12 @@ export default function GeminiSettings({
       </div>
 
       {/* Info box */}
-      <div className="bg-muted rounded-md p-2 text-xs">
+      {/* <div className="bg-muted rounded-md p-2 text-xs">
         <p className="font-medium">Gemini TTS</p>
         <p className="text-muted-foreground">
           Language is auto-detected from your text.
         </p>
-      </div>
+      </div> */}
     </div>
   );
 }

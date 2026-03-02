@@ -93,7 +93,8 @@ export default function DialogueSettingsPanel({
               <p className="text-muted-foreground text-xs">
                 {isPro
                   ? "Better for audiobooks & speeches"
-                  : "Best for dialogues & short lines"}{" "}
+                  : "Best for dialogues & short lines"}
+                <br />
                 {isPro
                   ? `(${CREDITS_PER_CHAR.geminiProDialogue} credits / char)`
                   : `(${CREDITS_PER_CHAR.geminiFlashDialogue} credits / char)`}

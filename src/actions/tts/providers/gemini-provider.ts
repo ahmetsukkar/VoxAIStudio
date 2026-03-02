@@ -11,7 +11,6 @@ import { env } from "~/env";
 import { GoogleGenAI, Modality } from "@google/genai";
 import { v4 as uuidv4 } from "uuid";
 import { uploadGeneratedAudio } from "./s3-upload-helper";
-import type { GeminiModel } from "~/data/GeminiOptions";
 import { calcGeminiTTSCredits } from "~/lib/credits/calculate";
 import { buildTTSPrompt } from "~/lib/tts/prompt-builder";
 import { encodeWav } from "~/lib/audio/wav-encoder";
@@ -111,9 +110,12 @@ export class GeminiProvider implements TTSProvider {
           text: options.text,
           audioUrl,
           s3Key,
-          language: "multilingual",
-          voiceS3Key: options.voice_name,
-          engine: "gemini",
+          language: "autodetect",
+          engine: options.gemini_model ?? "gemini-2.5-flash-preview-tts",
+          geminiVoice: options.voice_name ?? null,
+          geminiEmotion: options.gemini_emotion ?? null,
+          geminiStyle: options.gemini_style ?? null,
+          geminiPace: options.gemini_pace ?? null,
           userId: session.user.id,
         },
       });
