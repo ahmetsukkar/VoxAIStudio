@@ -40,7 +40,7 @@ export default function GeminiSettings({
 
   return (
     <div className="space-y-4">
-      {/* Model Toggle — Flash / Pro */}
+      {/* Model Toggle */}
       <div className="space-y-1.5">
         <Label className="flex items-center gap-1.5 text-xs font-medium">
           <Cpu className="h-3 w-3" /> Model
@@ -109,18 +109,6 @@ export default function GeminiSettings({
         </div>
       </div>
 
-      {/* Voice Picker */}
-      <div className="space-y-1.5">
-        <Label className="flex items-center gap-1.5 text-xs font-medium">
-          <Mic2 className="h-3 w-3" /> Voice
-        </Label>
-        <VoicePicker
-          value={options.voice}
-          onChange={(voice) => setOptions({ ...options, voice })}
-        />
-      </div>
-
-      {/* Emotion */}
       <div className="space-y-1.5">
         <Label className="flex items-center gap-1.5 text-xs font-medium">
           <Smile className="h-3 w-3" /> Emotion
@@ -146,6 +134,17 @@ export default function GeminiSettings({
             ))}
           </SelectContent>
         </Select>
+      </div>
+
+      <div className="space-y-1.5">
+        <Label className="flex items-center gap-1.5 text-xs font-medium">
+          <Mic2 className="h-3 w-3" /> Voice
+        </Label>
+        <VoicePicker
+          value={options.voice}
+          onChange={(voice) => setOptions({ ...options, voice })}
+          emotion={options.emotion} 
+        />
       </div>
 
       {/* Style */}
@@ -203,14 +202,6 @@ export default function GeminiSettings({
           </SelectContent>
         </Select>
       </div>
-
-      {/* Info box */}
-      {/* <div className="bg-muted rounded-md p-2 text-xs">
-        <p className="font-medium">Gemini TTS</p>
-        <p className="text-muted-foreground">
-          Language is auto-detected from your text.
-        </p>
-      </div> */}
     </div>
   );
 }

@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 "use client";
 
 import { Loader2 } from "lucide-react";
@@ -64,7 +61,6 @@ export default function TTSStudio() {
           authClient.getSession(),
           getUserUploadedVoices(),
         ]);
-
         if (voicesResult.success) {
           setUserUploadedVoices(voicesResult.voices);
         }
@@ -74,9 +70,25 @@ export default function TTSStudio() {
         setIsLoading(false);
       }
     };
-
     void initializeData();
   }, []);
+
+  useEffect(() => {
+    if (!currentAudio || !audioRef.current) return;
+
+    const audio = audioRef.current;
+
+    const onCanPlay = () => {
+      audio.play().catch((e) => console.error("Autoplay failed:", e));
+      audio.removeEventListener("canplay", onCanPlay);
+    };
+
+    audio.addEventListener("canplay", onCanPlay);
+
+    return () => {
+      audio.removeEventListener("canplay", onCanPlay);
+    };
+  }, [currentAudio]);
 
   const generateSpeech = async () => {
     if (!text.trim()) {
@@ -123,25 +135,18 @@ export default function TTSStudio() {
       };
 
       setCurrentAudio(newAudio);
-
-      // Trigger RecentGenerations to re-fetch
       setRefreshTrigger((prev) => prev + 1);
 
-      setTimeout(() => {
-        if (audioRef.current) {
-          audioRef.current.load();
-          audioRef.current
-            .play()
-            .catch((e) => console.error("Autoplay failed:", e));
-        }
-      }, 100);
+      document
+        .getElementById("main-scroll")
+        ?.scrollTo({ top: 0, behavior: "smooth" });
 
       toast.success("Speech generated successfully!");
     } catch (error) {
       console.error("Generation error:", error);
-      const errorMessage =
-        error instanceof Error ? error.message : "Failed to generate speech";
-      toast.error(errorMessage);
+      toast.error(
+        error instanceof Error ? error.message : "Failed to generate speech",
+      );
     } finally {
       setIsGenerating(false);
     }
@@ -192,8 +197,7 @@ export default function TTSStudio() {
         </div>
       </div>
 
-      {/* Recent Generations — TTS only */}
-      <RecentGenerations group="tts" refreshTrigger={refreshTrigger} />
+      <RecentGenerations group="TTS" refreshTrigger={refreshTrigger} />
     </div>
   );
 }

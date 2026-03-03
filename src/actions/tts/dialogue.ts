@@ -9,9 +9,9 @@ import type {
   DialogueLine,
   DialogueSettings,
 } from "~/types/dialogue";
-import { buildTTSPrompt } from "~/lib/tts/prompt-builder";
-import { encodeWav } from "~/lib/audio/wav-encoder";
 import { calcGeminiDialogueCredits } from "~/lib/credits/calculate";
+import { buildDialoguePrompt } from "~/lib/tts/prompt-builder";
+import { encodeWav } from "~/lib/audio/wav-encoder";
 
 export interface DialogueGenerateResult {
   success: boolean;
@@ -31,67 +31,61 @@ export async function generateDialogueAudio({
   lines: DialogueLine[];
   settings: DialogueSettings;
 }): Promise<DialogueGenerateResult> {
-  // 1. Validate
   const filledLines = lines.filter((l) => l.text.trim().length > 0);
+
   if (filledLines.length === 0) {
-    return { success: false, error: "Add at least one dialogue line with text." };
+    return {
+      success: false,
+      error: "Add at least one dialogue line with text.",
+    };
+  }
+
+  if (speakers.length < 2) {
+    return { success: false, error: "At least 2 speakers are required." };
   }
 
   const creditsNeeded = calcGeminiDialogueCredits(filledLines, settings);
 
-  // 2. Build speaker lookup map
-  const speakersMap = Object.fromEntries(speakers.map((s) => [s.id, s]));
+  // Build the single prompt
+  const prompt = buildDialoguePrompt(speakers, filledLines, settings);
 
-  // 3. Generate audio per line, collect PCM chunks
   const ai = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
-  const pcmChunks: Uint8Array[] = [];
 
-  for (const line of filledLines) {
-    const speaker = speakersMap[line.speakerId];
-    if (!speaker) continue;
-
-    const prompt = buildTTSPrompt(
-      line.text,
-      line.emotion,
-      settings.style,
-      settings.pace,
-    );
-
-    const response = await ai.models.generateContent({
-      model: settings.model,
-      contents: [{ parts: [{ text: prompt }] }],
-      config: {
-        responseModalities: [Modality.AUDIO],
-        speechConfig: {
-          voiceConfig: {
-            prebuiltVoiceConfig: { voiceName: speaker.voice },
-          },
+  const response = await ai.models.generateContent({
+    model: settings.model,
+    contents: [{ parts: [{ text: prompt }] }],
+    config: {
+      responseModalities: [Modality.AUDIO],
+      speechConfig: {
+        multiSpeakerVoiceConfig: {
+          speakerVoiceConfigs: speakers.map((s) => ({
+            speaker: s.name,
+            voiceConfig: {
+              prebuiltVoiceConfig: { voiceName: s.voice },
+            },
+          })),
         },
       },
-    });
+    },
+  });
 
-    const base64Audio =
-      response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+  const base64Audio =
+    response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
 
-    if (!base64Audio) {
-      return { success: false, error: `No audio returned for line: "${line.text}"` };
-    }
-
-    pcmChunks.push(new Uint8Array(Buffer.from(base64Audio, "base64")));
+  if (!base64Audio) {
+    return { success: false, error: "No audio returned" };
   }
 
-  if (pcmChunks.length === 0) {
-    return { success: false, error: "No audio was generated." };
-  }
+  const pcmBuffer = Buffer.from(base64Audio, "base64");
+  const wavBuffer = encodeWav([new Uint8Array(pcmBuffer)]);
 
-  // 4. Encode WAV + upload to S3
-  const wavBuffer = encodeWav(pcmChunks);
-  const s3Key     = `generated/dialogue/${uuidv4()}.wav`;
-  const audioUrl  = await uploadGeneratedAudio(wavBuffer, s3Key);
+  const s3Key = `generated/dialogue/${uuidv4()}.wav`;
+  const audioUrl = await uploadGeneratedAudio(wavBuffer, s3Key);
 
-  // 5. Build full text for DB
+  // Full text for DB record
+  const speakerMap = Object.fromEntries(speakers.map((s) => [s.id, s]));
   const fullText = filledLines
-    .map((l) => `${speakersMap[l.speakerId]?.name ?? "Speaker"}: ${l.text}`)
+    .map((l) => `${speakerMap[l.speakerId]?.name ?? "Speaker"}: ${l.text}`)
     .join("\n");
 
   return { success: true, audioUrl, s3Key, fullText, creditsNeeded };

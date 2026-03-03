@@ -68,7 +68,7 @@ export default function RecentGenerations({
             <div className="h-6 w-0.5 rounded-full bg-gradient-to-b from-purple-600 to-blue-500"></div>
           </div>
           <p className="text-muted-foreground mx-auto max-w-md text-sm">
-            {group === "dialogue"
+            {group === "Dialogue"
               ? "Your dialogue generation history"
               : "Your speech generation history"}
           </p>
@@ -162,7 +162,7 @@ export default function RecentGenerations({
                 No generations yet
               </h3>
               <p className="text-muted-foreground mx-auto max-w-md text-lg leading-relaxed">
-                {group === "dialogue"
+                {group === "Dialogue"
                   ? "Start by creating your first dialogue"
                   : "Start by entering some text and generating your first speech"}
               </p>

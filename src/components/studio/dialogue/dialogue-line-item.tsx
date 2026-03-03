@@ -9,7 +9,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import { GeminiEmotions } from "~/data/GeminiOptions";
 import type { DialogueLine, DialogueSpeaker, SpeakerId } from "~/types/dialogue";
 import { speakerColors } from "~/types/dialogue";
 
@@ -46,7 +45,7 @@ export default function DialogueLineItem({
 
       {/* Content */}
       <div className="flex-1 space-y-2">
-        {/* Speaker + Emotion + Delete */}
+        {/* Speaker selector + Delete */}
         <div className="flex items-center gap-2">
           <Select
             value={line.speakerId}
@@ -61,27 +60,6 @@ export default function DialogueLineItem({
               {speakers.map((s) => (
                 <SelectItem key={s.id} value={s.id} className="text-xs">
                   {s.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Select
-            value={line.emotion}
-            onValueChange={(value) =>
-              onChange({
-                ...line,
-                emotion: value as DialogueLine["emotion"],
-              })
-            }
-          >
-            <SelectTrigger className="h-7 w-auto text-xs">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {GeminiEmotions.map((em) => (
-                <SelectItem key={em.value} value={em.value} className="text-xs">
-                  {em.label}
                 </SelectItem>
               ))}
             </SelectContent>

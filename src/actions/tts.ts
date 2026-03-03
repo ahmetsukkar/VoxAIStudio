@@ -13,6 +13,7 @@ import { db } from "~/server/db";
 import { cache } from "react";
 import { generateDialogueAudio } from "./tts/dialogue";
 import type { DialogueSpeaker, DialogueLine, DialogueSettings } from "~/types/dialogue";
+import { detectLanguage } from "~/lib/tts/detect-language";
 
 export async function generateSpeech(
   providerType: TTSProviderType,
@@ -67,8 +68,9 @@ export async function generateSpeech(
         text: options.text,
         audioUrl: result.audioUrl,
         s3Key: result.s3_key,
-        language: chatterboxOpts?.language ?? "autodetect",
-        voiceS3Key: chatterboxOpts?.voice_S3_key ?? geminiOpts?.voice_name,
+        language: chatterboxOpts?.language ?? detectLanguage(options.text),
+        voiceS3Key: chatterboxOpts?.voice_S3_key ?? null,
+        name: "TTS",
         engine: geminiOpts?.gemini_model ?? providerType,
         exaggeration: chatterboxOpts?.exaggeration,
         cfgWeight: chatterboxOpts?.cfg_weight,
@@ -136,17 +138,22 @@ export async function generateDialogue({
       select: { credits: true },
     });
 
-    // 5. Save to DB
-    await db.audioProject.create({
-      data: {
-        text:     result.fullText,
-        audioUrl: result.audioUrl,
-        s3Key:    result.s3Key,
-        language: "autodetect",
-        engine:   "gemini-dialogue",
-        userId:   session.user.id,
-      },
-    });
+// 5. Save to DB
+await db.audioProject.create({
+  data: {
+    text:     result.fullText,
+    audioUrl: result.audioUrl,
+    s3Key:    result.s3Key,
+    language: detectLanguage(result.fullText),
+    name: "Dialogue",
+    engine:   settings.model,
+    geminiEmotion: speakers.map((s) => `${s.name}: ${s.emotion}`).join(" / "),
+    geminiStyle: settings.style,
+    geminiPace:  settings.pace,
+    geminiVoice: speakers.map((s) => `${s.name}: ${s.voice}`).join(" / "),
+    userId:   session.user.id,
+  },
+});
 
     return {
       success: true,
@@ -235,14 +242,7 @@ export async function deleteAudioProject(id: string) {
   }
 }
 
-export type EngineGroup = "tts" | "dialogue";
-
-const TTS_ENGINES = [
-  "chatterbox",
-  "gemini-2.5-flash-preview-tts",
-  "gemini-2.5-pro-preview-tts",
-];
-const DIALOGUE_ENGINES = ["gemini-dialogue"];
+export type EngineGroup = "TTS" | "Dialogue";
 
 export async function getRecentGenerations(group: EngineGroup, limit = 4) {
   try {
@@ -250,12 +250,10 @@ export async function getRecentGenerations(group: EngineGroup, limit = 4) {
     if (!session?.user?.id)
       return { success: false, error: "Unauthorized", projects: [] };
 
-    const engines = group === "dialogue" ? DIALOGUE_ENGINES : TTS_ENGINES;
-
     const projects = await db.audioProject.findMany({
       where: {
         userId: session.user.id,
-        engine: { in: engines },
+        name: group === "TTS" ? "TTS" : "Dialogue",
       },
       orderBy: { createdAt: "desc" },
       take: limit,

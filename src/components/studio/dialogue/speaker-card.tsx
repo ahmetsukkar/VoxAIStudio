@@ -1,11 +1,19 @@
 "use client";
 
-import { Volume2 } from "lucide-react";
+import { Volume2, Smile } from "lucide-react";
 import { Card, CardContent } from "~/components/ui/card";
 import { Label } from "~/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
 import VoicePicker from "~/components/studio/tts/engines/voice-picker";
 import type { DialogueSpeaker } from "~/types/dialogue";
 import { speakerColors } from "~/types/dialogue";
+import { GeminiEmotions } from "~/data/GeminiOptions";
 
 interface SpeakerCardProps {
   speaker: DialogueSpeaker;
@@ -47,6 +55,33 @@ export default function SpeakerCard({ speaker, onChange }: SpeakerCardProps) {
             />
           </div>
         </div>
+        
+        {/* Emotion */}                
+        <div className="space-y-1">
+          <Label className="flex items-center gap-1.5 text-xs font-medium">
+            <Smile className="h-3 w-3" /> Emotion
+          </Label>
+          <Select
+            value={speaker.emotion}
+            onValueChange={(value) =>
+              onChange({
+                ...speaker,
+                emotion: value as DialogueSpeaker["emotion"],
+              })
+            }
+          >
+            <SelectTrigger className="h-8 text-xs">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {GeminiEmotions.map((em) => (
+                <SelectItem key={em.value} value={em.value} className="text-xs">
+                  {em.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
         {/* Voice */}
         <div className="space-y-1">
@@ -56,6 +91,7 @@ export default function SpeakerCard({ speaker, onChange }: SpeakerCardProps) {
           <VoicePicker
             value={speaker.voice}
             onChange={(voice) => onChange({ ...speaker, voice })}
+            emotion={speaker.emotion}
           />
         </div>
       </CardContent>

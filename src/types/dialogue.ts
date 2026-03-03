@@ -22,13 +22,13 @@ export interface DialogueSpeaker {
   name: string;
   voice: string;
   color: SpeakerColor;
+  emotion: GeminiEmotion;
 }
 
 export interface DialogueLine {
   id: string;
   speakerId: SpeakerId;
   text: string;
-  emotion: GeminiEmotion;
 }
 
 export interface DialogueSettings {

@@ -19,7 +19,6 @@ import AppSidebar from "~/components/sidebar/app-sidebar";
 export const metadata: Metadata = {
   title: "Publish Vox AI Studio",
   description: "Publish Vox AI Studio - Transform text into natural speech",
-  icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
 export default function RootLayout({
@@ -46,7 +45,7 @@ export default function RootLayout({
               </Breadcrumb>
             </div>
           </header>
-          <main className="from-background to-muted/20 flex-1 overflow-y-auto bg-gradient-to-br p-6">
+          <main id="main-scroll" className="from-background to-muted/20 flex-1 overflow-y-auto bg-gradient-to-br p-6">
             {children}
           </main>
         </SidebarInset>

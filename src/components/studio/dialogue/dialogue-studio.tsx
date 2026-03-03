@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Loader2, Plus, Settings2, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
@@ -25,21 +25,23 @@ export default function DialogueStudio() {
   const [speakers, setSpeakers] = useState<DialogueSpeaker[]>([
     {
       id: "s1",
-      name: "John",
-      voice: GeminiVoices[1]?.name ?? "Puck",
+      name: "Joe",
+      voice: GeminiVoices[2]?.name ?? "Charon",
       color: "blue",
+      emotion: "neutral",
     },
     {
       id: "s2",
-      name: "Mary",
-      voice: GeminiVoices[3]?.name ?? "Kore",
+      name: "Jane",
+      voice: GeminiVoices[15]?.name ?? "Erinome",
       color: "green",
+      emotion: "neutral",
     },
   ]);
 
   const [lines, setLines] = useState<DialogueLine[]>([
-    { id: "l1", speakerId: "s1", text: "", emotion: "neutral" },
-    { id: "l2", speakerId: "s2", text: "", emotion: "neutral" },
+    { id: "l1", speakerId: "s1", text: "" },
+    { id: "l2", speakerId: "s2", text: "" },
   ]);
 
   const [settings, setSettings] = useState<DialogueSettings>({
@@ -54,6 +56,30 @@ export default function DialogueStudio() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const { setCredits } = useCreditsStore();
+
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioRefMobile = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    if (!audioUrl) return;
+
+    const playAudio = (el: HTMLAudioElement | null) => {
+      if (!el) return;
+      const timer = setTimeout(() => {
+        audioManager.register(el, () => el.pause());
+        el.play().catch(() => {
+          // Autoplay blocked by browser — user presses play manually
+        });
+      }, 100);
+      return timer;
+    };
+
+    const t1 = playAudio(audioRef.current);
+    // Only play one — desktop takes priority, mobile is hidden on lg+
+    return () => {
+      clearTimeout(t1);
+    };
+  }, [audioUrl]);
 
   const totalChars = lines.reduce((sum, l) => sum + l.text.length, 0);
   const creditsNeeded = calcGeminiDialogueCredits(lines, settings);
@@ -77,12 +103,7 @@ export default function DialogueStudio() {
 
       return [
         ...prev,
-        {
-          id: `l${Date.now()}`,
-          speakerId: nextSpeakerId,
-          text: "",
-          emotion: "neutral" as const,
-        },
+        { id: `l${Date.now()}`, speakerId: nextSpeakerId, text: "" },
       ];
     });
   };
@@ -105,13 +126,13 @@ export default function DialogueStudio() {
 
       setAudioUrl(result.audioUrl);
 
-      // Update credits in sidebar instantly
       if (result.creditsRemaining !== undefined) {
         setCredits(result.creditsRemaining);
       }
 
-      // Trigger RecentGenerations to re-fetch
       setRefreshTrigger((prev) => prev + 1);
+
+      document.getElementById("main-scroll")?.scrollTo({ top: 0, behavior: "smooth" });
 
       toast.success("Dialogue generated successfully!");
     } catch (error) {
@@ -124,6 +145,30 @@ export default function DialogueStudio() {
     }
   };
 
+  // Shared audio element renderer
+  const AudioPlayer = ({
+    refProp,
+  }: {
+    refProp: React.RefObject<HTMLAudioElement | null>;
+  }) => {
+    if (!audioUrl) {
+      return (
+        <p className="text-muted-foreground py-6 text-center text-xs italic">
+          Waiting for first generation...
+        </p>
+      );
+    }
+    return (
+      <audio
+        key={audioUrl}
+        ref={refProp}
+        controls
+        className="w-full"
+        src={audioUrl}
+      />
+    );
+  };
+
   return (
     <div className="mx-auto max-w-7xl px-2 py-4 sm:px-4 sm:py-6">
       <div className="grid grid-cols-1 gap-2 sm:gap-4 lg:grid-cols-3">
@@ -132,23 +177,7 @@ export default function DialogueStudio() {
           <Card className="shadow-lg">
             <CardContent className="p-2 sm:p-3">
               <h3 className="mb-2 text-sm font-bold">Player</h3>
-              {audioUrl ? (
-                <audio
-                  key={audioUrl}
-                  controls
-                  autoPlay
-                  className="w-full"
-                  src={audioUrl}
-                  onPlay={(e) => {
-                    const el = e.currentTarget;
-                    audioManager.register(el, () => el.pause());
-                  }}
-                />
-              ) : (
-                <p className="text-muted-foreground py-6 text-center text-xs italic">
-                  Waiting for first generation...
-                </p>
-              )}
+              <AudioPlayer refProp={audioRef} />
             </CardContent>
           </Card>
 
@@ -162,27 +191,11 @@ export default function DialogueStudio() {
 
         {/* ── MAIN AREA ── */}
         <div className="space-y-4 lg:col-span-2">
-          {/* ── MOBILE ONLY — Player + Settings toggle ── */}
+          {/* ── MOBILE ONLY ── */}
           <div className="space-y-2 lg:hidden">
             <Card className="shadow-sm">
               <CardContent className="p-2">
-                {audioUrl ? (
-                  <audio
-                    key={audioUrl}
-                    controls
-                    autoPlay
-                    className="w-full"
-                    src={audioUrl}
-                    onPlay={(e) => {
-                      const el = e.currentTarget;
-                      audioManager.register(el, () => el.pause());
-                    }}
-                  />
-                ) : (
-                  <p className="text-muted-foreground py-3 text-center text-xs italic">
-                    Waiting for first generation...
-                  </p>
-                )}
+                <AudioPlayer refProp={audioRefMobile} />
               </CardContent>
             </Card>
 
@@ -216,44 +229,40 @@ export default function DialogueStudio() {
             )}
           </div>
 
-          {/* Section 1 — Speakers */}
-          <div className="space-y-2">
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {speakers.map((speaker) => (
-                <SpeakerCard
-                  key={speaker.id}
-                  speaker={speaker}
-                  onChange={updateSpeaker}
-                />
-              ))}
-            </div>
+          {/* Speakers — always exactly 2 */}
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {speakers.map((speaker) => (
+              <SpeakerCard
+                key={speaker.id}
+                speaker={speaker}
+                onChange={updateSpeaker}
+              />
+            ))}
           </div>
 
-          {/* Section 2 — Dialogue Lines */}
-          <div className="space-y-2">
-            <Card>
-              <CardContent className="space-y-4 p-3 sm:p-4">
-                {lines.map((line) => (
-                  <DialogueLineItem
-                    key={line.id}
-                    line={line}
-                    speakers={speakers}
-                    canDelete={lines.length > 2}
-                    onChange={updateLine}
-                    onDelete={() => deleteLine(line.id)}
-                  />
-                ))}
-                <Button
-                  variant="outline"
-                  className="w-full border-dashed"
-                  onClick={addLine}
-                >
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add Line
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
+          {/* Dialogue Lines */}
+          <Card>
+            <CardContent className="space-y-4 p-3 sm:p-4">
+              {lines.map((line) => (
+                <DialogueLineItem
+                  key={line.id}
+                  line={line}
+                  speakers={speakers}
+                  canDelete={lines.length > 2}
+                  onChange={updateLine}
+                  onDelete={() => deleteLine(line.id)}
+                />
+              ))}
+              <Button
+                variant="outline"
+                className="w-full border-dashed"
+                onClick={addLine}
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                Add Line
+              </Button>
+            </CardContent>
+          </Card>
 
           {/* Generate Button */}
           <div className="space-y-2">
@@ -281,8 +290,7 @@ export default function DialogueStudio() {
         </div>
       </div>
 
-      {/* Recent Generations — Dialogue only */}
-      <RecentGenerations group="dialogue" refreshTrigger={refreshTrigger} />
+      <RecentGenerations group="Dialogue" refreshTrigger={refreshTrigger} />
     </div>
   );
 }
