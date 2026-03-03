@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
-import { Music, Play, Download, Loader2 } from "lucide-react";
+import { useEffect, useState, useCallback } from "react";
+import { Music, Play, Download, Loader2, Pause } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import Link from "next/link";
 import { getRecentGenerations, type EngineGroup } from "~/actions/tts";
 import type { AudioProject } from "@prisma/client";
+import { audioManager } from "~/lib/audio/audio-manager";
 
 interface RecentGenerationsProps {
   group: EngineGroup;
@@ -16,9 +17,8 @@ export default function RecentGenerations({
   group,
   refreshTrigger = 0,
 }: RecentGenerationsProps) {
-  const [projects, setProjects]   = useState<AudioProject[]>([]);
+  const [projects, setProjects] = useState<AudioProject[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const audioRef                  = useRef<HTMLAudioElement | null>(null);
   const [playingId, setPlayingId] = useState<string | null>(null);
 
   const fetchProjects = useCallback(async () => {
@@ -33,17 +33,20 @@ export default function RecentGenerations({
   }, [fetchProjects, refreshTrigger]);
 
   const handlePlay = (project: AudioProject) => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-    }
+    // If already playing this one — stop it
     if (playingId === project.id) {
+      audioManager.stopAll();
       setPlayingId(null);
       return;
     }
+
     const audio = new Audio(project.audioUrl);
-    audioRef.current = audio;
+
+    // Register with manager — stops the "Latest Generation" player too
+    audioManager.register(audio, () => setPlayingId(null));
+
     setPlayingId(project.id);
-    audio.play().catch(() => setPlayingId(null));
+    void audio.play();
     audio.onended = () => setPlayingId(null);
   };
 
@@ -55,7 +58,6 @@ export default function RecentGenerations({
   return (
     <div className="border-t border-gray-200 bg-white px-2 py-3 sm:px-4 sm:py-4">
       <div className="mx-auto max-w-7xl">
-
         {/* Exact same header */}
         <div className="mb-6 text-center">
           <div className="mb-2 inline-flex items-center gap-2">
@@ -77,7 +79,6 @@ export default function RecentGenerations({
           <div className="flex items-center justify-center py-16">
             <Loader2 className="text-muted-foreground h-8 w-8 animate-spin" />
           </div>
-
         ) : projects.length > 0 ? (
           <>
             {/* Exact same grid + card styles */}
@@ -114,9 +115,14 @@ export default function RecentGenerations({
                       size="sm"
                       className="h-7 flex-1 gap-1 px-2 text-xs"
                     >
-                      <Play className="h-3 w-3" />
-                      {playingId === project.id ? "Stop" : "Play"}
+                      {playingId === project.id ? (
+                        <Pause className="h-3 w-3" />
+                      ) : (
+                        <Play className="h-3 w-3" />
+                      )}
+                      {playingId === project.id ? "Pause" : "Play"}
                     </Button>
+
                     <Button
                       onClick={() => handleDownload(project)}
                       variant="outline"
@@ -140,7 +146,6 @@ export default function RecentGenerations({
               </Link>
             </div>
           </>
-
         ) : (
           /* Exact same empty state */
           <div className="py-16 text-center">
@@ -164,7 +169,6 @@ export default function RecentGenerations({
             </div>
           </div>
         )}
-
       </div>
     </div>
   );

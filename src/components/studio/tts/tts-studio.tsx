@@ -18,6 +18,7 @@ import SpeechSettings from "~/components/studio/tts/speech-settings";
 import TextInput from "~/components/studio/tts/text-input";
 import RecentGenerations from "~/components/studio/recent-generations";
 import { GeminiVoices } from "~/data/GeminiOptions";
+import { useCreditsStore } from "~/store/credits-store";
 
 export default function TTSStudio() {
   const [isLoading, setIsLoading] = useState(true);
@@ -107,6 +108,10 @@ export default function TTSStudio() {
 
       if (!result.success || !result.audioUrl || !result.s3_key) {
         throw new Error(result.error ?? "Generation failed");
+      }
+
+      if (result.creditsRemaining !== undefined) {
+        useCreditsStore.getState().setCredits(result.creditsRemaining);
       }
 
       const newAudio: GeneratedAudio = {

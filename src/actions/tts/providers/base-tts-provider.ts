@@ -7,13 +7,16 @@ import type {
   GeminiStyle,
 } from "~/data/GeminiOptions";
 
-// Shared result shape for all engines
 export interface GenerateSpeechResult {
   success: boolean;
   s3_key?: string;
   audioUrl?: string;
-  projectId?: string;
   error?: string;
+}
+
+export interface GenerateSpeechFinalResult extends GenerateSpeechResult {
+  projectId?: string;
+  creditsRemaining?: number;
 }
 
 // Chatterbox-specific options
@@ -35,10 +38,8 @@ export interface GeminiRequestOptions {
   gemini_pace?: GeminiPace;
 }
 
-// Union — what tts.ts accepts
 export type TTSOptions = ChatterboxRequestOptions | GeminiRequestOptions;
 
-// Every provider must implement this
 export interface TTSProvider {
   generateSpeech(options: TTSOptions): Promise<GenerateSpeechResult>;
   getCredits(options: TTSOptions): number;

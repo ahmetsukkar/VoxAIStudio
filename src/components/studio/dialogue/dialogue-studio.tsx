@@ -17,7 +17,9 @@ import SpeakerCard from "./speaker-card";
 import DialogueLineItem from "./dialogue-line-item";
 import DialogueSettingsPanel from "./dialogue-settings";
 import RecentGenerations from "~/components/studio/recent-generations";
-import { generateDialogue } from "~/actions/tts/dialogue";
+import { generateDialogue } from "~/actions/tts";
+import { useCreditsStore } from "~/store/credits-store";
+import { audioManager } from "~/lib/audio/audio-manager";
 
 export default function DialogueStudio() {
   const [speakers, setSpeakers] = useState<DialogueSpeaker[]>([
@@ -50,6 +52,8 @@ export default function DialogueStudio() {
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+  const { setCredits } = useCreditsStore();
 
   const totalChars = lines.reduce((sum, l) => sum + l.text.length, 0);
   const creditsNeeded = calcGeminiDialogueCredits(lines, settings);
@@ -101,6 +105,11 @@ export default function DialogueStudio() {
 
       setAudioUrl(result.audioUrl);
 
+      // Update credits in sidebar instantly
+      if (result.creditsRemaining !== undefined) {
+        setCredits(result.creditsRemaining);
+      }
+
       // Trigger RecentGenerations to re-fetch
       setRefreshTrigger((prev) => prev + 1);
 
@@ -130,6 +139,10 @@ export default function DialogueStudio() {
                   autoPlay
                   className="w-full"
                   src={audioUrl}
+                  onPlay={(e) => {
+                    const el = e.currentTarget;
+                    audioManager.register(el, () => el.pause());
+                  }}
                 />
               ) : (
                 <p className="text-muted-foreground py-6 text-center text-xs italic">
@@ -160,6 +173,10 @@ export default function DialogueStudio() {
                     autoPlay
                     className="w-full"
                     src={audioUrl}
+                    onPlay={(e) => {
+                      const el = e.currentTarget;
+                      audioManager.register(el, () => el.pause());
+                    }}
                   />
                 ) : (
                   <p className="text-muted-foreground py-3 text-center text-xs italic">

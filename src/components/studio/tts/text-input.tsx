@@ -8,6 +8,8 @@ import { Button } from "~/components/ui/button";
 
 import type { GeneratedAudio } from "~/types/tts";
 
+import { audioManager } from "~/lib/audio/audio-manager";
+
 interface TextInputProps {
   text: string;
   setText: (text: string) => void;
@@ -84,6 +86,15 @@ export default function TextInput({
                   className="w-full"
                   style={{ height: "32px" }}
                   key={currentAudio.s3_key}
+                  onPlay={() => {
+                    // Register this native element so manager can stop it
+                    // when a Recent Generation Play button is clicked
+                    if (audioRef.current) {
+                      audioManager.register(audioRef.current, () => {
+                        audioRef.current?.pause();
+                      });
+                    }
+                  }}
                 >
                   <source src={currentAudio.audioUrl} type="audio/wav" />
                 </audio>
