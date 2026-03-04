@@ -18,6 +18,7 @@ export interface GeminiOptions {
   emotion: GeminiEmotion;
   style: GeminiStyle;
   pace: GeminiPace;
+  language: string; // "auto" or BCP-47 code
 }
 
 export interface EngineOptionsMap {

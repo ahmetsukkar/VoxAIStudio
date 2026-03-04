@@ -42,6 +42,7 @@ export default function TTSStudio() {
       emotion: "neutral",
       style: "conversational",
       pace: "normal",
+      language: "auto",
     },
   });
 
@@ -115,6 +116,7 @@ export default function TTSStudio() {
               gemini_emotion: engineOptions.gemini.emotion,
               gemini_style: engineOptions.gemini.style,
               gemini_pace: engineOptions.gemini.pace,
+              gemini_language: engineOptions.gemini.language,
             },
       );
 

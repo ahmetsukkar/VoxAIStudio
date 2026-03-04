@@ -36,6 +36,7 @@ export interface GeminiRequestOptions {
   gemini_emotion?: GeminiEmotion;
   gemini_style?: GeminiStyle;
   gemini_pace?: GeminiPace;
+  gemini_language?: string;
 }
 
 export type TTSOptions = ChatterboxRequestOptions | GeminiRequestOptions;

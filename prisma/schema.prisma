@@ -20,7 +20,7 @@ model User {
     updatedAt     DateTime  @updatedAt
     sessions      Session[]
     accounts      Account[]
-    credits       Decimal       @default(30) @db.Decimal(10, 2)
+    credits       Int       @default(5000)
     audioProjects AudioProject[]
     uploadedVoices UploadedVoice[]
     blogPosts     BlogPost[]
@@ -49,6 +49,7 @@ model AudioProject {
   geminiStyle   String?
   geminiPace    String?
 
+  creditsSpent  Int?
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())

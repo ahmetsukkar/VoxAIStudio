@@ -13,7 +13,7 @@ const s3Client = new S3Client({
 export async function uploadGeneratedAudio(
   buffer: Buffer,
   s3Key: string,
-  contentType = "audio/wav",
+  contentType = "attachment",
 ): Promise<string> {
   await s3Client.send(
     new PutObjectCommand({

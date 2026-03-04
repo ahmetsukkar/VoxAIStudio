@@ -1,6 +1,6 @@
 "use client";
 
-import { Cpu, Smile, Volume2, Timer, Mic2, Info } from "lucide-react";
+import { Cpu, Smile, Volume2, Timer, Mic2, Info, Globe } from "lucide-react";
 import { Label } from "~/components/ui/label";
 import { Switch } from "~/components/ui/switch";
 import {
@@ -16,6 +16,7 @@ import {
   PopoverTrigger,
 } from "~/components/ui/popover";
 import {
+  SupportedLanguages,
   GeminiEmotions,
   GeminiStyles,
   GeminiPaces,
@@ -40,6 +41,37 @@ export default function GeminiSettings({
 
   return (
     <div className="space-y-4">
+      {/* Language */}
+      <div className="space-y-1.5">
+        <Label className="flex items-center gap-1.5 text-xs font-medium">
+          <Globe className="h-3 w-3" /> Language
+        </Label>
+        <Select
+          value={options.language}
+          onValueChange={(value) => setOptions({ ...options, language: value })}
+        >
+          <SelectTrigger className="h-8 w-full text-xs">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="auto" className="text-xs">
+              🌐 Auto Detect
+            </SelectItem>
+            {SupportedLanguages.map((lang) => (
+              <SelectItem key={lang.code} value={lang.code} className="text-xs">
+                <span className="flex items-center gap-2">
+                  <span
+                    className={`fi fi-${lang.countryCode} shrink-0`}
+                    style={{ fontSize: "1rem" }}
+                  />
+                  {lang.label}
+                </span>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
       {/* Model Toggle */}
       <div className="space-y-1.5">
         <Label className="flex items-center gap-1.5 text-xs font-medium">
@@ -143,7 +175,7 @@ export default function GeminiSettings({
         <VoicePicker
           value={options.voice}
           onChange={(voice) => setOptions({ ...options, voice })}
-          emotion={options.emotion} 
+          emotion={options.emotion}
         />
       </div>
 

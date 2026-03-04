@@ -10,9 +10,12 @@ import { TTSFactory, type TTSProviderType } from "./tts/tts-factory";
 import { auth } from "~/lib/auth";
 import { headers } from "next/headers";
 import { db } from "~/server/db";
-import { cache } from "react";
 import { generateDialogueAudio } from "./tts/dialogue";
-import type { DialogueSpeaker, DialogueLine, DialogueSettings } from "~/types/dialogue";
+import type {
+  DialogueSpeaker,
+  DialogueLine,
+  DialogueSettings,
+} from "~/types/dialogue";
 import { detectLanguage } from "~/lib/tts/detect-language";
 
 export async function generateSpeech(
@@ -38,14 +41,14 @@ export async function generateSpeech(
 
     if (!user) return { success: false, error: "User not found" };
 
-    if (Number(user.credits) < creditsNeeded) {
+    if (user.credits < creditsNeeded) {
       return {
         success: false,
         error: `Insufficient credits. Need ${creditsNeeded}, have ${String(user.credits)}`,
       };
     }
 
-    // 4. Generate audio (provider's only job)
+    // 4. Generate audio
     const result = await provider.generateSpeech(options);
     if (!result.success || !result.audioUrl || !result.s3_key) {
       return { success: false, error: result.error ?? "Generation failed" };
@@ -58,9 +61,11 @@ export async function generateSpeech(
       select: { credits: true },
     });
 
-    // 6. Save to DB (centralized for all engines)
+    // 6. Save to DB
     const isGemini = providerType === "gemini";
-    const chatterboxOpts = !isGemini ? (options as ChatterboxRequestOptions) : null;
+    const chatterboxOpts = !isGemini
+      ? (options as ChatterboxRequestOptions)
+      : null;
     const geminiOpts = isGemini ? (options as GeminiRequestOptions) : null;
 
     const audioProject = await db.audioProject.create({
@@ -68,7 +73,11 @@ export async function generateSpeech(
         text: options.text,
         audioUrl: result.audioUrl,
         s3Key: result.s3_key,
-        language: chatterboxOpts?.language ?? detectLanguage(options.text),
+        language:
+          chatterboxOpts?.language ??
+          (geminiOpts?.gemini_language && geminiOpts.gemini_language !== "auto"
+            ? geminiOpts.gemini_language
+            : detectLanguage(options.text)),
         voiceS3Key: chatterboxOpts?.voice_S3_key ?? null,
         name: "TTS",
         engine: geminiOpts?.gemini_model ?? providerType,
@@ -78,6 +87,7 @@ export async function generateSpeech(
         geminiEmotion: geminiOpts?.gemini_emotion,
         geminiStyle: geminiOpts?.gemini_style,
         geminiPace: geminiOpts?.gemini_pace,
+        creditsSpent: creditsNeeded,
         userId: session.user.id,
       },
     });
@@ -87,7 +97,7 @@ export async function generateSpeech(
       s3_key: result.s3_key,
       audioUrl: result.audioUrl,
       projectId: audioProject.id,
-      creditsRemaining: Math.floor(Number(updatedUser.credits)), // ← key addition
+      creditsRemaining: updatedUser.credits,
     };
   } catch (error) {
     console.error("Speech generation error:", error);
@@ -103,15 +113,26 @@ export async function generateDialogue({
   speakers: DialogueSpeaker[];
   lines: DialogueLine[];
   settings: DialogueSettings;
-}): Promise<{ success: boolean; audioUrl?: string; s3_key?: string; creditsRemaining?: number; error?: string }> {
+}): Promise<{
+  success: boolean;
+  audioUrl?: string;
+  s3_key?: string;
+  creditsRemaining?: number;
+  error?: string;
+}> {
   try {
     // 1. Auth
     const session = await auth.api.getSession({ headers: await headers() });
     if (!session?.user?.id) return { success: false, error: "Unauthorized" };
 
-    // 2. Generate audio (dialogue.ts only job now)
+    // 2. Generate audio
     const result = await generateDialogueAudio({ speakers, lines, settings });
-    if (!result.success || !result.audioUrl || !result.s3Key || !result.fullText) {
+    if (
+      !result.success ||
+      !result.audioUrl ||
+      !result.s3Key ||
+      !result.fullText
+    ) {
       return { success: false, error: result.error ?? "Generation failed" };
     }
 
@@ -124,7 +145,7 @@ export async function generateDialogue({
     });
 
     if (!user) return { success: false, error: "User not found" };
-    if (Number(user.credits) < creditsNeeded) {
+    if (user.credits < creditsNeeded) {
       return {
         success: false,
         error: `Insufficient credits. Need ${creditsNeeded}, have ${String(user.credits)}`,
@@ -138,28 +159,34 @@ export async function generateDialogue({
       select: { credits: true },
     });
 
-// 5. Save to DB
-await db.audioProject.create({
-  data: {
-    text:     result.fullText,
-    audioUrl: result.audioUrl,
-    s3Key:    result.s3Key,
-    language: detectLanguage(result.fullText),
-    name: "Dialogue",
-    engine:   settings.model,
-    geminiEmotion: speakers.map((s) => `${s.name}: ${s.emotion}`).join(" / "),
-    geminiStyle: settings.style,
-    geminiPace:  settings.pace,
-    geminiVoice: speakers.map((s) => `${s.name}: ${s.voice}`).join(" / "),
-    userId:   session.user.id,
-  },
-});
+    // 5. Save to DB
+    await db.audioProject.create({
+      data: {
+        text: result.fullText,
+        audioUrl: result.audioUrl,
+        s3Key: result.s3Key,
+        language:
+          settings.language && settings.language !== "auto"
+            ? settings.language
+            : detectLanguage(result.fullText),
+        name: "Dialogue",
+        engine: settings.model,
+        geminiEmotion: speakers
+          .map((s) => `${s.name}: ${s.emotion}`)
+          .join(" / "),
+        geminiStyle: settings.style,
+        geminiPace: settings.pace,
+        geminiVoice: speakers.map((s) => `${s.name}: ${s.voice}`).join(" / "),
+        creditsSpent: creditsNeeded,
+        userId: session.user.id,
+      },
+    });
 
     return {
       success: true,
-      audioUrl:         result.audioUrl,
-      s3_key:           result.s3Key,
-      creditsRemaining: Math.floor(Number(updatedUser.credits)),
+      audioUrl: result.audioUrl,
+      s3_key: result.s3Key,
+      creditsRemaining: updatedUser.credits,
     };
   } catch (error) {
     console.error("Dialogue generation error:", error);
@@ -167,27 +194,81 @@ await db.audioProject.create({
   }
 }
 
-export const getUserAudioProjects = cache(async () => {
-  try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+const PAGE_SIZE = 20;
 
+export interface AudioProjectFilters {
+  type?: string;
+  engine?: string;
+  language?: string;
+  search?: string;
+  sortBy?: "newest" | "oldest" | "name";
+}
+
+export async function getUserAudioProjects(
+  cursor?: string,
+  filters?: AudioProjectFilters,
+) {
+  try {
+    const session = await auth.api.getSession({ headers: await headers() });
     if (!session?.user?.id) {
-      return { success: false, error: "Unauthorized" };
+      return {
+        success: false,
+        error: "Unauthorized",
+        audioProjects: [],
+        nextCursor: null,
+        totalCount: 0,
+      };
     }
 
-    const audioProjects = await db.audioProject.findMany({
-      where: { userId: session.user.id },
-      orderBy: { createdAt: "desc" },
-    });
+    const where = {
+      userId: session.user.id,
+      ...(filters?.type && filters.type !== "all"
+        ? { name: filters.type }
+        : {}),
+      ...(filters?.engine && filters.engine !== "all"
+        ? { engine: filters.engine }
+        : {}),
+      ...(filters?.language && filters.language !== "all"
+        ? { language: filters.language }
+        : {}),
+      ...(filters?.search
+        ? { text: { contains: filters.search, mode: "insensitive" as const } }
+        : {}),
+    };
 
-    return { success: true, audioProjects };
+    const orderBy =
+      filters?.sortBy === "oldest"
+        ? { createdAt: "asc" as const }
+        : filters?.sortBy === "name"
+          ? { text: "asc" as const }
+          : { createdAt: "desc" as const };
+
+    const [totalCount, audioProjects] = await Promise.all([
+      db.audioProject.count({ where }),
+      db.audioProject.findMany({
+        where,
+        orderBy,
+        take: PAGE_SIZE + 1,
+        ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
+      }),
+    ]);
+
+    const hasMore = audioProjects.length > PAGE_SIZE;
+    const page = hasMore ? audioProjects.slice(0, PAGE_SIZE) : audioProjects;
+    const nextCursor = hasMore ? (page[page.length - 1]?.id ?? null) : null;
+
+    return { success: true, audioProjects: page, nextCursor, totalCount };
   } catch (error) {
     console.error("Error fetching audio projects:", error);
-    return { success: false, error: "Failed to fetch audio projects" };
+    return {
+      success: false,
+      error: "Failed to fetch audio projects",
+      audioProjects: [],
+      nextCursor: null,
+      totalCount: 0,
+    };
   }
-});
+}
 
 export async function getUserCredits() {
   try {
@@ -206,7 +287,7 @@ export async function getUserCredits() {
       return { success: false, error: "User not found", credits: 0 };
     }
 
-    return { success: true, credits: Math.floor(Number(user.credits)) };
+    return { success: true, credits: user.credits };
   } catch (error) {
     console.log("Error fetching user credits:", error);
     return { success: false, error: "Failed to fetch credits", credits: 0 };
@@ -215,25 +296,19 @@ export async function getUserCredits() {
 
 export async function deleteAudioProject(id: string) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    const session = await auth.api.getSession({ headers: await headers() });
 
     if (!session?.user?.id) {
       return { success: false, error: "Unauthorized" };
     }
 
-    const project = await db.audioProject.findUnique({
-      where: { id },
-    });
+    const project = await db.audioProject.findUnique({ where: { id } });
 
     if (project?.userId !== session.user.id) {
       return { success: false, error: "Not found or unauthorized" };
     }
 
-    await db.audioProject.delete({
-      where: { id },
-    });
+    await db.audioProject.delete({ where: { id } });
 
     return { success: true };
   } catch (error) {
@@ -242,7 +317,7 @@ export async function deleteAudioProject(id: string) {
   }
 }
 
-export type EngineGroup = "TTS" | "Dialogue";
+export type EngineGroup = "TTS" | "Dialogue" | "all";
 
 export async function getRecentGenerations(group: EngineGroup, limit = 4) {
   try {
@@ -253,7 +328,10 @@ export async function getRecentGenerations(group: EngineGroup, limit = 4) {
     const projects = await db.audioProject.findMany({
       where: {
         userId: session.user.id,
-        name: group === "TTS" ? "TTS" : "Dialogue",
+        // "all" → no name filter
+        ...(group !== "all"
+          ? { name: group === "TTS" ? "TTS" : "Dialogue" }
+          : {}),
       },
       orderBy: { createdAt: "desc" },
       take: limit,
@@ -263,5 +341,39 @@ export async function getRecentGenerations(group: EngineGroup, limit = 4) {
   } catch (error) {
     console.error("Error fetching recent generations:", error);
     return { success: false, error: "Failed to fetch", projects: [] };
+  }
+}
+
+export async function getAudioProjectsMeta() {
+  try {
+    const session = await auth.api.getSession({ headers: await headers() });
+    if (!session?.user?.id) {
+      return { success: false, totalCount: 0, languages: [], engines: [] };
+    }
+
+    const [totalCount, allProjects] = await Promise.all([
+      db.audioProject.count({
+        where: { userId: session.user.id },
+      }),
+      db.audioProject.findMany({
+        where: { userId: session.user.id },
+        select: { language: true, engine: true }, // only fetch what we need
+      }),
+    ]);
+
+    const languages = [
+      ...new Set(
+        allProjects
+          .map((p) => p.language)
+          .filter((l): l is string => !!l && l !== "autodetect"),
+      ),
+    ];
+
+    const engines = [...new Set(allProjects.map((p) => p.engine))];
+
+    return { success: true, totalCount, languages, engines };
+  } catch (error) {
+    console.error("Error fetching audio projects meta:", error);
+    return { success: false, totalCount: 0, languages: [], engines: [] };
   }
 }

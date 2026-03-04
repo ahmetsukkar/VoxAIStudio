@@ -35,4 +35,5 @@ export interface DialogueSettings {
   model: GeminiModel;
   style: GeminiStyle;
   pace: GeminiPace;
+  language: string;   // "auto" or BCP-47 code
 }

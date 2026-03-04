@@ -48,6 +48,7 @@ export default function DialogueStudio() {
     model: "gemini-2.5-flash-preview-tts",
     style: "conversational",
     pace: "normal",
+    language: "auto",
   });
 
   const [isGenerating, setIsGenerating] = useState(false);

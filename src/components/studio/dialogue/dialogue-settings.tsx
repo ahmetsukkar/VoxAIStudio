@@ -1,6 +1,6 @@
 "use client";
 
-import { Cpu, Gauge, Info, Mic2 } from "lucide-react";
+import { Cpu, Gauge, Info, Mic2, Globe } from "lucide-react";
 import { Card, CardContent } from "~/components/ui/card";
 import { Switch } from "~/components/ui/switch";
 import { Label } from "~/components/ui/label";
@@ -11,7 +11,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import { GeminiStyles, GeminiPaces } from "~/data/GeminiOptions";
+import {
+  GeminiStyles,
+  GeminiPaces,
+  SupportedLanguages,
+} from "~/data/GeminiOptions";
 import type { DialogueSettings } from "~/types/dialogue";
 import { CREDITS_PER_CHAR } from "~/config/credits";
 import {
@@ -44,6 +48,43 @@ export default function DialogueSettingsPanel({
           <p className="text-muted-foreground text-xs">
             Applied to full dialogue
           </p>
+        </div>
+
+        {/* Language */}
+        <div className="space-y-1.5">
+          <Label className="flex items-center gap-1.5 text-xs font-medium">
+            <Globe className="h-3 w-3" /> Language
+          </Label>
+          <Select
+            value={settings.language}
+            onValueChange={(value) =>
+              onChange({ ...settings, language: value })
+            }
+          >
+            <SelectTrigger className="h-8 w-full text-xs">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="auto" className="text-xs">
+                🌐 Auto Detect
+              </SelectItem>
+              {SupportedLanguages.map((lang) => (
+                <SelectItem
+                  key={lang.code}
+                  value={lang.code}
+                  className="text-xs"
+                >
+                  <span className="flex items-center gap-2">
+                    <span
+                      className={`fi fi-${lang.countryCode} shrink-0`}
+                      style={{ fontSize: "1rem" }}
+                    />
+                    {lang.label}
+                  </span>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         {/* Model Toggle — Flash / Pro */}
