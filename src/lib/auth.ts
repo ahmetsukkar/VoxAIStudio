@@ -22,6 +22,14 @@ const polarClient = new Polar({
 
 //const prisma = new PrismaClient();
 export const auth = betterAuth({
+  session: {
+    expiresIn: 60 * 60 * 24 * 30, // 30 days
+    updateAge: 60 * 60 * 24, // refresh session once per day
+    cookieCache: {
+      enabled: true,
+      maxAge: 60 * 15, // cache for 15 minutes (in seconds)
+    },
+  },
   user: {
     deleteUser: {
       enabled: true,
@@ -34,7 +42,7 @@ export const auth = betterAuth({
     },
     useSecureCookies: true,
   },
-  trustedOrigins: [env.BETTER_AUTH_WWWURL ,env.BETTER_AUTH_URL],
+  trustedOrigins: [env.BETTER_AUTH_WWWURL, env.BETTER_AUTH_URL],
   database: prismaAdapter(db, {
     provider: "postgresql", // or "mysql", "postgresql", ...etc
   }),
