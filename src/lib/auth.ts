@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
+import { admin } from "better-auth/plugins";
 import {
   polar,
   checkout,
@@ -49,6 +48,7 @@ export const auth = betterAuth({
     },
   },
   plugins: [
+    admin(),
     polar({
       client: polarClient,
       createCustomerOnSignUp: true,

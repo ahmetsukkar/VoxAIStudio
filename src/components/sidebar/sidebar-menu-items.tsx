@@ -11,55 +11,69 @@ import { usePathname } from "next/navigation";
 import { SidebarMenuButton, SidebarMenuItem, useSidebar } from "../ui/sidebar";
 import Link from "next/link";
 import { cn } from "~/lib/utils";
+import { useEffect, useState } from "react";
+import { authClient } from "~/lib/auth-client";
 
 export default function SidebarMenuItems() {
   const path = usePathname();
   const { setOpenMobile, isMobile } = useSidebar();
+  const [isAdmin, setIsAdmin] = useState(false);
 
-  let items = [
+  useEffect(() => {
+    const checkAdmin = async () => {
+      const session = await authClient.getSession();
+      const role = (session?.data?.user as { role?: string } | undefined)?.role;
+      setIsAdmin(role === "admin");
+    };
+    void checkAdmin();
+  }, []);
+
+  const baseItems = [
     {
       title: "Dashboard",
       url: "/dashboard",
       icon: LayoutDashboard,
-      active: false,
+      adminOnly: false,
     },
     {
       title: "Studio",
       url: "/dashboard/studio",
       icon: Wand2,
-      active: false,
+      adminOnly: false,
     },
     {
       title: "Projects",
       url: "/dashboard/projects",
       icon: FolderOpen,
-      active: false,
+      adminOnly: false,
     },
     {
       title: "Create Blog Post",
       url: "/dashboard/blog/create",
       icon: Rss,
-      active: false,
+      adminOnly: true,
     },
     {
       title: "Settings",
       url: "/dashboard/settings",
       icon: Settings,
-      active: false,
+      adminOnly: false,
     },
   ];
 
-  items = items.map((item) => ({
-    ...item,
-    active: path === item.url,
-  }));
+  const items = baseItems
+    .filter((item) => !item.adminOnly || isAdmin)
+    .map((item) => ({
+      ...item,
+      active: path === item.url,
+    }));
 
   const handleMenuClick = () => {
-    // Close mobile sidebar when clicking a menu item
     if (isMobile) {
       setOpenMobile(false);
     }
   };
+
   return (
     <>
       {items.map((item) => (
