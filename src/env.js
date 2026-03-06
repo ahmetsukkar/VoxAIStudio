@@ -25,6 +25,7 @@ export const env = createEnv({
     GOOGLE_ANALYTICS_ID: z.string(),
     GOOGLE_TTS_API_KEY: z.string(),
     GEMINI_API_KEY: z.string(),
+    RESEND_API_KEY: z.string(),
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
@@ -63,7 +64,7 @@ export const env = createEnv({
     GOOGLE_ANALYTICS_ID: process.env.GOOGLE_ANALYTICS_ID,
     GOOGLE_TTS_API_KEY: process.env.GOOGLE_TTS_API_KEY,
     GEMINI_API_KEY: process.env.GEMINI_API_KEY,
-    // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
+    RESEND_API_KEY: process.env.RESEND_API_KEY,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

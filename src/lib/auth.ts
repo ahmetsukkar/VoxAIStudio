@@ -11,6 +11,9 @@ import {
 import { Polar } from "@polar-sh/sdk";
 import { env } from "~/env";
 import { db } from "~/server/db";
+import { Resend } from "resend";
+
+const resend = new Resend(String(env.RESEND_API_KEY));
 
 const polarClient = new Polar({
   accessToken: env.POLAR_ACCESS_TOKEN,
@@ -48,6 +51,23 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
+    sendResetPassword: async ({ user, url }) => {
+      await resend.emails.send({
+        from: "Vox AI Studio <noreply@voxaistudio.com>",
+        to: user.email,
+        subject: "Reset your password",
+        html: `
+          <h2>Reset your password</h2>
+          <p>Click the link below to reset your password. This link expires in 1 hour.</p>
+          <a href="${url}" 
+             style="background:#4f46e5;color:white;padding:12px 24px;
+                    border-radius:8px;text-decoration:none;display:inline-block;">
+            Reset Password
+          </a>
+          <p>If you didn't request this, you can safely ignore this email.</p>
+        `,
+      });
+    },
   },
   socialProviders: {
     google: {
