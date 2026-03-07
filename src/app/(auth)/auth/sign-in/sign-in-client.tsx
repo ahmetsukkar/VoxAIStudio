@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 "use client";
 
 import { useState, useEffect } from "react";
@@ -61,11 +58,7 @@ export default function SignInManualPage() {
       if (response.data) {
         window.location.href = "/dashboard";
       } else if (response.error) {
-        setError(
-          response.error.message
-            ? "response.error.message"
-            : "Invalid email or password",
-        );
+        setError(response.error.message ?? "Invalid email or password");
         setIsLoading(false);
       }
     } catch (err) {

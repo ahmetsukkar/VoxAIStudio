@@ -15,6 +15,7 @@ import {
 } from "~/components/ui/breadcrumb";
 import BreadcrumbPageClient from "~/components/sidebar/breadcrumb-page-client";
 import AppSidebar from "~/components/sidebar/app-sidebar";
+import VerifyEmailBanner from "~/components/dashboard/verify-email-banner";
 
 export const metadata: Metadata = {
   title: "Publish Vox AI Studio",
@@ -45,6 +46,7 @@ export default function RootLayout({
               </Breadcrumb>
             </div>
           </header>
+          <VerifyEmailBanner />
           <main id="main-scroll" className="from-background to-muted/20 flex-1 overflow-y-auto bg-gradient-to-br p-6">
             {children}
           </main>
