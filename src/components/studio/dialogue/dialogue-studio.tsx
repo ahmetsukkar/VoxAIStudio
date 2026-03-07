@@ -20,6 +20,7 @@ import RecentGenerations from "~/components/studio/recent-generations";
 import { generateDialogue } from "~/actions/tts";
 import { useCreditsStore } from "~/store/credits-store";
 import { audioManager } from "~/lib/audio/audio-manager";
+import { VerifyToGenerateModal } from "~/components/verify-to-generate-modal";
 
 export default function DialogueStudio() {
   const [speakers, setSpeakers] = useState<DialogueSpeaker[]>([
@@ -55,6 +56,7 @@ export default function DialogueStudio() {
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [showVerifyModal, setShowVerifyModal] = useState(false);
 
   const { setCredits } = useCreditsStore();
 
@@ -76,7 +78,6 @@ export default function DialogueStudio() {
     };
 
     const t1 = playAudio(audioRef.current);
-    // Only play one — desktop takes priority, mobile is hidden on lg+
     return () => {
       clearTimeout(t1);
     };
@@ -121,6 +122,11 @@ export default function DialogueStudio() {
     try {
       const result = await generateDialogue({ speakers, lines, settings });
 
+      if (result.error === "VERIFICATION_REQUIRED") {
+        setShowVerifyModal(true);
+        return;
+      }
+
       if (!result.success || !result.audioUrl) {
         throw new Error(result.error ?? "Generation failed");
       }
@@ -133,7 +139,9 @@ export default function DialogueStudio() {
 
       setRefreshTrigger((prev) => prev + 1);
 
-      document.getElementById("main-scroll")?.scrollTo({ top: 0, behavior: "smooth" });
+      document
+        .getElementById("main-scroll")
+        ?.scrollTo({ top: 0, behavior: "smooth" });
 
       toast.success("Dialogue generated successfully!");
     } catch (error) {
@@ -146,7 +154,6 @@ export default function DialogueStudio() {
     }
   };
 
-  // Shared audio element renderer
   const AudioPlayer = ({
     refProp,
   }: {
@@ -172,6 +179,9 @@ export default function DialogueStudio() {
 
   return (
     <div className="mx-auto max-w-7xl px-2 py-4 sm:px-4 sm:py-6">
+      {showVerifyModal && (
+        <VerifyToGenerateModal onClose={() => setShowVerifyModal(false)} />
+      )}
       <div className="grid grid-cols-1 gap-2 sm:gap-4 lg:grid-cols-3">
         {/* ── LEFT SIDEBAR — desktop only ── */}
         <div className="hidden space-y-2 sm:space-y-3 lg:col-span-1 lg:block">

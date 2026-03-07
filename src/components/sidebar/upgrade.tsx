@@ -1,12 +1,19 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 "use client";
 
-import { authClient } from "~/lib/auth-client";
+import { authClient, useSession } from "~/lib/auth-client";
 import { Button } from "../ui/button";
-import { Crown, AudioWaveform } from "lucide-react";
+import { Crown, AudioWaveform, Lock } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
 
 export default function Upgrade() {
+  const { data: session } = useSession();
+  const isVerified = session?.user?.emailVerified;
+
   const upgrade = async () => {
     await authClient.checkout({
       products: [
@@ -16,6 +23,34 @@ export default function Upgrade() {
       ],
     });
   };
+
+  if (!isVerified) {
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled
+                className="group relative ml-2 overflow-hidden border-muted-foreground/20 bg-muted/30 text-muted-foreground cursor-not-allowed opacity-60"
+              >
+                <div className="flex items-center gap-2">
+                  <Lock className="h-4 w-4" />
+                  <span className="font-medium">Upgrade</span>
+                </div>
+              </Button>
+            </span>
+          </TooltipTrigger>
+          <TooltipContent side="top" className="max-w-[200px] text-center text-xs">
+            Please verify your email to purchase credits
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    );
+  }
+
   return (
     <Button
       variant="outline"
@@ -28,8 +63,6 @@ export default function Upgrade() {
         <span className="font-medium">Upgrade</span>
         <AudioWaveform className="h-3 w-3 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
       </div>
-
-      {/* Subtle glow effect */}
       <div className="absolute inset-0 rounded-md bg-gradient-to-r from-orange-400/20 to-pink-500/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
     </Button>
   );

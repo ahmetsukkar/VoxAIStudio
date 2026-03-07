@@ -18,6 +18,9 @@ import type {
 } from "~/types/dialogue";
 import { detectLanguage } from "~/lib/tts/detect-language";
 
+const FREE_CREDITS_LIMIT = 5000;
+const UNVERIFIED_CREDIT_THRESHOLD = 3000; // block generation after 3000 credits used
+
 export async function generateSpeech(
   providerType: TTSProviderType,
   options: TTSOptions,
@@ -36,7 +39,7 @@ export async function generateSpeech(
     // 3. Check credits
     const user = await db.user.findUnique({
       where: { id: session.user.id },
-      select: { credits: true },
+      select: { credits: true, emailVerified: true },
     });
 
     if (!user) return { success: false, error: "User not found" };
@@ -48,20 +51,29 @@ export async function generateSpeech(
       };
     }
 
-    // 4. Generate audio
+    // 4. Verification gate — block if used more than 3000 free credits and not verified
+    const creditsUsed = FREE_CREDITS_LIMIT - user.credits;
+    if (!user.emailVerified && creditsUsed >= UNVERIFIED_CREDIT_THRESHOLD) {
+      return {
+        success: false,
+        error: "VERIFICATION_REQUIRED",
+      };
+    }
+
+    // 5. Generate audio
     const result = await provider.generateSpeech(options);
     if (!result.success || !result.audioUrl || !result.s3_key) {
       return { success: false, error: result.error ?? "Generation failed" };
     }
 
-    // 5. Deduct credits
+    // 6. Deduct credits
     const updatedUser = await db.user.update({
       where: { id: session.user.id },
       data: { credits: { decrement: creditsNeeded } },
       select: { credits: true },
     });
 
-    // 6. Save to DB
+    // 7. Save to DB
     const isGemini = providerType === "gemini";
     const chatterboxOpts = !isGemini
       ? (options as ChatterboxRequestOptions)
@@ -141,7 +153,7 @@ export async function generateDialogue({
     // 3. Credits check
     const user = await db.user.findUnique({
       where: { id: session.user.id },
-      select: { credits: true },
+      select: { credits: true, emailVerified: true },
     });
 
     if (!user) return { success: false, error: "User not found" };
@@ -152,14 +164,23 @@ export async function generateDialogue({
       };
     }
 
-    // 4. Deduct credits
+    // 4. Verification gate
+    const creditsUsed = FREE_CREDITS_LIMIT - user.credits;
+    if (!user.emailVerified && creditsUsed >= UNVERIFIED_CREDIT_THRESHOLD) {
+      return {
+        success: false,
+        error: "VERIFICATION_REQUIRED",
+      };
+    }
+
+    // 5. Deduct credits
     const updatedUser = await db.user.update({
       where: { id: session.user.id },
       data: { credits: { decrement: creditsNeeded } },
       select: { credits: true },
     });
 
-    // 5. Save to DB
+    // 6. Save to DB
     await db.audioProject.create({
       data: {
         text: result.fullText,

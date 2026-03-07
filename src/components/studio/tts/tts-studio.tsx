@@ -16,6 +16,7 @@ import TextInput from "~/components/studio/tts/text-input";
 import RecentGenerations from "~/components/studio/recent-generations";
 import { GeminiVoices } from "~/data/GeminiOptions";
 import { useCreditsStore } from "~/store/credits-store";
+import { VerifyToGenerateModal } from "~/components/verify-to-generate-modal";
 
 export default function TTSStudio() {
   const [isLoading, setIsLoading] = useState(true);
@@ -28,6 +29,7 @@ export default function TTSStudio() {
     [],
   );
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [showVerifyModal, setShowVerifyModal] = useState(false);
 
   const [engineOptions, setEngineOptions] = useState<EngineOptionsMap>({
     chatterbox: {
@@ -120,6 +122,11 @@ export default function TTSStudio() {
             },
       );
 
+      if (result.error === "VERIFICATION_REQUIRED") {
+        setShowVerifyModal(true);
+        return;
+      }
+
       if (!result.success || !result.audioUrl || !result.s3_key) {
         throw new Error(result.error ?? "Generation failed");
       }
@@ -169,6 +176,9 @@ export default function TTSStudio() {
 
   return (
     <div className="mx-auto max-w-7xl px-2 py-4 sm:px-4 sm:py-6">
+      {showVerifyModal && (
+        <VerifyToGenerateModal onClose={() => setShowVerifyModal(false)} />
+      )}
       <div className="grid grid-cols-1 gap-2 sm:gap-4 lg:grid-cols-3">
         {/* Left — Settings */}
         <div className="order-2 space-y-2 sm:space-y-3 lg:order-1 lg:col-span-1">
