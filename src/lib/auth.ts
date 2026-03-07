@@ -11,9 +11,12 @@ import {
 import { Polar } from "@polar-sh/sdk";
 import { env } from "~/env";
 import { db } from "~/server/db";
-import { Resend } from "resend";
-
-const resend = new Resend(String(env.RESEND_API_KEY));
+import {
+  sendVerificationEmail,
+  sendResetPasswordEmail,
+} from "~/lib/email/send-email";
+import { verifyEmailTemplate } from "~/lib/email/templates/verify-email";
+import { resetPasswordTemplate } from "~/lib/email/templates/reset-password";
 
 const polarClient = new Polar({
   accessToken: env.POLAR_ACCESS_TOKEN,
@@ -23,7 +26,6 @@ const polarClient = new Polar({
   server: "sandbox",
 });
 
-//const prisma = new PrismaClient();
 export const auth = betterAuth({
   session: {
     expiresIn: 60 * 60 * 24 * 30, // 30 days
@@ -47,7 +49,7 @@ export const auth = betterAuth({
   },
   trustedOrigins: [env.BETTER_AUTH_WWWURL, env.BETTER_AUTH_URL],
   database: prismaAdapter(db, {
-    provider: "postgresql", // or "mysql", "postgresql", ...etc
+    provider: "postgresql",
   }),
   emailAndPassword: {
     enabled: true,
@@ -60,27 +62,8 @@ export const auth = betterAuth({
       url: string;
     }) => {
       try {
-        await resend.emails.send({
-          from: "Vox AI Studio <noreply@voxaistudio.com>",
-          to: user.email,
-          subject: "Reset your Vox AI Studio password",
-          html: `
-          <div style="font-family:sans-serif;max-width:480px;margin:auto;padding:24px;">
-            <h2 style="color:#4f46e5;">Reset your password 🔐</h2>
-            <p>Hi ${user.name ?? "there"},</p>
-            <p>We received a request to reset your password. Click below to choose a new one.</p>
-            <a href="${url}"
-               style="display:inline-block;background:#4f46e5;color:white;
-                      padding:12px 24px;border-radius:8px;text-decoration:none;
-                      font-weight:bold;margin:16px 0;">
-              Reset Password
-            </a>
-            <p style="color:#888;font-size:13px;">
-              This link expires in 1 hour. If you didn't request this, ignore this email.
-            </p>
-          </div>
-        `,
-        });
+        const html = resetPasswordTemplate(user.name ?? "there", url);
+        await sendResetPasswordEmail(user, url, html);
       } catch (error) {
         console.error("Failed to send reset password email:", error);
       }
@@ -97,27 +80,8 @@ export const auth = betterAuth({
       url: string;
     }) => {
       try {
-        await resend.emails.send({
-          from: "Vox AI Studio <noreply@voxaistudio.com>",
-          to: user.email,
-          subject: "Verify your Vox AI Studio email",
-          html: `
-          <div style="font-family:sans-serif;max-width:480px;margin:auto;padding:24px;">
-            <h2 style="color:#4f46e5;">Verify your email ✉️</h2>
-            <p>Hi ${user.name ?? "there"},</p>
-            <p>Thanks for signing up to Vox AI Studio! Please verify your email to secure your account.</p>
-            <a href="${url}"
-               style="display:inline-block;background:#4f46e5;color:white;
-                      padding:12px 24px;border-radius:8px;text-decoration:none;
-                      font-weight:bold;margin:16px 0;">
-              Verify Email
-            </a>
-            <p style="color:#888;font-size:13px;">
-              If you didn't create an account, you can safely ignore this email.
-            </p>
-          </div>
-        `,
-        });
+        const html = verifyEmailTemplate(user.name ?? "there", url);
+        await sendVerificationEmail(user, url, html);
       } catch (error) {
         console.error("Failed to send verification email:", error);
       }
@@ -167,7 +131,7 @@ export const auth = betterAuth({
             }
 
             const productId = order.data.productId;
-
+            
             let creditsToAdd = 0;
 
             switch (productId) {
