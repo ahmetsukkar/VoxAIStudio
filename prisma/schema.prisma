@@ -19,6 +19,12 @@ model User {
     createdAt     DateTime  @default(now())
     updatedAt     DateTime  @updatedAt
     role          String    @default("user")
+
+    // These three fields for admin() plugin
+    banned        Boolean?  @default(false)
+    banReason     String?
+    banExpires    DateTime?
+
     sessions      Session[]
     accounts      Account[]
     credits       Int       @default(5000)
