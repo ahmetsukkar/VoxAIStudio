@@ -66,7 +66,7 @@ export default function RecentGenerations({
 
   const headerSub =
     group === "Dialogue"
-      ? "Your dialogue generation history"
+      ? "Your multi-speaker generation history"
       : group === "TTS"
         ? "Your speech generation history"
         : "Your latest generated audio";
@@ -79,7 +79,7 @@ export default function RecentGenerations({
       <h3 className="mb-2 text-lg font-semibold">No audio projects yet</h3>
       <p className="text-muted-foreground mb-4 text-sm">
         {group === "Dialogue"
-          ? "Start by creating your first dialogue"
+          ? "Start by creating your first multi-speaker audio"
           : "Start generating speech with AI voice cloning"}
       </p>
       <Button
@@ -272,7 +272,7 @@ export default function RecentGenerations({
               <h3 className="text-xl font-bold text-gray-900">No generations yet</h3>
               <p className="text-muted-foreground mx-auto max-w-md text-lg leading-relaxed">
                 {group === "Dialogue"
-                  ? "Start by creating your first dialogue"
+                  ? "Start by creating your first multi-speaker audio"
                   : "Start by entering some text and generating your first speech"}
               </p>
             </div>

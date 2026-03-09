@@ -296,6 +296,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
       <section
         id="pricing"
         className="bg-gradient-to-br from-slate-50 to-indigo-50/50 py-20 sm:py-32"
@@ -303,60 +304,204 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto mb-16 max-w-2xl text-center">
             <h2 className="text-3xl font-bold tracking-tight text-slate-800 sm:text-4xl">
-              Create with Vox AI Studio{" "}
+              Simple, Transparent{" "}
               <span className="bg-gradient-to-r from-indigo-600 to-cyan-600 bg-clip-text text-transparent">
-                Free to Start.
+                Pricing
               </span>
             </h2>
             <p className="mt-4 text-lg text-slate-600">
-              No card needed. Turn your text into speech in seconds.
+              Start free. Scale as you grow. No hidden fees.
             </p>
           </div>
-          <div className="mx-auto max-w-lg">
-            <Card className="relative overflow-hidden border-2 border-indigo-300 bg-white/70 backdrop-blur-sm">
-              <div className="absolute top-0 right-0 bg-gradient-to-r from-indigo-500 to-cyan-600 px-4 py-1 text-sm font-medium text-white">
-                Get Started Free
-              </div>
-              <CardContent className="p-8">
-                <div className="mb-8 text-center">
-                  <h3 className="text-2xl font-bold text-slate-800">
-                    Starter (Free)
+
+          <div className="grid items-stretch gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {/* ── FREE TRIAL ── */}
+            <Card className="relative flex flex-col overflow-hidden border-slate-200 bg-white/70 backdrop-blur-sm">
+              <CardContent className="flex flex-1 flex-col p-6">
+                <div>
+                  <h3 className="text-xl font-bold text-slate-800">
+                    Free Trial
                   </h3>
-                  <div className="mt-4 flex items-baseline justify-center">
-                    <span className="text-5xl font-bold text-slate-800">
+                  <div className="mt-3 flex items-baseline gap-1">
+                    <span className="text-4xl font-bold text-slate-800">
                       $0
                     </span>
-                    <span className="ml-2 text-slate-600">to begin</span>
                   </div>
-                  <p className="mt-2 text-slate-600">
-                    Explore the full toolkit using free credits.
+                  <p className="mt-1 text-sm text-slate-500">
+                    7-day trial · No card needed
                   </p>
+                  <ul className="mt-6 space-y-3">
+                    {[
+                      "10,000 credits included",
+                      "Flash voice only",
+                      "Single-speaker (no multi-speaker)",
+                      "Max 1,500 chars / request",
+                      "Expires after 7 days",
+                    ].map((f) => (
+                      <li
+                        key={f}
+                        className="flex items-start gap-2 text-sm text-slate-700"
+                      >
+                        <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-emerald-500" />
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <ul className="mb-8 space-y-4">
-                  {pricingFeatures.map((feature, index) => (
-                    <li key={index} className="flex items-center gap-3">
-                      <CheckCircle2 className="h-5 w-5 flex-shrink-0 text-emerald-500" />
-                      <span className="text-sm text-slate-700">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-                <Link href="/dashboard">
-                  <Button
-                    className="w-full cursor-pointer gap-2 bg-gradient-to-r from-indigo-500 to-cyan-600 hover:from-indigo-600 hover:to-cyan-700"
-                    size="lg"
-                  >
-                    <AudioWaveform className="h-4 w-4" />
-                    Start Free Today
-                  </Button>
-                  <p className="mt-4 text-center text-xs text-slate-500">
-                    Includes 25 free credits - No credit card required
+                <div className="mt-auto pt-8">
+                  <Link href="/dashboard">
+                    <Button
+                      variant="outline"
+                      className="w-full cursor-pointer"
+                      size="lg"
+                    >
+                      Try for Free
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* ── START ── */}
+            <Card className="relative flex flex-col overflow-hidden border-slate-200 bg-white/70 backdrop-blur-sm">
+              <CardContent className="flex flex-1 flex-col p-6">
+                <div>
+                  <h3 className="text-xl font-bold text-slate-800">Start</h3>
+                  <div className="mt-3 flex items-baseline gap-1">
+                    <span className="text-4xl font-bold text-slate-800">
+                      $7
+                    </span>
+                  </div>
+                  <p className="mt-1 text-sm text-slate-500">
+                    Light users · Credits never expire
                   </p>
-                </Link>
+                  <ul className="mt-6 space-y-3">
+                    {[
+                      "40,000 credits",
+                      "All voices (Flash + Pro)",
+                      "Multi-speaker enabled",
+                      "No character limit per request",
+                      "Credits never expire",
+                    ].map((f) => (
+                      <li
+                        key={f}
+                        className="flex items-start gap-2 text-sm text-slate-700"
+                      >
+                        <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-emerald-500" />
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="mt-auto pt-8">
+                  <Link href="/api/auth/checkout?slug=start">
+                    <Button
+                      className="w-full cursor-pointer bg-gradient-to-r from-indigo-500 to-cyan-600 hover:from-indigo-600 hover:to-cyan-700"
+                      size="lg"
+                    >
+                      Get Started
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* ── CREATOR (Most Popular) ── */}
+            <Card className="relative flex flex-col overflow-hidden border-2 border-indigo-400 bg-white/70 shadow-lg backdrop-blur-sm">
+              <div className="absolute top-0 right-0 bg-gradient-to-r from-indigo-500 to-cyan-600 px-3 py-1 text-xs font-semibold text-white">
+                Most Popular
+              </div>
+              <CardContent className="flex flex-1 flex-col p-6">
+                <div>
+                  <h3 className="text-xl font-bold text-slate-800">Creator</h3>
+                  <div className="mt-3 flex items-baseline gap-1">
+                    <span className="text-4xl font-bold text-slate-800">
+                      $19
+                    </span>
+                  </div>
+                  <p className="mt-1 text-sm text-slate-500">
+                    Regular creators · Credits never expire
+                  </p>
+                  <ul className="mt-6 space-y-3">
+                    {[
+                      "125,000 credits",
+                      "All voices (Flash + Pro)",
+                      "Multi-speaker enabled",
+                      "All features included",
+                      "Credits never expire",
+                    ].map((f) => (
+                      <li
+                        key={f}
+                        className="flex items-start gap-2 text-sm text-slate-700"
+                      >
+                        <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-emerald-500" />
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="mt-auto pt-8">
+                  <Link href="/api/auth/checkout?slug=creator">
+                    <Button
+                      className="w-full cursor-pointer bg-gradient-to-r from-indigo-500 to-cyan-600 hover:from-indigo-600 hover:to-cyan-700"
+                      size="lg"
+                    >
+                      Get Creator
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* ── PRO ── */}
+            <Card className="relative flex flex-col overflow-hidden border-slate-200 bg-white/70 backdrop-blur-sm">
+              <CardContent className="flex flex-1 flex-col p-6">
+                <div>
+                  <h3 className="text-xl font-bold text-slate-800">Pro</h3>
+                  <div className="mt-3 flex items-baseline gap-1">
+                    <span className="text-4xl font-bold text-slate-800">
+                      $59
+                    </span>
+                  </div>
+                  <p className="mt-1 text-sm text-slate-500">
+                    Agencies &amp; heavy users · Credits never expire
+                  </p>
+                  <ul className="mt-6 space-y-3">
+                    {[
+                      "400,000 credits",
+                      "All voices (Flash + Pro)",
+                      "Multi-speaker enabled",
+                      "All features included",
+                      "Priority queue",
+                      "Credits never expire",
+                    ].map((f) => (
+                      <li
+                        key={f}
+                        className="flex items-start gap-2 text-sm text-slate-700"
+                      >
+                        <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-emerald-500" />
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="mt-auto pt-8">
+                  <Link href="/api/auth/checkout?slug=pro">
+                    <Button
+                      className="w-full cursor-pointer bg-gradient-to-r from-indigo-500 to-cyan-600 hover:from-indigo-600 hover:to-cyan-700"
+                      size="lg"
+                    >
+                      Get Pro
+                    </Button>
+                  </Link>
+                </div>
               </CardContent>
             </Card>
           </div>
+          {/* Credit note removed from homepage — see FAQ for details */}
         </div>
       </section>
+
       <section className="bg-gradient-to-r from-indigo-100/70 to-cyan-100/70 py-20 sm:py-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">

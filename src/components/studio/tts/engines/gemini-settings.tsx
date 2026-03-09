@@ -1,6 +1,15 @@
 "use client";
 
-import { Cpu, Smile, Volume2, Timer, Mic2, Info, Globe } from "lucide-react";
+import {
+  Cpu,
+  Smile,
+  Volume2,
+  Timer,
+  Mic2,
+  Info,
+  Globe,
+  Lock,
+} from "lucide-react";
 import { Label } from "~/components/ui/label";
 import { Switch } from "~/components/ui/switch";
 import {
@@ -15,6 +24,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
 import {
   SupportedLanguages,
   GeminiEmotions,
@@ -31,11 +46,13 @@ import { CREDITS_PER_CHAR } from "~/config/credits";
 interface GeminiSettingsProps {
   options: GeminiOptions;
   setOptions: (options: GeminiOptions) => void;
+  isTrialTier?: boolean;
 }
 
 export default function GeminiSettings({
   options,
   setOptions,
+  isTrialTier = false,
 }: GeminiSettingsProps) {
   const isPro = options.model === "gemini-2.5-pro-preview-tts";
 
@@ -110,37 +127,60 @@ export default function GeminiSettings({
           </Popover>
         </Label>
 
-        <div className="flex items-center justify-between rounded-md border px-3 py-2">
-          <div className="space-y-0.5">
-            <p className="text-xs font-semibold">
-              {options.model === "gemini-2.5-flash-preview-tts"
-                ? "Flash — Recommended"
-                : "Pro — Long-form Content"}
-            </p>
-            <p className="text-muted-foreground text-xs">
-              {isPro
-                ? "Better for audiobooks & speeches"
-                : "Best for dialogues & short lines"}
-              <br />
-              {isPro
-                ? `(${CREDITS_PER_CHAR.geminiProTTS} credits / char)`
-                : `(${CREDITS_PER_CHAR.geminiFlashTTS} credits / char)`}
-            </p>
-          </div>
-          <Switch
-            checked={options.model === "gemini-2.5-pro-preview-tts"}
-            onCheckedChange={(checked) =>
-              setOptions({
-                ...options,
-                model: checked
-                  ? "gemini-2.5-pro-preview-tts"
-                  : "gemini-2.5-flash-preview-tts",
-              })
-            }
-          />
-        </div>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div
+                className={`flex items-center justify-between rounded-md border px-3 py-2 ${
+                  isTrialTier ? "cursor-not-allowed opacity-60" : ""
+                }`}
+              >
+                <div className="space-y-0.5">
+                  <p className="flex items-center gap-1.5 text-xs font-semibold">
+                    {isPro ? "Pro — Long-form Content" : "Flash — Recommended"}
+                    {isTrialTier && <Lock className="h-3 w-3 text-amber-500" />}
+                  </p>
+                  <p className="text-muted-foreground text-xs">
+                    {isPro
+                      ? "Better for audiobooks & speeches"
+                      : "Best for dialogues & short lines"}
+                    <br />
+                    {isPro
+                      ? `(${CREDITS_PER_CHAR.geminiProTTS} credits / char)`
+                      : `(${CREDITS_PER_CHAR.geminiFlashTTS} credits / char)`}
+                    {isTrialTier && (
+                      <span className="ml-1 text-amber-600">(Free Trial)</span>
+                    )}
+                  </p>
+                </div>
+                <Switch
+                  checked={isPro}
+                  disabled={isTrialTier}
+                  onCheckedChange={(checked) => {
+                    if (isTrialTier) return;
+                    setOptions({
+                      ...options,
+                      model: checked
+                        ? "gemini-2.5-pro-preview-tts"
+                        : "gemini-2.5-flash-preview-tts",
+                    });
+                  }}
+                />
+              </div>
+            </TooltipTrigger>
+            {isTrialTier && (
+              <TooltipContent
+                side="right"
+                className="max-w-[200px] text-center text-xs"
+              >
+                Pro voice is only available on paid plans. Upgrade to unlock it.
+              </TooltipContent>
+            )}
+          </Tooltip>
+        </TooltipProvider>
       </div>
 
+      {/* Emotion */}
       <div className="space-y-1.5">
         <Label className="flex items-center gap-1.5 text-xs font-medium">
           <Smile className="h-3 w-3" /> Emotion
@@ -168,6 +208,7 @@ export default function GeminiSettings({
         </Select>
       </div>
 
+      {/* Voice */}
       <div className="space-y-1.5">
         <Label className="flex items-center gap-1.5 text-xs font-medium">
           <Mic2 className="h-3 w-3" /> Voice

@@ -17,6 +17,7 @@ import RecentGenerations from "~/components/studio/recent-generations";
 import { GeminiVoices } from "~/data/GeminiOptions";
 import { useCreditsStore } from "~/store/credits-store";
 import { VerifyToGenerateModal } from "~/components/verify-to-generate-modal";
+import { TrialExpiredModal } from "~/components/trial-expired-modal";
 
 export default function TTSStudio() {
   const [isLoading, setIsLoading] = useState(true);
@@ -30,6 +31,7 @@ export default function TTSStudio() {
   );
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [showVerifyModal, setShowVerifyModal] = useState(false);
+  const [showTrialExpiredModal, setShowTrialExpiredModal] = useState(false);
 
   const [engineOptions, setEngineOptions] = useState<EngineOptionsMap>({
     chatterbox: {
@@ -127,6 +129,11 @@ export default function TTSStudio() {
         return;
       }
 
+      if (result.error === "TRIAL_EXPIRED") {
+        setShowTrialExpiredModal(true);
+        return;
+      }
+
       if (!result.success || !result.audioUrl || !result.s3_key) {
         throw new Error(result.error ?? "Generation failed");
       }
@@ -178,6 +185,9 @@ export default function TTSStudio() {
     <div className="mx-auto max-w-7xl px-2 py-4 sm:px-4 sm:py-6">
       {showVerifyModal && (
         <VerifyToGenerateModal onClose={() => setShowVerifyModal(false)} />
+      )}
+      {showTrialExpiredModal && (
+        <TrialExpiredModal onClose={() => setShowTrialExpiredModal(false)} />
       )}
       <div className="grid grid-cols-1 gap-2 sm:gap-4 lg:grid-cols-3">
         {/* Left — Settings */}

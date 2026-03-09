@@ -3,20 +3,13 @@
 import { Settings, Loader2 } from "lucide-react";
 import { Card, CardContent } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
-import { Label } from "~/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select";
 import type { Language, VoiceFile, UploadedVoice } from "~/types/tts";
 import { type TTSProviderType } from "~/actions/tts/tts-factory";
 import ChatterboxSettings from "./engines/chatterbox-settings";
 import GeminiSettings from "./engines/gemini-settings";
 import type { EngineOptionsMap } from "~/types/engines";
 import { calcTTSCredits } from "~/lib/credits/calculate";
+import { usePlanStore } from "~/store/plan-store"; // ← add
 
 interface SpeechSettingsProps {
   languages: Language[];
@@ -45,6 +38,7 @@ export default function SpeechSettings({
   isGenerating,
   onGenerate,
 }: SpeechSettingsProps) {
+  const isTrialTier = usePlanStore((s) => s.isTrialTier) ?? false; // ← add
   const creditsNeeded = calcTTSCredits(
     selectedEngine,
     text,
@@ -108,6 +102,7 @@ export default function SpeechSettings({
               setOptions={(updated) =>
                 setEngineOptions({ ...engineOptions, gemini: updated })
               }
+              isTrialTier={isTrialTier} // ← pass it down
             />
           )}
 

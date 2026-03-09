@@ -20,11 +20,16 @@ import { resetPasswordTemplate } from "~/lib/email/templates/reset-password";
 
 const polarClient = new Polar({
   accessToken: env.POLAR_ACCESS_TOKEN,
-  // Use 'sandbox' if you're using the Polar Sandbox environment
-  // Remember that access tokens, products, etc. are completely separated between environments.
-  // Access tokens obtained in Production are for instance not usable in the Sandbox environment.
-  server: "sandbox",
+  server: "production",
 });
+
+const PLAN_CREDITS: Record<string, number> = {
+  "REPLACE_WITH_PROD_ID_START":   40_000,
+  "REPLACE_WITH_PROD_ID_CREATOR": 125_000,
+  "REPLACE_WITH_PROD_ID_PRO":     400_000,
+};
+
+const FREE_TRIAL_DAYS = 7;
 
 export const auth = betterAuth({
   session: {
@@ -42,13 +47,13 @@ export const auth = betterAuth({
   },
   baseURL: env.BETTER_AUTH_URL,
   advanced: {
-    crossSubDomainCookies: {
+    crossSubDomainCookies: { 
       enabled: true,
-    },
+     },
     useSecureCookies: true,
   },
   trustedOrigins: [env.BETTER_AUTH_WWWURL, env.BETTER_AUTH_URL],
-  database: prismaAdapter(db, {
+  database: prismaAdapter(db, { 
     provider: "postgresql",
   }),
   emailAndPassword: {
@@ -87,11 +92,25 @@ export const auth = betterAuth({
       }
     },
   },
-
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    },
+  },
+  databaseHooks: {
+    user: {
+      create: {
+        after: async (user) => {
+          // Set trial expiry for every new sign-up
+          const trialExpiresAt = new Date();
+          trialExpiresAt.setDate(trialExpiresAt.getDate() + FREE_TRIAL_DAYS);
+          await db.user.update({
+            where: { id: user.id },
+            data: { trialExpiresAt },
+          });
+        },
+      },
     },
   },
   plugins: [
@@ -102,17 +121,17 @@ export const auth = betterAuth({
       use: [
         checkout({
           products: [
-            {
-              productId: "b3e419e7-3a7e-4c06-8859-fb4d03ef99ec",
-              slug: "starter-plan",
+            { 
+              productId: "REPLACE_WITH_PROD_ID_START",  
+              slug: "start",
             },
-            {
-              productId: "a17bb07f-8d75-46fe-9b18-04ae2ea46474",
-              slug: "professional-creator",
+            { 
+              productId: "REPLACE_WITH_PROD_ID_CREATOR", 
+              slug: "creator",
             },
-            {
-              productId: "faf28a2b-eee3-4091-85b0-d3565552db7e",
-              slug: "agency-enterprise",
+            { 
+              productId: "REPLACE_WITH_PROD_ID_PRO",
+              slug: "pro",
             },
           ],
           successUrl: "/dashboard",
@@ -124,26 +143,20 @@ export const auth = betterAuth({
           secret: env.POLAR_WEBHOOK_SECRET,
           onOrderPaid: async (order) => {
             const externalCustomerId = order.data.customer.externalId;
-
             if (!externalCustomerId) {
               console.error("No external customer ID found.");
               throw new Error("No external customer id found.");
             }
 
             const productId = order.data.productId;
-            
-            let creditsToAdd = 0;
-
-            switch (productId) {
-              case "b3e419e7-3a7e-4c06-8859-fb4d03ef99ec":
-                creditsToAdd = 10000;
-                break;
-              case "a17bb07f-8d75-46fe-9b18-04ae2ea46474":
-                creditsToAdd = 40000;
-                break;
-              case "faf28a2b-eee3-4091-85b0-d3565552db7e":
-                creditsToAdd = 120000;
-                break;
+             if (!productId) {
+              console.error("No product ID found in order data.");
+              throw new Error("No product id found in order data.");
+            }
+            const creditsToAdd = PLAN_CREDITS[productId] ?? 0;
+            if (creditsToAdd === 0) {
+              console.warn(`Unknown productId in onOrderPaid: ${productId}`);
+              return;
             }
 
             await db.user.update({
@@ -152,6 +165,8 @@ export const auth = betterAuth({
                 credits: {
                   increment: creditsToAdd,
                 },
+                // Clear trial expiry when user upgrades to a paid plan
+                trialExpiresAt: null,
               },
             });
           },

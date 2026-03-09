@@ -9,8 +9,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import type { DialogueLine, DialogueSpeaker, SpeakerId } from "~/types/dialogue";
+import type {
+  DialogueLine,
+  DialogueSpeaker,
+  SpeakerId,
+} from "~/types/dialogue";
 import { speakerColors } from "~/types/dialogue";
+import { MAX_CHARS_PER_DIALOGUE_LINE } from "~/config/credits";
 
 interface DialogueLineItemProps {
   line: DialogueLine;
@@ -19,8 +24,6 @@ interface DialogueLineItemProps {
   onChange: (updated: DialogueLine) => void;
   onDelete: () => void;
 }
-
-const MAX_LINE_CHARS = 500;
 
 export default function DialogueLineItem({
   line,
@@ -31,8 +34,7 @@ export default function DialogueLineItem({
 }: DialogueLineItemProps) {
   const speaker = speakers.find((s) => s.id === line.speakerId);
   const avatarColor = speaker ? speakerColors[speaker.color].bg : "bg-gray-400";
-  const charsLeft = MAX_LINE_CHARS - line.text.length;
-  const isNearLimit = charsLeft <= 50;
+  const isNearLimit = line.text.length >= MAX_CHARS_PER_DIALOGUE_LINE * 0.9;
 
   return (
     <div className="flex gap-3">
@@ -77,23 +79,22 @@ export default function DialogueLineItem({
           )}
         </div>
 
-        {/* Text area */}
+        {/* Text area — no maxLength so user can type freely; total is checked at submit */}
         <textarea
           value={line.text}
           onChange={(e) => onChange({ ...line, text: e.target.value })}
           rows={2}
-          maxLength={MAX_LINE_CHARS}
-          placeholder="Enter dialogue text..."
+          placeholder="Enter dialogue text…"
           className="border-input bg-background w-full rounded-md border px-3 py-2 text-sm focus:outline-none"
         />
 
-        {/* Character counter */}
+        {/* Per-line counter — soft guidance only */}
         <p
           className={`text-right text-xs ${
             isNearLimit ? "text-orange-500" : "text-muted-foreground"
           }`}
         >
-          {line.text.length} / {MAX_LINE_CHARS}
+          {line.text.length} / {MAX_CHARS_PER_DIALOGUE_LINE}
         </p>
       </div>
     </div>

@@ -81,13 +81,10 @@ export function verifyEmailTemplate(name: string, url: string): string {
                       What you get
                     </p>
                     <p style="margin:0 0 8px;font-size:14px;color:#374151;">
-                      🎙️ &nbsp;<strong>5,000 free credits</strong> to start generating voices
+                      🎙️ &nbsp;<strong>10,000 free credits</strong> to start generating voices
                     </p>
                     <p style="margin:0 0 8px;font-size:14px;color:#374151;">
                       🌍 &nbsp;Multi-language AI voiceover support
-                    </p>
-                    <p style="margin:0;font-size:14px;color:#374151;">
-                      🎭 &nbsp;Dialogue studio with multiple speakers
                     </p>
                   </td>
                 </tr>

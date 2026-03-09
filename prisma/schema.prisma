@@ -27,7 +27,8 @@ model User {
 
     sessions      Session[]
     accounts      Account[]
-    credits       Int       @default(5000)
+    credits       Int       @default(10000)
+    trialExpiresAt DateTime? // Set on sign-up for Free Trial users; null = paid plan
     audioProjects AudioProject[]
     uploadedVoices UploadedVoice[]
     blogPosts     BlogPost[]
