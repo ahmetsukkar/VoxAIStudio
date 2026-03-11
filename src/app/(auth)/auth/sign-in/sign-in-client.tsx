@@ -14,6 +14,10 @@ export default function SignInManualPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const searchParams = useSearchParams();
+  const redirectToPricing = searchParams.get("upgrade") === "true";
+  const postSignInUrl = redirectToPricing
+    ? "/dashboard?upgrade=true"
+    : "/dashboard";
 
   useEffect(() => {
     const errorParam = searchParams.get("error");
@@ -33,7 +37,9 @@ export default function SignInManualPage() {
     try {
       await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/auth/callback",
+        callbackURL: redirectToPricing
+          ? "/auth/callback?upgrade=true"
+          : "/auth/callback",
         requestSignUp: true,
       });
     } catch (err) {
@@ -50,13 +56,9 @@ export default function SignInManualPage() {
     setError("");
 
     try {
-      const response = await authClient.signIn.email({
-        email,
-        password,
-      });
-
+      const response = await authClient.signIn.email({ email, password });
       if (response.data) {
-        window.location.href = "/dashboard";
+        window.location.href = postSignInUrl;
       } else if (response.error) {
         setError(response.error.message ?? "Invalid email or password");
         setIsLoading(false);
@@ -73,7 +75,11 @@ export default function SignInManualPage() {
       <div className="w-full max-w-md space-y-6">
         <div className="space-y-2 text-center">
           <h1 className="text-3xl font-bold">Welcome Back</h1>
-          <p className="text-muted-foreground">Sign in to your account</p>
+          <p className="text-muted-foreground">
+            {redirectToPricing
+              ? "Sign in to continue to your plan"
+              : "Sign in to your account"}
+          </p>
         </div>
 
         <div className="bg-card rounded-lg border p-6 shadow-sm">
@@ -84,7 +90,11 @@ export default function SignInManualPage() {
               </p>
               {error.includes("No account found") && (
                 <Link
-                  href="/auth/sign-up"
+                  href={
+                    redirectToPricing
+                      ? "/auth/sign-up?upgrade=true"
+                      : "/auth/sign-up"
+                  }
                   className="text-primary inline-flex items-center gap-1 text-sm font-medium hover:underline"
                 >
                   Create an account now →
@@ -171,7 +181,6 @@ export default function SignInManualPage() {
                 disabled={isLoading}
               />
             </div>
-
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? "Signing in..." : "Sign In"}
             </Button>
@@ -179,7 +188,14 @@ export default function SignInManualPage() {
 
           <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{" "}
-            <Link href="/auth/sign-up" className="text-primary hover:underline">
+            <Link
+              href={
+                redirectToPricing
+                  ? "/auth/sign-up?upgrade=true"
+                  : "/auth/sign-up"
+              }
+              className="text-primary hover:underline"
+            >
               Sign up
             </Link>
           </div>

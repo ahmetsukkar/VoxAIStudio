@@ -2,10 +2,15 @@
 
 import { useEffect } from "react";
 import { authClient } from "~/lib/auth-client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function AuthCallbackPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectToPricing = searchParams.get("upgrade") === "true";
+  const postAuthUrl = redirectToPricing
+    ? "/dashboard?upgrade=true"
+    : "/dashboard";
 
   useEffect(() => {
     const handleCallback = async () => {
@@ -31,15 +36,10 @@ export default function AuthCallbackPage() {
 
           if (accountAgeInSeconds < 10) {
             console.log("New account detected - deleting user");
-
             try {
-              //await authClient.deleteUser(user);
-
               const response = await fetch("/api/auth/delete-user", {
                 method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ userId: user.id }),
               });
 
@@ -48,10 +48,8 @@ export default function AuthCallbackPage() {
               } else {
                 console.error("Failed to delete user");
               }
-
             } catch (deleteError) {
               console.error("Error deleting user:", deleteError);
-
               await authClient.signOut();
             }
 
@@ -61,7 +59,7 @@ export default function AuthCallbackPage() {
         }
 
         console.log("Existing user - redirecting to dashboard");
-        router.push("/dashboard");
+        router.push(postAuthUrl);
       } catch (err) {
         console.error("Callback error:", err);
         router.push("/auth/sign-in?error=auth-failed");
@@ -69,7 +67,6 @@ export default function AuthCallbackPage() {
     };
 
     handleCallback();
-    
   }, [router]);
 
   return (

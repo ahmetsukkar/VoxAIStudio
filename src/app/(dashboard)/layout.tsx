@@ -16,6 +16,7 @@ import {
 import BreadcrumbPageClient from "~/components/sidebar/breadcrumb-page-client";
 import AppSidebar from "~/components/sidebar/app-sidebar";
 import VerifyEmailBanner from "~/components/dashboard/verify-email-banner";
+import UpgradeModalTrigger from "~/components/upgrade-modal-trigger";
 
 export const metadata: Metadata = {
   title: "Publish Vox AI Studio",
@@ -53,6 +54,7 @@ export default function RootLayout({
         </SidebarInset>
       </SidebarProvider>
       <Toaster />
+      <UpgradeModalTrigger />
     </Providers>
   );
 }
