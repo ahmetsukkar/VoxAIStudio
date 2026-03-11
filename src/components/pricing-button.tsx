@@ -1,10 +1,17 @@
 "use client";
 
-import { useSession } from "~/lib/auth-client";
+import { authClient, useSession } from "~/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { Button } from "~/components/ui/button";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+
+// Replace these with your actual Polar sandbox Product IDs
+const PRODUCT_IDS = {
+  start: "98eca73c-5de0-4a22-9d46-264554e2326c",
+  creator: "c9dac2c1-aa44-4378-90fb-fc845e347493",
+  pro: "b0054483-c856-4415-8915-4bda36c3e86d",
+};
 
 type Props = {
   slug: "start" | "creator" | "pro";
@@ -19,13 +26,14 @@ export default function PricingButton({ slug, label, className }: Props) {
 
   const handleClick = async () => {
     if (!session?.user) {
-      // Not logged in → send to sign-in, come back after
       router.push(`/sign-in?callbackURL=/api/auth/checkout?slug=${slug}`);
       return;
     }
     setLoading(true);
-    // Logged in → go directly to Polar checkout for this plan only
-    router.push(`/api/auth/checkout?slug=${slug}`);
+    await authClient.checkout({
+      products: [PRODUCT_IDS[slug]], // ← only ONE product ID for this plan
+    });
+    setLoading(false);
   };
 
   return (
@@ -35,7 +43,7 @@ export default function PricingButton({ slug, label, className }: Props) {
       size="lg"
       className={className}
     >
-      {loading && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+      {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
       {label}
     </Button>
   );
