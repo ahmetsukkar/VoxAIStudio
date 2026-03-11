@@ -75,7 +75,7 @@ export function TrialExpiredModal({ onClose }: Props) {
                         className="w-full bg-gradient-to-r from-indigo-500 to-cyan-600 hover:from-indigo-600 hover:to-cyan-700 text-white"
                         onClick={onClose}
                       >
-                        Upgrade — starting at $7
+                        Upgrade — starting at 4.99
                       </Button>
                     </Link>
                   ) : (
@@ -84,7 +84,7 @@ export function TrialExpiredModal({ onClose }: Props) {
                       className="w-full cursor-not-allowed bg-gradient-to-r from-indigo-300 to-cyan-400 opacity-60 text-white"
                     >
                       <Lock className="mr-2 h-4 w-4" />
-                      Upgrade — starting at $7
+                      Upgrade — starting at $4.99
                     </Button>
                   )}
                 </span>
