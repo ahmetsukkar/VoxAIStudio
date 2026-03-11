@@ -10,58 +10,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "~/components/ui/dialog";
-
-const PRODUCT_IDS: Record<string, string> = {
-  start: "98eca73c-5de0-4a22-9d46-264554e2326c",
-  creator: "c9dac2c1-aa44-4378-90fb-fc845e347493",
-  pro: "b0054483-c856-4415-8915-4bda36c3e86d",
-};
-
-const plans = [
-  {
-    slug: "start",
-    name: "Starter",
-    price: "$4.99",
-    description: "Perfect for trying Vox AI Studio or small projects.",
-    features: [
-      "40,000 credits",
-      "All voices (Flash + Pro)",
-      "Multi-speaker enabled",
-      "No character limit per request",
-      "Credits never expire",
-    ],
-    highlight: false,
-  },
-  {
-    slug: "creator",
-    name: "Creator",
-    price: "$9.99",
-    description: "Best value for content creators and educators.",
-    features: [
-      "125,000 credits",
-      "All voices (Flash + Pro)",
-      "Multi-speaker enabled",
-      "All features included",
-      "Credits never expire",
-    ],
-    highlight: true,
-  },
-  {
-    slug: "pro",
-    name: "Pro",
-    price: "$49.99",
-    description: "For agencies, teams, and high-volume creators.",
-    features: [
-      "400,000 credits",
-      "All voices (Flash + Pro)",
-      "Multi-speaker enabled",
-      "All features included",
-      "Priority queue",
-      "Credits never expire",
-    ],
-    highlight: false,
-  },
-];
+import { PLANS } from "~/config/plans";
+import Image from "next/image";
 
 type Props = {
   open: boolean;
@@ -74,12 +24,10 @@ export default function PricingModal({ open, onClose }: Props) {
   const [resendSent, setResendSent] = useState(false);
   const isVerified = session?.user?.emailVerified;
 
-  const handleBuy = async (slug: string) => {
+  const handleBuy = async (productId: string, slug: string) => {
     if (!session?.user || !isVerified) return;
     setLoadingSlug(slug);
-    await authClient.checkout({
-      products: [PRODUCT_IDS[slug]!],
-    });
+    await authClient.checkout({ products: [productId] });
     setLoadingSlug(null);
   };
 
@@ -103,8 +51,7 @@ export default function PricingModal({ open, onClose }: Props) {
           </p>
         </DialogHeader>
 
-        <div className="overflow-y-auto overflow-x-hidden flex-1 px-6 pb-6 pt-4">
-          {/* Email verification warning */}
+        <div className="flex-1 overflow-x-hidden overflow-y-auto px-6 pt-4 pb-6">
           {!isVerified && (
             <div className="mb-4 flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 p-4">
               <MailWarning className="mt-0.5 h-5 w-5 flex-shrink-0 text-amber-500" />
@@ -131,8 +78,8 @@ export default function PricingModal({ open, onClose }: Props) {
             </div>
           )}
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
-            {plans.map((plan) => (
+          <div className="mt-2 grid grid-cols-1 gap-4 md:grid-cols-3">
+            {PLANS.map((plan) => (
               <div
                 key={plan.slug}
                 className={`relative flex flex-col rounded-xl border p-5 transition-opacity ${
@@ -147,15 +94,24 @@ export default function PricingModal({ open, onClose }: Props) {
                   </div>
                 )}
                 <div className="mb-4">
-                  <h3 className="text-lg font-bold text-slate-800">
+                  <div className="mb-3 flex justify-center">
+                    <Image
+                      src={plan.image}
+                      alt={`${plan.name} plan`}
+                      width={300}
+                      height={300}
+                      className="rounded-full object-cover"
+                    />
+                  </div>
+                  <h3 className="text-center text-lg font-bold text-slate-800">
                     {plan.name}
                   </h3>
-                  <div className="mt-1 flex items-baseline gap-1">
+                  <div className="mt-1 flex items-baseline justify-center gap-1">
                     <span className="text-3xl font-bold text-slate-800">
                       {plan.price}
                     </span>
                   </div>
-                  <p className="mt-2 text-sm text-slate-500">
+                  <p className="mt-2 text-center text-sm text-slate-500">
                     {plan.description}
                   </p>
                 </div>
@@ -171,7 +127,7 @@ export default function PricingModal({ open, onClose }: Props) {
                   ))}
                 </ul>
                 <Button
-                  onClick={() => handleBuy(plan.slug)}
+                  onClick={() => handleBuy(plan.productId, plan.slug)}
                   disabled={!isVerified || loadingSlug !== null}
                   className="w-full bg-gradient-to-r from-indigo-500 to-cyan-600 text-white hover:from-indigo-600 hover:to-cyan-700 disabled:cursor-not-allowed disabled:opacity-50"
                   size="lg"

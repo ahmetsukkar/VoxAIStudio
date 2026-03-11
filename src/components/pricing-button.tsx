@@ -5,15 +5,11 @@ import { useRouter } from "next/navigation";
 import { Button } from "~/components/ui/button";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
-
-const PRODUCT_IDS: Record<string, string> = {
-  start: "98eca73c-5de0-4a22-9d46-264554e2326c",
-  creator: "c9dac2c1-aa44-4378-90fb-fc845e347493",
-  pro: "b0054483-c856-4415-8915-4bda36c3e86d",
-};
+import { getPlanBySlug } from "~/config/plans";
+import type { PlanSlug } from "~/config/plans";
 
 type Props = {
-  slug: "start" | "creator" | "pro";
+  slug: PlanSlug;
   label: string;
   className?: string;
 };
@@ -27,19 +23,18 @@ export default function PricingButton({ slug, label, className }: Props) {
     if (isPending) return;
 
     if (!session?.user) {
-      router.push(`/auth/sign-up?upgrade=true`);
+      router.push("/auth/sign-up?upgrade=true");
       return;
     }
 
     if (!session.user.emailVerified) {
-      router.push(`/dashboard?upgrade=true`);
+      router.push("/dashboard?upgrade=true");
       return;
     }
 
+    const plan = getPlanBySlug(slug);
     setLoading(true);
-    await authClient.checkout({
-      products: [PRODUCT_IDS[slug]!],
-    });
+    await authClient.checkout({ products: [plan.productId] });
     setLoading(false);
   };
 
