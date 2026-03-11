@@ -1,17 +1,16 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import CustomerPortalRedirect from "~/components/sidebar/CustomerPortalRedirect";
 import { auth } from "~/lib/auth";
 
+export const dynamic = "force-dynamic";
 
 export default async function page() {
   const session = await auth.api.getSession({ headers: await headers() });
 
-  if(!session){
-    redirect("/auth/sign-in")
+  if (!session) {
+    redirect("/auth/sign-in");
   }
 
-  return <CustomerPortalRedirect />
+  return <CustomerPortalRedirect />;
 }

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import { auth } from "~/lib/auth";
