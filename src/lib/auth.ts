@@ -20,13 +20,13 @@ import { resetPasswordTemplate } from "~/lib/email/templates/reset-password";
 
 const polarClient = new Polar({
   accessToken: env.POLAR_ACCESS_TOKEN,
-  server: "production",
+  server: "sandbox",
 });
 
 const PLAN_CREDITS: Record<string, number> = {
-  "REPLACE_WITH_PROD_ID_START":   40_000,
-  "REPLACE_WITH_PROD_ID_CREATOR": 125_000,
-  "REPLACE_WITH_PROD_ID_PRO":     400_000,
+  "98eca73c-5de0-4a22-9d46-264554e2326c":   40_000,   //Starter
+  "c9dac2c1-aa44-4378-90fb-fc845e347493": 125_000,    //Creator
+  "b0054483-c856-4415-8915-4bda36c3e86d":     400_000,//Pro
 };
 
 const FREE_TRIAL_DAYS = 7;
@@ -122,15 +122,15 @@ export const auth = betterAuth({
         checkout({
           products: [
             { 
-              productId: "REPLACE_WITH_PROD_ID_START",  
-              slug: "start",
+              productId: "98eca73c-5de0-4a22-9d46-264554e2326c",  
+              slug: "starter",
             },
             { 
-              productId: "REPLACE_WITH_PROD_ID_CREATOR", 
+              productId: "b0054483-c856-4415-8915-4bda36c3e86d", 
               slug: "creator",
             },
             { 
-              productId: "REPLACE_WITH_PROD_ID_PRO",
+              productId: "b0054483-c856-4415-8915-4bda36c3e86d",
               slug: "pro",
             },
           ],

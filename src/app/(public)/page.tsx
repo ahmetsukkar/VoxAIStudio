@@ -14,6 +14,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import DemoSection from "~/components/demo-section";
+import PricingButton from "~/components/pricing-button";
+
 export default function HomePage() {
   const features = [
     {
@@ -369,7 +371,7 @@ export default function HomePage() {
                   <h3 className="text-xl font-bold text-slate-800">Start</h3>
                   <div className="mt-3 flex items-baseline gap-1">
                     <span className="text-4xl font-bold text-slate-800">
-                      $7
+                      $4.99
                     </span>
                   </div>
                   <p className="mt-1 text-sm text-slate-500">
@@ -394,14 +396,11 @@ export default function HomePage() {
                   </ul>
                 </div>
                 <div className="mt-auto pt-8">
-                  <Link href="/api/auth/checkout?slug=start">
-                    <Button
-                      className="w-full cursor-pointer bg-gradient-to-r from-indigo-500 to-cyan-600 hover:from-indigo-600 hover:to-cyan-700"
-                      size="lg"
-                    >
-                      Get Started
-                    </Button>
-                  </Link>
+                  <PricingButton
+                    slug="start"
+                    label="Get Started"
+                    className="w-full bg-gradient-to-r from-indigo-500 to-cyan-600 hover:from-indigo-600 hover:to-cyan-700"
+                  />
                 </div>
               </CardContent>
             </Card>
@@ -416,7 +415,7 @@ export default function HomePage() {
                   <h3 className="text-xl font-bold text-slate-800">Creator</h3>
                   <div className="mt-3 flex items-baseline gap-1">
                     <span className="text-4xl font-bold text-slate-800">
-                      $19
+                      $9.99
                     </span>
                   </div>
                   <p className="mt-1 text-sm text-slate-500">
@@ -441,14 +440,11 @@ export default function HomePage() {
                   </ul>
                 </div>
                 <div className="mt-auto pt-8">
-                  <Link href="/api/auth/checkout?slug=creator">
-                    <Button
-                      className="w-full cursor-pointer bg-gradient-to-r from-indigo-500 to-cyan-600 hover:from-indigo-600 hover:to-cyan-700"
-                      size="lg"
-                    >
-                      Get Creator
-                    </Button>
-                  </Link>
+                  <PricingButton
+                    slug="creator"
+                    label="Get Creator"
+                    className="w-full bg-gradient-to-r from-indigo-500 to-cyan-600 hover:from-indigo-600 hover:to-cyan-700"
+                  />
                 </div>
               </CardContent>
             </Card>
@@ -460,7 +456,7 @@ export default function HomePage() {
                   <h3 className="text-xl font-bold text-slate-800">Pro</h3>
                   <div className="mt-3 flex items-baseline gap-1">
                     <span className="text-4xl font-bold text-slate-800">
-                      $59
+                      $49.99
                     </span>
                   </div>
                   <p className="mt-1 text-sm text-slate-500">
@@ -486,14 +482,11 @@ export default function HomePage() {
                   </ul>
                 </div>
                 <div className="mt-auto pt-8">
-                  <Link href="/api/auth/checkout?slug=pro">
-                    <Button
-                      className="w-full cursor-pointer bg-gradient-to-r from-indigo-500 to-cyan-600 hover:from-indigo-600 hover:to-cyan-700"
-                      size="lg"
-                    >
-                      Get Pro
-                    </Button>
-                  </Link>
+                  <PricingButton
+                    slug="pro"
+                    label="Get Pro"
+                    className="w-full bg-gradient-to-r from-indigo-500 to-cyan-600 hover:from-indigo-600 hover:to-cyan-700"
+                  />
                 </div>
               </CardContent>
             </Card>
