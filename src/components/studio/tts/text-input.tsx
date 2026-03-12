@@ -55,7 +55,13 @@ export default function TextInput({
           <div className="flex items-center justify-between text-xs">
             <span
               className={
-                isOverLimit ? "font-semibold text-red-500" : "text-gray-500"
+                isOverLimit
+                  ? "font-semibold text-red-500"
+                  : text.length > 2_400
+                    ? "font-semibold text-orange-500"
+                    : text.length > 2_000
+                      ? "font-medium text-yellow-600"
+                      : "text-gray-500"
               }
             >
               {text.length.toLocaleString()} / {maxChars.toLocaleString()}{" "}

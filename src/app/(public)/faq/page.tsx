@@ -51,7 +51,7 @@ export default function FAQPage() {
             <p className="text-slate-600">
               Yes! New users get a 7-day Free Trial with 10,000 credits — no
               credit card required. The trial includes Flash voice only, with a
-              maximum of 1,500 characters per request, and is limited to
+              maximum of 500 characters per request, and is limited to
               single-speaker generation.
             </p>
           </div>

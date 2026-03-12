@@ -330,7 +330,7 @@ export default function HomePage() {
                       "10,000 credits included",
                       "Flash voice only",
                       "Single-speaker (no multi-speaker)",
-                      "Max 1,500 chars / request",
+                      "Max 500 chars / request",
                       "Expires after 7 days",
                     ].map((f) => (
                       <li
