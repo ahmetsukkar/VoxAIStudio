@@ -1,21 +1,26 @@
-export type PlanSlug = "start" | "creator" | "pro";
+export type PlanSlug = "starter" | "creator" | "pro";
 
 export interface Plan {
   slug: PlanSlug;
   name: string;
-  price: string;
+  productId: string;
+  price: number;
+  credits: number;
   description: string;
   features: string[];
   highlight: boolean;
-  productId: string;
   image: string;
 }
 
 export const PLANS: Plan[] = [
   {
-    slug: "start",
+    slug: "starter",
     name: "Starter",
-    price: "$4.99",
+    productId: "f7019892-6c9a-45df-9a7e-0e0addd6fea9",
+    price: 4.99,
+    credits: 40_000,
+    highlight: false,
+    image: "/plans/starter.png",
     description: "Perfect for trying Vox AI Studio or small projects.",
     features: [
       "40,000 credits",
@@ -24,15 +29,16 @@ export const PLANS: Plan[] = [
       "No character limit per request",
       "Credits never expire",
     ],
-    highlight: false,
-    productId: "98eca73c-5de0-4a22-9d46-264554e2326c",
-    image: "/plans/starter.png",
   },
   {
     slug: "creator",
     name: "Creator",
-    price: "$9.99",
+    productId: "73690d9a-4acf-470b-999b-0f2a44234802",
+    price: 9.99,
+    credits: 125_000,
     description: "Best value for content creators and educators.",
+    highlight: true,
+    image: "/plans/creator.png",
     features: [
       "125,000 credits",
       "All voices (Flash + Pro)",
@@ -40,15 +46,16 @@ export const PLANS: Plan[] = [
       "All features included",
       "Credits never expire",
     ],
-    highlight: true,
-    productId: "c9dac2c1-aa44-4378-90fb-fc845e347493",
-    image: "/plans/creator.png",
   },
   {
     slug: "pro",
     name: "Pro",
-    price: "$49.99",
+    productId: "0ec0d4e1-ca61-412e-be6f-f90c8bb62212",
+    price: 49.99,
+    credits: 400_000,
     description: "For agencies, teams, and high-volume creators.",
+    highlight: false,
+    image: "/plans/pro.png",
     features: [
       "400,000 credits",
       "All voices (Flash + Pro)",
@@ -57,11 +64,12 @@ export const PLANS: Plan[] = [
       "Priority queue",
       "Credits never expire",
     ],
-    highlight: false,
-    productId: "b0054483-c856-4415-8915-4bda36c3e86d",
-    image: "/plans/pro.png",
   },
 ];
+
+export const PLAN_CREDITS: Record<string, number> = Object.fromEntries(
+  PLANS.map((p) => [p.productId, p.credits])
+);
 
 export const getPlanBySlug = (slug: PlanSlug): Plan => {
   const plan = PLANS.find((p) => p.slug === slug);

@@ -17,17 +17,12 @@ import {
 } from "~/lib/email/send-email";
 import { verifyEmailTemplate } from "~/lib/email/templates/verify-email";
 import { resetPasswordTemplate } from "~/lib/email/templates/reset-password";
+import { PLAN_CREDITS } from "~/config/plans";
 
 const polarClient = new Polar({
   accessToken: env.POLAR_ACCESS_TOKEN,
-  server: "sandbox",
+  server: "production",
 });
-
-const PLAN_CREDITS: Record<string, number> = {
-  "98eca73c-5de0-4a22-9d46-264554e2326c":   40_000,   //Starter
-  "c9dac2c1-aa44-4378-90fb-fc845e347493": 125_000,    //Creator
-  "b0054483-c856-4415-8915-4bda36c3e86d":     400_000,//Pro
-};
 
 const FREE_TRIAL_DAYS = 7;
 

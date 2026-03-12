@@ -387,7 +387,7 @@ export default function HomePage() {
                 </div>
                 <div className="mt-auto pt-8">
                   <PricingButton
-                    slug="start"
+                    slug="starter"
                     label="Get Started"
                     className="w-full bg-gradient-to-r from-indigo-500 to-cyan-600 hover:from-indigo-600 hover:to-cyan-700"
                   />
