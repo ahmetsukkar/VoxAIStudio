@@ -1,14 +1,10 @@
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import CustomerPortalRedirect from "~/components/sidebar/CustomerPortalRedirect";
-import { auth } from "~/lib/auth";
+import { getAuthSession } from "~/lib/get-session";
 
-export default async function page() {
-  const session = await auth.api.getSession({ headers: await headers() });
-
-  if (!session) {
-    redirect("/auth/sign-in");
-  }
+export default async function CustomerPortalPage() {
+  const session = await getAuthSession();
+  if (!session) redirect("/auth/sign-in");
 
   return <CustomerPortalRedirect />;
 }

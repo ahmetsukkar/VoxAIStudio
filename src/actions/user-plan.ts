@@ -1,13 +1,12 @@
 "use server";
 
-import { auth } from "~/lib/auth";
-import { headers } from "next/headers";
 import { db } from "~/server/db";
+import { getAuthSession } from "~/lib/get-session";
 
 export interface UserPlanStatus {
-  isFreeTrial: boolean;    // true = on active 7-day trial
-  trialExpired: boolean;   // true = trial has ended, no paid plan yet
-  trialExpiresAt: string | null; // ISO string for display
+  isFreeTrial: boolean;
+  trialExpired: boolean;
+  trialExpiresAt: string | null;
 }
 
 export async function getUserPlanStatus(): Promise<{
@@ -16,8 +15,8 @@ export async function getUserPlanStatus(): Promise<{
   error?: string;
 }> {
   try {
-    const session = await auth.api.getSession({ headers: await headers() });
-    if (!session?.user?.id) return { success: false, error: "Unauthorized" };
+    const session = await getAuthSession();
+    if (!session) return { success: false, error: "Unauthorized" };
 
     const user = await db.user.findUnique({
       where: { id: session.user.id },

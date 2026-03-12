@@ -1,22 +1,15 @@
 "use server";
 
 import { db } from "~/server/db";
-
 import { revalidatePath } from "next/cache";
-import { headers } from "next/headers";
-import { auth } from "./auth";
+import { getAuthSession } from "~/lib/get-session";
 import type { BlogStatus } from "~/types/blog";
 
-// Get all published blog posts
 export async function getPublishedBlogPosts() {
   try {
     const posts = await db.blogPost.findMany({
-      where: {
-        status: "PUBLISHED",
-      },
-      orderBy: {
-        publishedAt: "desc",
-      },
+      where: { status: "PUBLISHED" },
+      orderBy: { publishedAt: "desc" },
       select: {
         id: true,
         slug: true,
@@ -34,7 +27,6 @@ export async function getPublishedBlogPosts() {
         views: true,
       },
     });
-
     return { success: true, data: posts };
   } catch (error) {
     console.error("Error fetching blog posts:", error);
@@ -42,17 +34,11 @@ export async function getPublishedBlogPosts() {
   }
 }
 
-// Get featured blog posts
 export async function getFeaturedBlogPosts() {
   try {
     const posts = await db.blogPost.findMany({
-      where: {
-        status: "PUBLISHED",
-        featured: true,
-      },
-      orderBy: {
-        publishedAt: "desc",
-      },
+      where: { status: "PUBLISHED", featured: true },
+      orderBy: { publishedAt: "desc" },
       take: 3,
       select: {
         id: true,
@@ -66,7 +52,6 @@ export async function getFeaturedBlogPosts() {
         featuredImage: true,
       },
     });
-
     return { success: true, data: posts };
   } catch (error) {
     console.error("Error fetching featured posts:", error);
@@ -74,25 +59,14 @@ export async function getFeaturedBlogPosts() {
   }
 }
 
-// Get single blog post by slug - FIXED VERSION
 export async function getBlogPostBySlug(slug: string) {
   try {
-    console.log("🔍 Fetching blog post with slug:", slug); // Debug log
-
     const post = await db.blogPost.findFirst({
-      where: {
-        slug: slug, // Make sure we're using the slug parameter
-        status: "PUBLISHED",
-      },
+      where: { slug, status: "PUBLISHED" },
     });
 
-    console.log("📝 Found post:", post?.title ?? "NOT FOUND"); // Debug log
+    if (!post) return { success: false, error: "Post not found" };
 
-    if (!post) {
-      return { success: false, error: "Post not found" };
-    }
-
-    // Increment views
     await db.blogPost.update({
       where: { id: post.id },
       data: { views: { increment: 1 } },
@@ -100,24 +74,17 @@ export async function getBlogPostBySlug(slug: string) {
 
     return { success: true, data: post };
   } catch (error) {
-    console.error("❌ Error fetching blog post:", error);
+    console.error("Error fetching blog post:", error);
     return { success: false, error: "Failed to fetch blog post" };
   }
 }
 
-// Get posts by category
 export async function getBlogPostsByCategory(category: string) {
   try {
     const posts = await db.blogPost.findMany({
-      where: {
-        status: "PUBLISHED",
-        category,
-      },
-      orderBy: {
-        publishedAt: "desc",
-      },
+      where: { status: "PUBLISHED", category },
+      orderBy: { publishedAt: "desc" },
     });
-
     return { success: true, data: posts };
   } catch (error) {
     console.error("Error fetching posts by category:", error);
@@ -125,36 +92,24 @@ export async function getBlogPostsByCategory(category: string) {
   }
 }
 
-// Get all categories
 export async function getBlogCategories() {
   try {
     const categories = await db.blogPost.findMany({
-      where: {
-        status: "PUBLISHED",
-      },
-      select: {
-        category: true,
-      },
+      where: { status: "PUBLISHED" },
+      select: { category: true },
       distinct: ["category"],
     });
-
-    return {
-      success: true,
-      data: categories.map((c) => c.category),
-    };
+    return { success: true, data: categories.map((c) => c.category) };
   } catch (error) {
     console.error("Error fetching categories:", error);
     return { success: false, error: "Failed to fetch categories" };
   }
 }
 
-// Create new blog post (Admin only)
 export async function createBlogPost(formData: FormData) {
   try {
-    // Get current user session
-    const session = await auth.api.getSession({ headers: await headers() });
-
-    if (!session?.user?.id) {
+    const session = await getAuthSession();
+    if (!session) {
       return {
         success: false,
         error: "You must be logged in to create a blog post",
@@ -174,16 +129,11 @@ export async function createBlogPost(formData: FormData) {
     const featured = formData.get("featured") === "true";
     const status = formData.get("status") as BlogStatus;
 
-    // Check if slug already exists
-    const existingPost = await db.blogPost.findUnique({
-      where: { slug },
-    });
-
+    const existingPost = await db.blogPost.findUnique({ where: { slug } });
     if (existingPost) {
       return { success: false, error: "A post with this slug already exists" };
     }
 
-    // Create blog post with author assignment
     const post = await db.blogPost.create({
       data: {
         title,
@@ -197,7 +147,7 @@ export async function createBlogPost(formData: FormData) {
         featured,
         status,
         publishedAt: status === "PUBLISHED" ? new Date() : null,
-        authorId: session.user.id, // Assign to logged-in user
+        authorId: session.user.id,
       },
     });
 
@@ -210,7 +160,6 @@ export async function createBlogPost(formData: FormData) {
   }
 }
 
-// Search blog posts
 export async function searchBlogPosts(query: string) {
   try {
     const posts = await db.blogPost.findMany({
@@ -223,11 +172,8 @@ export async function searchBlogPosts(query: string) {
           { tags: { has: query } },
         ],
       },
-      orderBy: {
-        publishedAt: "desc",
-      },
+      orderBy: { publishedAt: "desc" },
     });
-
     return { success: true, data: posts };
   } catch (error) {
     console.error("Error searching posts:", error);
@@ -239,23 +185,16 @@ export async function getAdjacentPosts(slug: string, publishedAt: Date) {
   try {
     const [prevPost, nextPost] = await Promise.all([
       db.blogPost.findFirst({
-        where: {
-          status: "PUBLISHED",
-          publishedAt: { lt: publishedAt },
-        },
+        where: { status: "PUBLISHED", publishedAt: { lt: publishedAt } },
         orderBy: { publishedAt: "desc" },
         select: { slug: true, title: true, category: true, readingTime: true },
       }),
       db.blogPost.findFirst({
-        where: {
-          status: "PUBLISHED",
-          publishedAt: { gt: publishedAt },
-        },
+        where: { status: "PUBLISHED", publishedAt: { gt: publishedAt } },
         orderBy: { publishedAt: "asc" },
         select: { slug: true, title: true, category: true, readingTime: true },
       }),
     ]);
-
     return { success: true, data: { prevPost, nextPost } };
   } catch (error) {
     console.error("Error fetching adjacent posts:", error);
@@ -266,11 +205,7 @@ export async function getAdjacentPosts(slug: string, publishedAt: Date) {
 export async function getRelatedPosts(slug: string, category: string) {
   try {
     const posts = await db.blogPost.findMany({
-      where: {
-        status: "PUBLISHED",
-        category,
-        slug: { not: slug },
-      },
+      where: { status: "PUBLISHED", category, slug: { not: slug } },
       orderBy: { publishedAt: "desc" },
       take: 3,
       select: {
@@ -283,7 +218,6 @@ export async function getRelatedPosts(slug: string, category: string) {
         authorName: true,
       },
     });
-
     return { success: true, data: posts };
   } catch (error) {
     console.error("Error fetching related posts:", error);

@@ -7,8 +7,7 @@ import type {
   GeminiRequestOptions,
 } from "./tts/providers/base-tts-provider";
 import { TTSFactory, type TTSProviderType } from "./tts/tts-factory";
-import { auth } from "~/lib/auth";
-import { headers } from "next/headers";
+import { getAuthSession } from "~/lib/get-session";
 import { db } from "~/server/db";
 import { generateDialogueAudio } from "./tts/dialogue";
 import type {
@@ -40,8 +39,8 @@ export async function generateSpeech(
 ): Promise<GenerateSpeechFinalResult> {
   try {
     // 1. Auth
-    const session = await auth.api.getSession({ headers: await headers() });
-    if (!session?.user?.id) return { success: false, error: "Unauthorized" };
+    const session = await getAuthSession();
+    if (!session) return { success: false, error: "Unauthorized" };
     // 2. Get provider + calculate credits needed
     const provider = TTSFactory.getProvider(providerType);
     const creditsNeeded = provider.getCredits(options);
@@ -172,8 +171,8 @@ export async function generateMultiSpeaker({
 }> {
   try {
     // 1. Auth
-    const session = await auth.api.getSession({ headers: await headers() });
-    if (!session?.user?.id) return { success: false, error: "Unauthorized" };
+    const session = await getAuthSession();
+    if (!session) return { success: false, error: "Unauthorized" };
 
     // 2. Fetch user
     const user = await db.user.findUnique({
@@ -197,7 +196,6 @@ export async function generateMultiSpeaker({
       };
     }
 
-    // 5. Total chars check across ALL lines (not per-line)
     const totalChars = lines.reduce((sum, l) => sum + l.text.length, 0);
     if (totalChars > MAX_CHARS_ALLOWED) {
       return {
@@ -206,7 +204,6 @@ export async function generateMultiSpeaker({
       };
     }
 
-    // 6. Generate audio
     const result = await generateDialogueAudio({ speakers, lines, settings });
     if (
       !result.success ||
@@ -219,7 +216,6 @@ export async function generateMultiSpeaker({
 
     const creditsNeeded = result.creditsNeeded ?? 0;
 
-    // 7. Credit check
     if (user.credits < creditsNeeded) {
       return {
         success: false,
@@ -227,20 +223,17 @@ export async function generateMultiSpeaker({
       };
     }
 
-    // 8. Verification gate
     const creditsUsed = FREE_TRIAL_INITIAL_CREDITS - user.credits;
     if (!user.emailVerified && creditsUsed >= UNVERIFIED_CREDIT_THRESHOLD) {
       return { success: false, error: "VERIFICATION_REQUIRED" };
     }
 
-    // 9. Deduct credits
     const updatedUser = await db.user.update({
       where: { id: session.user.id },
       data: { credits: { decrement: creditsNeeded } },
       select: { credits: true },
     });
 
-    // 10. Save to DB
     await db.audioProject.create({
       data: {
         text: result.fullText,
@@ -275,7 +268,6 @@ export async function generateMultiSpeaker({
   }
 }
 
-// Keep old export as alias so existing UI calls don't break
 export { generateMultiSpeaker as generateDialogue };
 
 const PAGE_SIZE = 20;
@@ -293,8 +285,8 @@ export async function getUserAudioProjects(
   filters?: AudioProjectFilters,
 ) {
   try {
-    const session = await auth.api.getSession({ headers: await headers() });
-    if (!session?.user?.id) {
+    const session = await getAuthSession();
+    if (!session) {
       return {
         success: false,
         error: "Unauthorized",
@@ -356,9 +348,8 @@ export async function getUserAudioProjects(
 
 export async function getUserCredits() {
   try {
-    const session = await auth.api.getSession({ headers: await headers() });
-    if (!session?.user?.id)
-      return { success: false, error: "Unauthorized", credits: 0 };
+    const session = await getAuthSession();
+    if (!session) return { success: false, error: "Unauthorized", credits: 0 };
 
     const user = await db.user.findUnique({
       where: { id: session.user.id },
@@ -368,15 +359,15 @@ export async function getUserCredits() {
     if (!user) return { success: false, error: "User not found", credits: 0 };
     return { success: true, credits: user.credits };
   } catch (error) {
-    console.log("Error fetching user credits:", error);
+    console.error("Error fetching user credits:", error);
     return { success: false, error: "Failed to fetch credits", credits: 0 };
   }
 }
 
 export async function deleteAudioProject(id: string) {
   try {
-    const session = await auth.api.getSession({ headers: await headers() });
-    if (!session?.user?.id) return { success: false, error: "Unauthorized" };
+    const session = await getAuthSession();
+    if (!session) return { success: false, error: "Unauthorized" };
 
     const project = await db.audioProject.findUnique({ where: { id } });
     if (project?.userId !== session.user.id) {
@@ -395,8 +386,8 @@ export type EngineGroup = "TTS" | "Dialogue" | "all";
 
 export async function getRecentGenerations(group: EngineGroup, limit = 4) {
   try {
-    const session = await auth.api.getSession({ headers: await headers() });
-    if (!session?.user?.id)
+    const session = await getAuthSession();
+    if (!session)
       return { success: false, error: "Unauthorized", projects: [] };
 
     const projects = await db.audioProject.findMany({
@@ -419,8 +410,8 @@ export async function getRecentGenerations(group: EngineGroup, limit = 4) {
 
 export async function getAudioProjectsMeta() {
   try {
-    const session = await auth.api.getSession({ headers: await headers() });
-    if (!session?.user?.id) {
+    const session = await getAuthSession();
+    if (!session) {
       return { success: false, totalCount: 0, languages: [], engines: [] };
     }
 

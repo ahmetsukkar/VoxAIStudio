@@ -1,20 +1,19 @@
-import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
 import {
   Zap,
   Star,
-  ArrowRight,
   Scissors,
   Expand,
   Target,
-  Download,
   CheckCircle2,
   Play,
   AudioWaveform,
 } from "lucide-react";
 import Link from "next/link";
+import { Button } from "~/components/ui/button";
 import DemoSection from "~/components/demo-section";
 import PricingButton from "~/components/pricing-button";
+import AuthCTA from "~/components/auth-cta";
 
 export default function HomePage() {
   const features = [
@@ -76,16 +75,9 @@ export default function HomePage() {
     },
   ];
 
-  const pricingFeatures = [
-    "Clone and create custom voices",
-    "Natural‑sounding speech generation",
-    "Many languages and voice styles",
-    "Download high‑quality audio files",
-    "Quick processing speed",
-    "Secure cloud storage",
-  ];
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/20 to-slate-100">
+      {/* ── HERO ── */}
       <section className="relative overflow-hidden py-20 sm:py-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-4xl text-center">
@@ -107,16 +99,13 @@ export default function HomePage() {
               realistic intonation—ready in seconds.
             </p>
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
-              <Link href="/dashboard">
-                <Button
-                  size="lg"
-                  className="cursor-pointer gap-2 px-8 py-6 text-base"
-                >
-                  <Play className="h-5 w-5" />
-                  Try It Free Now
-                </Button>
-              </Link>
-              <Link href="/dashboard">
+              <AuthCTA
+                label="Try It Free Now"
+                icon="AudioLines"
+                size="lg"
+                className="bg-gradient-to-r from-indigo-500 to-cyan-600 px-8 py-6 text-base text-white"
+              />
+              <Link href="#demo">
                 <Button
                   variant="outline"
                   size="lg"
@@ -157,7 +146,10 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
       <DemoSection />
+
+      {/* ── FEATURES ── */}
       <section id="features" className="bg-white py-20 sm:py-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto mb-16 max-w-2xl text-center">
@@ -187,11 +179,9 @@ export default function HomePage() {
                       {feature.icon}
                     </div>
                   </div>
-
                   <h3 className="mb-2 flex justify-center text-lg font-semibold text-slate-800">
                     {feature.title}
                   </h3>
-
                   <p className="text-sm text-slate-600">
                     {feature.description}
                   </p>
@@ -202,6 +192,8 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ── HOW IT WORKS ── */}
       <section className="bg-slate-50 py-20 sm:py-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto mb-16 max-w-2xl text-center">
@@ -251,6 +243,8 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ── TESTIMONIALS ── */}
       <section id="testimonials" className="bg-white py-20 sm:py-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto mb-16 max-w-2xl text-center">
@@ -272,14 +266,12 @@ export default function HomePage() {
               >
                 <CardContent className="p-6">
                   <div className="mb-4 flex items-center gap-1">
-                    {Array.from({ length: Number(testimonial.rating) }).map(
-                      (_, i) => (
-                        <Star
-                          key={i}
-                          className="h-4 w-4 fill-amber-400 text-amber-400"
-                        />
-                      ),
-                    )}
+                    {Array.from({ length: testimonial.rating }).map((_, i) => (
+                      <Star
+                        key={i}
+                        className="h-4 w-4 fill-amber-400 text-amber-400"
+                      />
+                    ))}
                   </div>
                   <p className="mb-4 text-slate-600 italic">
                     &ldquo;{testimonial.content}&rdquo;
@@ -299,6 +291,7 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── PRICING ── */}
       <section
         id="pricing"
         className="bg-gradient-to-br from-slate-50 to-indigo-50/50 py-20 sm:py-32"
@@ -351,15 +344,12 @@ export default function HomePage() {
                   </ul>
                 </div>
                 <div className="mt-auto pt-8">
-                  <Link href="/dashboard">
-                    <Button
-                      variant="outline"
-                      className="w-full cursor-pointer"
-                      size="lg"
-                    >
-                      Try for Free
-                    </Button>
-                  </Link>
+                  <AuthCTA
+                    label="Try for Free"
+                    variant="outline"
+                    size="lg"
+                    className="w-full font-semibold"
+                  />
                 </div>
               </CardContent>
             </Card>
@@ -491,10 +481,8 @@ export default function HomePage() {
               </CardContent>
             </Card>
           </div>
-          {/* Credit note removed from homepage — see FAQ for details */}
         </div>
       </section>
-
       <section className="bg-gradient-to-r from-indigo-100/70 to-cyan-100/70 py-20 sm:py-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
@@ -506,23 +494,20 @@ export default function HomePage() {
               and alive.
             </p>
             <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center">
-              <Link href="/dashboard">
-                <Button
-                  size="lg"
-                  className="cursor-pointer gap-2 bg-gradient-to-r from-indigo-500 to-cyan-600 px-8 py-6 text-base hover:from-indigo-600 hover:to-cyan-700"
-                >
-                  <AudioWaveform className="h-5 w-5" />
-                  Start Free
-                </Button>
-              </Link>
-              <Link href="/dashboard">
+              <AuthCTA
+                label="Start Free"
+                icon="AudioWaveform"
+                size="lg"
+                className="bg-gradient-to-r from-indigo-500 to-cyan-600 px-8 py-6 text-base text-white"
+              />
+              <Link href="#demo">
                 <Button
                   variant="outline"
                   size="lg"
                   className="cursor-pointer gap-2 border-slate-300 px-8 py-6 text-base text-slate-700 hover:bg-slate-100"
                 >
-                  <Download className="h-5 w-5" />
-                  Play Samples
+                  <Play className="h-5 w-5" />
+                  Play samples
                 </Button>
               </Link>
             </div>

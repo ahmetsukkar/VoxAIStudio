@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
-import { Play, Pause, AudioWaveform } from "lucide-react";
-import Link from "next/link";
+import { Play, Pause } from "lucide-react";
+import AuthCTA from "./auth-cta";
 export default function DemoSection() {
   const [playingId, setPlayingId] = useState<string | null>(null);
   const naturalSpeechSamples = [
@@ -119,7 +119,7 @@ export default function DemoSection() {
     }
   };
   return (
-    <section className="bg-gradient-to-br from-indigo-50/50 to-cyan-50/30 py-20 sm:py-32">
+    <section id="demo" className="bg-gradient-to-br from-indigo-50/50 to-cyan-50/30 py-20 sm:py-32">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto mb-16 max-w-2xl text-center">
           <h2 className="text-3xl font-bold tracking-tight text-slate-800 sm:text-4xl">
@@ -272,15 +272,12 @@ export default function DemoSection() {
           <p className="mb-6 text-slate-600">
             Ready to create your own AI-generated voices?
           </p>
-          <Link href="/dashboard">
-            <Button
-              size="lg"
-              className="cursor-pointer gap-2 bg-gradient-to-r from-indigo-500 to-cyan-600 hover:from-indigo-600 hover:to-cyan-700"
-            >
-              <AudioWaveform className="h-5 w-5" />
-              Try It Free Now
-            </Button>
-          </Link>
+          <AuthCTA
+            label="Try It Free Now"
+            icon="AudioWaveform"
+            size="lg"
+            className="bg-gradient-to-r from-indigo-500 to-cyan-600 px-8 py-6 text-base text-white"
+          />
         </div>
       </div>
     </section>

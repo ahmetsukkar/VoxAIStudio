@@ -1,13 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { AudioWaveform, ArrowRight, LayoutDashboard } from "lucide-react";
+import { AudioWaveform } from "lucide-react";
 import { Button } from "./ui/button";
 import { authClient } from "~/lib/auth-client";
+import AuthCTA from "~/components/auth-cta";
 
 export default function Navigation() {
   const { data: session, isPending } = authClient.useSession();
   const isLoggedIn = !!session?.user;
+
   return (
     <nav className="sticky top-0 z-50 border-b border-slate-200/60 bg-slate-50/95 backdrop-blur supports-[backdrop-filter]:bg-slate-50/80">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -57,30 +59,20 @@ export default function Navigation() {
           </div>
 
           <div className="flex items-center gap-3">
-            {isPending ? (
-              <div className="h-9 w-32 animate-pulse rounded-lg bg-gray-100" />
-            ) : isLoggedIn ? (
-              <Link href="/dashboard">
-                <Button size="sm" className="cursor-pointer gap-2">
-                  <LayoutDashboard className="h-4 w-4" />
-                  My Dashboard
+            {!isPending && !isLoggedIn && (
+              <Link href="/auth/sign-in">
+                <Button variant="ghost" size="sm" className="cursor-pointer">
+                  Sign In
                 </Button>
               </Link>
-            ) : (
-              <>
-                <Link href="/auth/sign-in">
-                  <Button variant="ghost" size="sm" className="cursor-pointer">
-                    Sign In
-                  </Button>
-                </Link>
-                <Link href="/auth/sign-up">
-                  <Button size="sm" className="cursor-pointer gap-2">
-                    Try Free
-                    <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </Link>
-              </>
             )}
+            <AuthCTA
+              label={isLoggedIn ? "My Dashboard" : "Try It Free"}
+              icon={isLoggedIn ? "LayoutDashboard" : "ArrowRight"}
+              iconPosition="left"
+              size="sm"
+              className="bg-gradient-to-r from-indigo-500 to-cyan-600 text-white"
+            />
           </div>
         </div>
       </div>
