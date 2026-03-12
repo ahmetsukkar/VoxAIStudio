@@ -6,6 +6,7 @@ import {
   FolderOpen,
   Settings,
   Rss,
+  Mail,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { SidebarMenuButton, SidebarMenuItem, useSidebar } from "../ui/sidebar";
@@ -51,6 +52,12 @@ export default function SidebarMenuItems() {
       title: "Create Blog Post",
       url: "/dashboard/blog/create",
       icon: Rss,
+      adminOnly: true,
+    },
+    {
+      title: "Send Email",
+      url: "/dashboard/send-email",
+      icon: Mail,
       adminOnly: true,
     },
     {

@@ -14,7 +14,7 @@ export default function SignUpClient() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(true);
   const searchParams = useSearchParams();
   const redirectToPricing = searchParams.get("upgrade") === "true";
   const postSignUpUrl = redirectToPricing
