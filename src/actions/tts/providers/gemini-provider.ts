@@ -35,7 +35,7 @@ export class GeminiProvider implements TTSProvider {
       options.gemini_pace,
     );
 
-    const ai = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
+    const ai = new GoogleGenAI({ apiKey: env.GenerativeLanguageAPIKey });
 
     const response = await ai.models.generateContent({
       model,

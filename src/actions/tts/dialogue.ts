@@ -49,7 +49,7 @@ export async function generateDialogueAudio({
   // Build the single prompt
   const prompt = buildDialoguePrompt(speakers, filledLines, settings);
 
-  const ai = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
+  const ai = new GoogleGenAI({ apiKey: env.GenerativeLanguageAPIKey });
 
   const response = await ai.models.generateContent({
     model: settings.model,

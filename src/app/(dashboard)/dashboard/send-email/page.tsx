@@ -65,7 +65,7 @@ export default function SendEmailPage() {
             </table>
             <p style="margin:0 0 28px;font-size:15px;color:#374151;line-height:1.8;">No strings attached. Just log in with your existing account and the credits are already there waiting for you.</p>
             <table cellpadding="0" cellspacing="0" width="100%"><tr><td align="center" style="padding:0 0 32px;">
-              <a href="https://voxaistudio.com/sign-in" style="display:inline-block;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;padding:16px 40px;border-radius:12px;text-decoration:none;font-weight:700;font-size:15px;box-shadow:0 4px 16px rgba(79,70,229,0.4);">🚀 &nbsp;Log In & Start Creating</a>
+              <a href="https://voxaistudio.com/auth/sign-in" style="display:inline-block;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;padding:16px 40px;border-radius:12px;text-decoration:none;font-weight:700;font-size:15px;box-shadow:0 4px 16px rgba(79,70,229,0.4);">🚀 &nbsp;Log In & Start Creating</a>
             </td></tr></table>
             <p style="margin:0 0 8px;font-size:14px;color:#6b7280;line-height:1.7;">We'd love to hear what you think. If you have any questions or feedback, just reply to this email — we read every message.</p>
             <p style="margin:0 0 32px;font-size:14px;color:#374151;line-height:1.7;">Thank you for giving us a second chance.<br/><strong>Warm regards,<br/>The Vox AI Studio Team</strong></p>
