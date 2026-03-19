@@ -64,10 +64,9 @@ function EmailVerificationCard() {
           {!isVerified && (
             <Button
               size="sm"
-              variant="outline"
               onClick={handleResend}
               disabled={isSending}
-              className="w-full sm:w-auto sm:shrink-0"
+              className="w-full bg-purple-600 hover:bg-purple-700 sm:w-auto sm:shrink-0"
             >
               {isSending ? (
                 <>
@@ -130,11 +129,11 @@ export default function SettingPage() {
           <div className="flex flex-col items-center justify-center gap-6">
             <EmailVerificationCard />
 
-            <div className="w-full max-w-2xl">
+            <div className="w-full max-w-2xl [&_button[type='submit']]:border-0 [&_button[type='submit']]:bg-purple-600 [&_button[type='submit']]:text-white [&_button[type='submit']:hover]:bg-purple-700">
               <UpdateNameCard />
             </div>
 
-            <div className="w-full max-w-2xl overflow-hidden [&_*]:min-w-0 [&_*]:break-all">
+            <div className="w-full max-w-2xl overflow-hidden [&_*]:min-w-0 [&_*]:break-all [&_button[type='submit']]:border-0 [&_button[type='submit']]:bg-purple-600 [&_button[type='submit']]:text-white [&_button[type='submit']:hover]:bg-purple-700">
               <SecuritySettingsCards className="w-full max-w-2xl" />
             </div>
           </div>

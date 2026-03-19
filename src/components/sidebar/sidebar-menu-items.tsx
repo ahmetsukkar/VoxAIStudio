@@ -89,8 +89,9 @@ export default function SidebarMenuItems() {
             asChild
             isActive={item.active}
             className={cn(
-              "group hover:bg-primary/10 hover:text-primary relative h-10 w-full justify-start rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200",
-              item.active && "bg-primary/15 text-primary shadow-sm",
+              "group relative h-10 w-full justify-start rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200",
+              "hover:bg-purple-600/10 hover:text-purple-600",
+              item.active && "bg-purple-600/15 text-purple-600 shadow-sm",
             )}
           >
             <Link

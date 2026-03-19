@@ -1,6 +1,8 @@
 import { getPublishedBlogPosts } from "~/lib/blog";
 import { env } from "~/env";
 
+export const revalidate = 3600
+
 export default async function sitemap() {
   const baseUrl = env.BETTER_AUTH_WWWURL;
 

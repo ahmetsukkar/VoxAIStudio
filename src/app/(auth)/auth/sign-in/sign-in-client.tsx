@@ -106,8 +106,7 @@ export default function SignInManualPage() {
           <Button
             onClick={handleGoogleSignIn}
             disabled={isLoading}
-            variant="outline"
-            className="w-full"
+            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
             size="lg"
           >
             <svg
@@ -181,7 +180,7 @@ export default function SignInManualPage() {
                 disabled={isLoading}
               />
             </div>
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button type="submit" className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700" disabled={isLoading}>
               {isLoading ? "Signing in..." : "Sign In"}
             </Button>
           </form>

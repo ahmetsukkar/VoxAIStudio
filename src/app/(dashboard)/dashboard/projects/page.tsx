@@ -364,7 +364,7 @@ export default function Projects() {
             </div>
             <Button
               onClick={() => router.push("/dashboard/studio")}
-              className="gap-2 self-start sm:self-auto"
+              className="gap-2 self-start bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 sm:self-auto"
             >
               <Plus className="h-4 w-4" />
               New Audio
@@ -479,9 +479,9 @@ export default function Projects() {
                 ) : (
                   <Button
                     onClick={() => router.push("/dashboard/studio")}
-                    className="gap-2"
+                    className="gap-2 bg-purple-600 hover:bg-purple-700"
                   >
-                    <Plus className="h-4 w-4" />
+                    <Mic className="h-4 w-4" />
                     Create Your First Audio
                   </Button>
                 )}
