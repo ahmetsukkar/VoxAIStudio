@@ -190,7 +190,7 @@ export default function DemoSection() {
                             <audio
                               id={sample.id}
                               src={sample.audioUrl}
-                              preload="metadata"
+                              preload="none"
                             />
                           )}
                         </div>
@@ -258,8 +258,7 @@ export default function DemoSection() {
                             <audio
                               id={sample.id}
                               src={sample.audioUrl}
-                              preload="metadata"
-                              crossOrigin="anonymous"
+                              preload="none"
                             />
                           )}
                         </div>
