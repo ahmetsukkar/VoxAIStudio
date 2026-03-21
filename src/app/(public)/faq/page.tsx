@@ -9,10 +9,61 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://www.voxaistudio.com/faq" },
 };
 
-
 export default function FAQPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/20 to-slate-100">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: [
+              {
+                "@type": "Question",
+                name: "What is Vox AI Studio?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Vox AI Studio is an AI-powered Text-to-Speech platform that converts written text into natural-sounding, professional-quality speech in seconds.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "How do credits work?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Credits are consumed based on the number of characters converted to speech. Credits never expire on paid plans and can be topped up anytime.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "What languages are supported?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Vox AI Studio supports multiple languages and regional accents through Google Gemini TTS, including English, Arabic, Spanish, French, German, and many more.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "Can I clone my own voice?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Yes. Vox AI Studio supports voice cloning, allowing you to create a unique voice based on your own recordings or choose from a library of pre-built professional voices.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "Is there a free trial?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Yes. Vox AI Studio offers a 7-day free trial with 10,000 credits included. No credit card is required to start.",
+                },
+              },
+            ],
+          }),
+        }}
+      />
+
       <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
         <h1 className="mb-4 text-4xl font-bold text-slate-800">
           Frequently Asked Questions

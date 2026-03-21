@@ -85,6 +85,32 @@ export default async function BlogPostPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            headline: post.title,
+            description: post.excerpt,
+            author: {
+              "@type": "Person",
+              name: post.authorName,
+            },
+            publisher: {
+              "@type": "Organization",
+              name: "Vox AI Studio",
+              url: "https://www.voxaistudio.com",
+            },
+            datePublished: post.publishedAt?.toISOString(),
+            dateModified:
+              post.updatedAt?.toISOString() ?? post.publishedAt?.toISOString(),
+            url: `https://www.voxaistudio.com/blog/${post.slug}`,
+            image: "/images/og-image.png",
+          }),
+        }}
+      />
+
       {/* Header */}
       <section className="bg-gradient-to-br from-purple-600 to-blue-500 py-12 text-white">
         <div className="container mx-auto px-4">

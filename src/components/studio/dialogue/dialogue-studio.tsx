@@ -30,7 +30,6 @@ import { useCreditsStore } from "~/store/credits-store";
 import { usePlanStore } from "~/store/plan-store";
 import { audioManager } from "~/lib/audio/audio-manager";
 import { VerifyToGenerateModal } from "~/components/verify-to-generate-modal";
-import Link from "next/link";
 import { authClient, useSession } from "~/lib/auth-client";
 import {
   Tooltip,
@@ -38,6 +37,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
+import PricingModal from "~/components/pricing-modal";
 import { TrialExpiredModal } from "~/components/trial-expired-modal";
 
 export default function DialogueStudio() {
@@ -77,6 +77,7 @@ export default function DialogueStudio() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [showVerifyModal, setShowVerifyModal] = useState(false);
   const [showTrialExpiredModal, setShowTrialExpiredModal] = useState(false);
+  const [showPricingModal, setShowPricingModal] = useState(false);
 
   const [verifySent, setVerifySent] = useState(false);
   const [verifyLoading, setVerifyLoading] = useState(false);
@@ -254,11 +255,12 @@ export default function DialogueStudio() {
               <TooltipTrigger asChild>
                 <span>
                   {isVerified ? (
-                    <Link href="/api/auth/checkout?slug=start">
-                      <Button className="bg-gradient-to-r from-indigo-500 to-cyan-600 hover:from-indigo-600 hover:to-cyan-700">
-                        Upgrade — starting at $4.99
-                      </Button>
-                    </Link>
+                    <Button
+                      onClick={() => setShowPricingModal(true)}
+                      className="bg-gradient-to-r from-indigo-500 to-cyan-600 hover:from-indigo-600 hover:to-cyan-700"
+                    >
+                      Upgrade — starting at $4.99
+                    </Button>
                   ) : (
                     <Button
                       disabled
@@ -307,6 +309,12 @@ export default function DialogueStudio() {
                 </p>
               )}
             </div>
+          )}
+          {showPricingModal && (
+            <PricingModal
+              open={showPricingModal}
+              onClose={() => setShowPricingModal(false)}
+            />
           )}
         </div>
       </div>
@@ -464,10 +472,7 @@ export default function DialogueStudio() {
         </div>
       </div>
 
-      <RecentGenerations
-        group="Dialogue"
-        refreshTrigger={refreshTrigger}
-      />
+      <RecentGenerations group="Dialogue" refreshTrigger={refreshTrigger} />
     </div>
   );
 }
