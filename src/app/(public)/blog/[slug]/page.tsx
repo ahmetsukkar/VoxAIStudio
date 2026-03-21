@@ -34,19 +34,30 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const post = result.data;
+  const ogImage = post.featuredImage ?? "/images/og-image.png"; // use post image if available
 
   return {
     title: post.metaTitle ?? `${post.title} | Vox AI Studio Blog`,
     description: post.metaDescription ?? post.excerpt,
     keywords: post.keywords?.join(", ") ?? "",
+    alternates: {
+      canonical: `https://www.voxaistudio.com/blog/${slug}`,
+    },
     openGraph: {
-      title: post.title,
-      description: post.excerpt,
+      title: post.metaTitle ?? post.title,
+      description: post.metaDescription ?? post.excerpt,
       type: "article",
       publishedTime: post.publishedAt?.toISOString(),
+      modifiedTime: post.updatedAt?.toISOString(),
       authors: [post.authorName],
       tags: post.tags,
-      images: ["/images/og-image.png"],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: post.title }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.metaTitle ?? post.title,
+      description: post.metaDescription ?? post.excerpt,
+      images: [ogImage],
     },
   };
 }

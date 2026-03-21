@@ -14,6 +14,40 @@ import { Button } from "~/components/ui/button";
 import DemoSection from "~/components/demo-section";
 import PricingButton from "~/components/pricing-button";
 import AuthCTA from "~/components/auth-cta";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Vox AI Studio — AI Text to Speech & Voice Cloning",
+  description:
+    "Convert text into natural, human-like speech instantly. Clone voices, choose from 50+ AI voices, support multiple languages. Try free — no credit card needed.",
+  keywords: [
+    "text to speech",
+    "AI voice generator",
+    "voice cloning",
+    "TTS online",
+    "AI audio generator",
+    "natural speech synthesis",
+    "AI voiceover tool",
+    "text to audio",
+  ],
+  alternates: {
+    canonical: "https://www.voxaistudio.com",
+  },
+  openGraph: {
+    title: "Vox AI Studio — AI Text to Speech & Voice Cloning",
+    description:
+      "Convert text into natural-sounding speech with AI. Clone voices, pick from 50+ voices, multiple languages. Start free.",
+    url: "https://www.voxaistudio.com",
+    images: [
+      {
+        url: "/images/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Vox AI Studio — AI Text to Speech",
+      },
+    ],
+  },
+};
 
 export default function HomePage() {
   const features = [
@@ -77,6 +111,53 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/20 to-slate-100">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            name: "Vox AI Studio",
+            url: "https://www.voxaistudio.com",
+            description:
+              "AI-powered text-to-speech and voice cloning platform. Convert text into natural human-like speech in seconds.",
+            applicationCategory: "MultimediaApplication",
+            operatingSystem: "Web",
+            offers: [
+              {
+                "@type": "Offer",
+                name: "Free Trial",
+                price: "0",
+                priceCurrency: "USD",
+              },
+              {
+                "@type": "Offer",
+                name: "Starter",
+                price: "4.99",
+                priceCurrency: "USD",
+              },
+              {
+                "@type": "Offer",
+                name: "Creator",
+                price: "9.99",
+                priceCurrency: "USD",
+              },
+              {
+                "@type": "Offer",
+                name: "Pro",
+                price: "49.99",
+                priceCurrency: "USD",
+              },
+            ],
+            aggregateRating: {
+              "@type": "AggregateRating",
+              ratingValue: "4.8",
+              ratingCount: "5000",
+            },
+          }),
+        }}
+      />
+
       {/* ── HERO ── */}
       <section className="relative overflow-hidden py-20 sm:py-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

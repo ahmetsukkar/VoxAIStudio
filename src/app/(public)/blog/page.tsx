@@ -12,12 +12,21 @@ import AuthCTA from "~/components/auth-cta";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Blog - Vox AI Studio | AI Voice & Text-to-Speech Insights",
+  title: "Blog — AI Voice & Text to Speech Guides | Vox AI Studio",
   description:
-    "Explore guides, tutorials, and insights about AI voice technology, text-to-speech, voice cloning, and content creation.",
-  keywords:
-    "AI voice blog, text-to-speech guides, voice cloning tutorials, TTS technology",
+    "Explore expert guides, comparisons, and tutorials on AI text-to-speech, voice cloning, TTS pricing, and voice synthesis technology.",
+  alternates: {
+    canonical: "https://www.voxaistudio.com/blog",
+  },
+  openGraph: {
+    title: "Blog — AI Voice & Text to Speech Guides | Vox AI Studio",
+    description:
+      "Expert guides on AI TTS, voice cloning, pricing comparisons, and more.",
+    url: "https://www.voxaistudio.com/blog",
+    images: [{ url: "/images/og-image.png", width: 1200, height: 630 }],
+  },
 };
+
 
 export default async function BlogPage() {
   const postsResult = await getPublishedBlogPosts();

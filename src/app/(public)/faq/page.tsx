@@ -1,11 +1,14 @@
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
-import { AudioWaveform, ArrowLeft } from "lucide-react";
+import type { Metadata } from "next";
 
-export const metadata = {
-  title: "FAQ - Vox AI Studio",
-  description: "Frequently Asked Questions about Vox AI Studio",
+export const metadata: Metadata = {
+  title: "FAQ — Common Questions About Vox AI Studio",
+  description:
+    "Find answers to common questions about Vox AI Studio — credits, pricing, voice cloning, supported languages, and how AI text-to-speech works.",
+  alternates: { canonical: "https://www.voxaistudio.com/faq" },
 };
+
 
 export default function FAQPage() {
   return (
