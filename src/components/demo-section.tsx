@@ -5,6 +5,9 @@ import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { Play, Pause } from "lucide-react";
 import AuthCTA from "./auth-cta";
+
+const S3_VOICE_SAMPLES = "https://vox-ai-studio.s3.us-east-1.amazonaws.com/samples/voices/Public";
+
 export default function DemoSection() {
   const [playingId, setPlayingId] = useState<string | null>(null);
   const naturalSpeechSamples = [
@@ -12,37 +15,37 @@ export default function DemoSection() {
       id: "warm-narrator",
       text: "Welcome back. In the next minute, I’ll guide you through a simple story that feels natural and clear.",
       voiceType: "Warm Narrator (Neutral English)",
-      audioUrl: "/audio/warm-narrator.wav",
+      audioUrl: `${S3_VOICE_SAMPLES}/warm-narrator.wav`,
     },
     {
       id: "energetic-host",
       text: "Alright everyone—big news today! We’re kicking off with the fastest updates and a quick takeaway you can use.",
       voiceType: "Energetic Male Host",
-      audioUrl: "/audio/energetic-host.wav",
+      audioUrl: `${S3_VOICE_SAMPLES}/energetic-host.wav`,
     },
     {
       id: "calm-meditation",
       text: "Take a slow breath in, hold for a moment, and let your shoulders drop as you exhale gently.",
       voiceType: "Calm Meditation Guide (Soft Female)",
-      audioUrl: "/audio/calm-meditation.wav",
+      audioUrl: `${S3_VOICE_SAMPLES}/calm-meditation.wav`,
     },
     {
       id: "customer-support",
       text: "Thanks for reaching out—let’s sort this out together. First, I’ll confirm a couple of details and then fix it.",
       voiceType: "Customer Support Agent (Professional)",
-      audioUrl: "/audio/customer-support.wav",
+      audioUrl: `${S3_VOICE_SAMPLES}/customer-support.wav`,
     },
     {
       id: "audiobook-british",
       text: "At precisely midnight, the old clock chimed once, and the hallway seemed to hold its breath.",
       voiceType: "Audiobook Reader (British RP)",
-      audioUrl: "/audio/audiobook-british.wav",
+      audioUrl: `${S3_VOICE_SAMPLES}/audiobook-british.wav`,
     },
     {
       id: "turkish-friendly",
       text: "Merhaba! Bugün sana doğal ve anlaşılır bir ses örneği dinleteceğim; hazır olduğunda başlayalım.",
       voiceType: "Turkish Friendly (Istanbul Accent)",
-      audioUrl: "/audio/turkish-friendly.wav",
+      audioUrl: `${S3_VOICE_SAMPLES}/turkish-friendly.wav`,
     },
   ];
 
@@ -51,31 +54,31 @@ export default function DemoSection() {
       id: "hindi",
       language: "Indian 🇮🇳",
       text: "नमस्ते! हमें खुशी है कि आप आज यहाँ हैं।",
-      audioUrl: "/audio/hindi.wav",
+      audioUrl: `${S3_VOICE_SAMPLES}/hindi.wav`,
     },
     {
       id: "spanish",
       language: "Spanish 🇪🇸",
       text: "¡Hola! Gracias por visitarnos, empecemos cuando quieras.",
-      audioUrl: "/audio/spanish.wav",
+      audioUrl: `${S3_VOICE_SAMPLES}/spanish.wav`,
     },
     {
       id: "french",
       language: "French 🇫🇷",
       text: "Bonjour ! Ravi de vous voir ici, commençons ensemble.",
-      audioUrl: "/audio/french.wav",
+      audioUrl: `${S3_VOICE_SAMPLES}/french.wav`,
     },
     {
       id: "japanese",
       language: "Japanese 🇯🇵",
       text: "はじめまして！ここで一緒に始めましょう。",
-      audioUrl: "/audio/japanese.wav",
+      audioUrl: `${S3_VOICE_SAMPLES}/japanese.wav`,
     },
     {
       id: "arabic",
       language: "Arabic 🇸🇦",
       text: "مرحبًا! يسعدنا انضمامك إلينا، فلنبدأ الآن.",
-      audioUrl: "/audio/arabic.wav",
+      audioUrl: `${S3_VOICE_SAMPLES}/arabic.wav`,
     },
   ];
 

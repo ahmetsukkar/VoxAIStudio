@@ -48,7 +48,7 @@ export const GeminiPaces: { value: GeminiPace; label: string }[] = [
   { value: "fast",   label: "Fast" },
 ];
 
-const S3_VOICE_SAMPLES = "https://vox-ai-studio.s3.us-east-1.amazonaws.com/samples/voices";
+const S3_VOICE_SAMPLES = "https://vox-ai-studio.s3.us-east-1.amazonaws.com/samples/voices/Gemini";
 
 export const GeminiVoices: {
   name: string;
