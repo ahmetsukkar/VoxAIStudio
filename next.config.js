@@ -6,7 +6,10 @@ import "./src/env.js";
 
 /** @type {import("next").NextConfig} */
 const config = {
-    async headers() {
+  experimental: {
+    optimizeCss: true,
+  },
+  async headers() {
     return [
       {
         source: "/(.*)",
