@@ -20,7 +20,7 @@ export default function Navigation() {
             </div>
             <Link href="/">
               <span className="bg-gradient-to-r from-indigo-600 to-cyan-600 bg-clip-text text-xl font-bold text-transparent">
-                Vox AI Studio
+                Vox AI Studio Stg
               </span>
             </Link>
           </div>
