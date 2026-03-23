@@ -99,261 +99,268 @@ async function main() {
 
   // Add these after post3 (around line where post3 ends)
 
-  const post4 = await prisma.blogPost.create({
-    data: {
-      slug: "ai-voice-technology-future-content-creation",
-      title: "The Future of AI Voice Technology in Content Creation",
-      excerpt:
-        "Explore emerging trends in AI voice technology and how they will reshape content creation, marketing, and digital storytelling in the coming years.",
-      content: POST4_CONTENT,
-      category: "Educational",
-      tags: [
-        "AI Technology",
-        "Future Trends",
-        "Content Creation",
-        "Innovation",
-      ],
-      authorName: "Dr. Emily Watson",
-      authorAvatar: "/images/authors/emily.jpg",
-      metaTitle:
-        "Future of AI Voice Technology in Content Creation | 2026 Trends",
-      metaDescription:
-        "Discover the latest trends and future predictions for AI voice technology in content creation. Learn how AI voices will transform digital storytelling.",
-      keywords: [
-        "AI voice future",
-        "voice technology trends",
-        "content creation AI",
-        "digital storytelling",
-      ],
-      readingTime: "9 min read",
-      featured: false,
-      status: "PUBLISHED",
-      publishedAt: new Date("2026-01-22"),
-    },
-  });
-  console.log("Created post 4:", post4.title);
+  // const post4 = await prisma.blogPost.create({
+  //   data: {
+  //     slug: "ai-voice-technology-future-content-creation",
+  //     title: "The Future of AI Voice Technology in Content Creation",
+  //     excerpt:
+  //       "Explore emerging trends in AI voice technology and how they will reshape content creation, marketing, and digital storytelling in the coming years.",
+  //     content: POST4_CONTENT,
+  //     category: "Educational",
+  //     tags: [
+  //       "AI Technology",
+  //       "Future Trends",
+  //       "Content Creation",
+  //       "Innovation",
+  //     ],
+  //     authorName: "Dr. Emily Watson",
+  //     authorAvatar: "/images/authors/emily.jpg",
+  //     metaTitle:
+  //       "Future of AI Voice Technology in Content Creation | 2026 Trends",
+  //     metaDescription:
+  //       "Discover the latest trends and future predictions for AI voice technology in content creation. Learn how AI voices will transform digital storytelling.",
+  //     keywords: [
+  //       "AI voice future",
+  //       "voice technology trends",
+  //       "content creation AI",
+  //       "digital storytelling",
+  //     ],
+  //     readingTime: "9 min read",
+  //     featured: false,
+  //     status: "PUBLISHED",
+  //     publishedAt: new Date("2026-01-22"),
+  //   },
+  // });
+  // console.log("Created post 4:", post4.title);
 
-  const post5 = await prisma.blogPost.create({
-    data: {
-      slug: "voice-cloning-ethics-best-practices",
-      title: "Voice Cloning Ethics: Best Practices and Legal Considerations",
-      excerpt:
-        "Understanding the ethical implications and legal framework surrounding AI voice cloning technology. Essential reading for content creators and businesses.",
-      content: POST5_CONTENT,
-      category: "Educational",
-      tags: ["Ethics", "Voice Cloning", "Legal", "Best Practices"],
-      authorName: "Marcus Thompson",
-      authorAvatar: "/images/authors/marcus.jpg",
-      metaTitle:
-        "Voice Cloning Ethics & Legal Best Practices | Complete Guide 2026",
-      metaDescription:
-        "Comprehensive guide to ethical voice cloning practices, legal considerations, consent requirements, and responsible AI voice usage.",
-      keywords: [
-        "voice cloning ethics",
-        "AI voice legal",
-        "voice cloning consent",
-        "ethical AI",
-      ],
-      readingTime: "11 min read",
-      featured: false,
-      status: "PUBLISHED",
-      publishedAt: new Date("2026-01-20"),
-    },
-  });
-  console.log("Created post 5:", post5.title);
+  // const post5 = await prisma.blogPost.create({
+  //   data: {
+  //     slug: "voice-cloning-ethics-best-practices",
+  //     title: "Voice Cloning Ethics: Best Practices and Legal Considerations",
+  //     excerpt:
+  //       "Understanding the ethical implications and legal framework surrounding AI voice cloning technology. Essential reading for content creators and businesses.",
+  //     content: POST5_CONTENT,
+  //     category: "Educational",
+  //     tags: ["Ethics", "Voice Cloning", "Legal", "Best Practices"],
+  //     authorName: "Marcus Thompson",
+  //     authorAvatar: "/images/authors/marcus.jpg",
+  //     metaTitle:
+  //       "Voice Cloning Ethics & Legal Best Practices | Complete Guide 2026",
+  //     metaDescription:
+  //       "Comprehensive guide to ethical voice cloning practices, legal considerations, consent requirements, and responsible AI voice usage.",
+  //     keywords: [
+  //       "voice cloning ethics",
+  //       "AI voice legal",
+  //       "voice cloning consent",
+  //       "ethical AI",
+  //     ],
+  //     readingTime: "11 min read",
+  //     featured: false,
+  //     status: "PUBLISHED",
+  //     publishedAt: new Date("2026-01-20"),
+  //   },
+  // });
+  // console.log("Created post 5:", post5.title);
 
-  const post6 = await prisma.blogPost.create({
-    data: {
-      slug: "multilingual-content-strategy-ai-voices",
-      title: "Building a Multilingual Content Strategy with AI Voices",
-      excerpt:
-        "Learn how to scale your content globally using AI voice technology. Practical strategies for creating multilingual audio content efficiently.",
-      content: POST6_CONTENT,
-      category: "How-To Guide",
-      tags: ["Multilingual", "Global Content", "Strategy", "Localization"],
-      authorName: "Sofia Martinez",
-      authorAvatar: "/images/authors/sofia.jpg",
-      metaTitle:
-        "Multilingual Content Strategy with AI Voices | Scale Globally",
-      metaDescription:
-        "Master the art of creating multilingual content with AI voices. Learn localization strategies, language selection, and best practices.",
-      keywords: [
-        "multilingual content",
-        "AI voice localization",
-        "global content strategy",
-        "language scaling",
-      ],
-      readingTime: "10 min read",
-      featured: false,
-      status: "PUBLISHED",
-      publishedAt: new Date("2026-01-18"),
-    },
-  });
-  console.log("Created post 6:", post6.title);
+  // const post6 = await prisma.blogPost.create({
+  //   data: {
+  //     slug: "multilingual-content-strategy-ai-voices",
+  //     title: "Building a Multilingual Content Strategy with AI Voices",
+  //     excerpt:
+  //       "Learn how to scale your content globally using AI voice technology. Practical strategies for creating multilingual audio content efficiently.",
+  //     content: POST6_CONTENT,
+  //     category: "How-To Guide",
+  //     tags: ["Multilingual", "Global Content", "Strategy", "Localization"],
+  //     authorName: "Sofia Martinez",
+  //     authorAvatar: "/images/authors/sofia.jpg",
+  //     metaTitle:
+  //       "Multilingual Content Strategy with AI Voices | Scale Globally",
+  //     metaDescription:
+  //       "Master the art of creating multilingual content with AI voices. Learn localization strategies, language selection, and best practices.",
+  //     keywords: [
+  //       "multilingual content",
+  //       "AI voice localization",
+  //       "global content strategy",
+  //       "language scaling",
+  //     ],
+  //     readingTime: "10 min read",
+  //     featured: false,
+  //     status: "PUBLISHED",
+  //     publishedAt: new Date("2026-01-18"),
+  //   },
+  // });
+  // console.log("Created post 6:", post6.title);
 
-  const post7 = await prisma.blogPost.create({
-    data: {
-      slug: "audiobook-production-ai-voice-guide",
-      title: "Audiobook Production with AI Voices: A Complete Guide",
-      excerpt:
-        "Step-by-step guide to producing professional audiobooks using AI voice technology. Learn about voice selection, editing, and distribution.",
-      content: POST7_CONTENT,
-      category: "How-To Guide",
-      tags: ["Audiobooks", "Publishing", "Voice Production", "Tutorial"],
-      authorName: "David Kumar",
-      authorAvatar: "/images/authors/david.jpg",
-      metaTitle:
-        "AI Voice Audiobook Production Guide | Professional Publishing 2026",
-      metaDescription:
-        "Complete guide to creating professional audiobooks with AI voices. Learn production workflow, quality standards, and distribution strategies.",
-      keywords: [
-        "AI audiobook production",
-        "audiobook creation",
-        "voice audiobook",
-        "self-publishing audio",
-      ],
-      readingTime: "13 min read",
-      featured: false,
-      status: "PUBLISHED",
-      publishedAt: new Date("2026-01-16"),
-    },
-  });
-  console.log("Created post 7:", post7.title);
+  // const post7 = await prisma.blogPost.create({
+  //   data: {
+  //     slug: "audiobook-production-ai-voice-guide",
+  //     title: "Audiobook Production with AI Voices: A Complete Guide",
+  //     excerpt:
+  //       "Step-by-step guide to producing professional audiobooks using AI voice technology. Learn about voice selection, editing, and distribution.",
+  //     content: POST7_CONTENT,
+  //     category: "How-To Guide",
+  //     tags: ["Audiobooks", "Publishing", "Voice Production", "Tutorial"],
+  //     authorName: "David Kumar",
+  //     authorAvatar: "/images/authors/david.jpg",
+  //     metaTitle:
+  //       "AI Voice Audiobook Production Guide | Professional Publishing 2026",
+  //     metaDescription:
+  //       "Complete guide to creating professional audiobooks with AI voices. Learn production workflow, quality standards, and distribution strategies.",
+  //     keywords: [
+  //       "AI audiobook production",
+  //       "audiobook creation",
+  //       "voice audiobook",
+  //       "self-publishing audio",
+  //     ],
+  //     readingTime: "13 min read",
+  //     featured: false,
+  //     status: "PUBLISHED",
+  //     publishedAt: new Date("2026-01-16"),
+  //   },
+  // });
+  // console.log("Created post 7:", post7.title);
 
-  const post8 = await prisma.blogPost.create({
-    data: {
-      slug: "ai-voice-social-media-marketing",
-      title: "Using AI Voices for Social Media Marketing in 2026",
-      excerpt:
-        "Discover how leading brands are using AI voice technology to create engaging social media content. Includes platform-specific strategies and case studies.",
-      content: POST8_CONTENT,
-      category: "How-To Guide",
-      tags: ["Social Media", "Marketing", "Content Strategy", "Engagement"],
-      authorName: "Jessica Lee",
-      authorAvatar: "/images/authors/jessica.jpg",
-      metaTitle:
-        "AI Voice Social Media Marketing Strategy | Instagram, TikTok, YouTube",
-      metaDescription:
-        "Learn how to leverage AI voices for social media marketing. Platform-specific strategies for Instagram, TikTok, YouTube, and LinkedIn.",
-      keywords: [
-        "AI voice social media",
-        "social media marketing",
-        "voice content strategy",
-        "social engagement",
-      ],
-      readingTime: "9 min read",
-      featured: false,
-      status: "PUBLISHED",
-      publishedAt: new Date("2026-01-14"),
-    },
-  });
-  console.log("Created post 8:", post8.title);
+  // const post8 = await prisma.blogPost.create({
+  //   data: {
+  //     slug: "ai-voice-social-media-marketing",
+  //     title: "Using AI Voices for Social Media Marketing in 2026",
+  //     excerpt:
+  //       "Discover how leading brands are using AI voice technology to create engaging social media content. Includes platform-specific strategies and case studies.",
+  //     content: POST8_CONTENT,
+  //     category: "How-To Guide",
+  //     tags: ["Social Media", "Marketing", "Content Strategy", "Engagement"],
+  //     authorName: "Jessica Lee",
+  //     authorAvatar: "/images/authors/jessica.jpg",
+  //     metaTitle:
+  //       "AI Voice Social Media Marketing Strategy | Instagram, TikTok, YouTube",
+  //     metaDescription:
+  //       "Learn how to leverage AI voices for social media marketing. Platform-specific strategies for Instagram, TikTok, YouTube, and LinkedIn.",
+  //     keywords: [
+  //       "AI voice social media",
+  //       "social media marketing",
+  //       "voice content strategy",
+  //       "social engagement",
+  //     ],
+  //     readingTime: "9 min read",
+  //     featured: false,
+  //     status: "PUBLISHED",
+  //     publishedAt: new Date("2026-01-14"),
+  //   },
+  // });
+  // console.log("Created post 8:", post8.title);
 
-  const post9 = await prisma.blogPost.create({
-    data: {
-      slug: "voice-branding-consistent-audio-identity",
-      title: "Voice Branding: Creating a Consistent Audio Identity",
-      excerpt:
-        "Build a recognizable brand voice with AI technology. Learn how to establish and maintain consistent audio branding across all customer touchpoints.",
-      content: POST9_CONTENT,
-      category: "Educational",
-      tags: ["Branding", "Audio Identity", "Brand Voice", "Marketing"],
-      authorName: "Alex Thompson",
-      authorAvatar: "/images/authors/alex.jpg",
-      metaTitle:
-        "Voice Branding Guide | Create Consistent Audio Brand Identity",
-      metaDescription:
-        "Master voice branding with AI technology. Learn to create and maintain a consistent audio identity for your brand across all platforms.",
-      keywords: [
-        "voice branding",
-        "audio brand identity",
-        "brand voice consistency",
-        "sonic branding",
-      ],
-      readingTime: "10 min read",
-      featured: false,
-      status: "PUBLISHED",
-      publishedAt: new Date("2026-01-12"),
-    },
-  });
-  console.log("Created post 9:", post9.title);
+  // const post9 = await prisma.blogPost.create({
+  //   data: {
+  //     slug: "voice-branding-consistent-audio-identity",
+  //     title: "Voice Branding: Creating a Consistent Audio Identity",
+  //     excerpt:
+  //       "Build a recognizable brand voice with AI technology. Learn how to establish and maintain consistent audio branding across all customer touchpoints.",
+  //     content: POST9_CONTENT,
+  //     category: "Educational",
+  //     tags: ["Branding", "Audio Identity", "Brand Voice", "Marketing"],
+  //     authorName: "Alex Thompson",
+  //     authorAvatar: "/images/authors/alex.jpg",
+  //     metaTitle:
+  //       "Voice Branding Guide | Create Consistent Audio Brand Identity",
+  //     metaDescription:
+  //       "Master voice branding with AI technology. Learn to create and maintain a consistent audio identity for your brand across all platforms.",
+  //     keywords: [
+  //       "voice branding",
+  //       "audio brand identity",
+  //       "brand voice consistency",
+  //       "sonic branding",
+  //     ],
+  //     readingTime: "10 min read",
+  //     featured: false,
+  //     status: "PUBLISHED",
+  //     publishedAt: new Date("2026-01-12"),
+  //   },
+  // });
+  // console.log("Created post 9:", post9.title);
 
-    const post10 = await prisma.blogPost.create({
-    data: {
-      slug: "elearning-course-narration-best-practices",
-      title: "E-Learning Course Narration: Best Practices for 2026",
-      excerpt: "Optimize your online courses with professional AI voice narration. Essential tips for creating engaging educational content that improves learning outcomes.",
-      content: POST10_CONTENT,
-      category: "Educational",
-      tags: ["E-Learning", "Education", "Course Design", "Training"],
-      authorName: "Dr. Rachel Green",
-      authorAvatar: "/images/authors/rachel.jpg",
-      metaTitle: "E-Learning Narration Best Practices | AI Voice for Online Courses",
-      metaDescription: "Expert guide to e-learning course narration using AI voices. Improve engagement, retention, and learning outcomes with professional audio.",
-      keywords: ["e-learning narration", "online course voice", "educational audio", "course design"],
-      readingTime: "11 min read",
-      featured: false,
-      status: "PUBLISHED",
-      publishedAt: new Date("2026-01-10"),
-    },
-  });
-  console.log("Created post 10:", post10.title);
+  //   const post10 = await prisma.blogPost.create({
+  //   data: {
+  //     slug: "elearning-course-narration-best-practices",
+  //     title: "E-Learning Course Narration: Best Practices for 2026",
+  //     excerpt: "Optimize your online courses with professional AI voice narration. Essential tips for creating engaging educational content that improves learning outcomes.",
+  //     content: POST10_CONTENT,
+  //     category: "Educational",
+  //     tags: ["E-Learning", "Education", "Course Design", "Training"],
+  //     authorName: "Dr. Rachel Green",
+  //     authorAvatar: "/images/authors/rachel.jpg",
+  //     metaTitle: "E-Learning Narration Best Practices | AI Voice for Online Courses",
+  //     metaDescription: "Expert guide to e-learning course narration using AI voices. Improve engagement, retention, and learning outcomes with professional audio.",
+  //     keywords: ["e-learning narration", "online course voice", "educational audio", "course design"],
+  //     readingTime: "11 min read",
+  //     featured: false,
+  //     status: "PUBLISHED",
+  //     publishedAt: new Date("2026-01-10"),
+  //   },
+  // });
+  // console.log("Created post 10:", post10.title);
 
-  const post11 = await prisma.blogPost.create({
-    data: {
-      slug: "ai-voice-accessibility-inclusive-content",
-      title: "AI Voice Technology and Digital Accessibility",
-      excerpt: "How AI voice technology is breaking down barriers and making digital content accessible to everyone. Essential insights for inclusive content creation.",
-      content: POST11_CONTENT,
-      category: "Educational",
-      tags: ["Accessibility", "Inclusion", "WCAG", "Digital Rights"],
-      authorName: "Maya Patel",
-      authorAvatar: "/images/authors/maya.jpg",
-      metaTitle: "AI Voice Accessibility Guide | Creating Inclusive Digital Content",
-      metaDescription: "Learn how AI voice technology improves digital accessibility. WCAG compliance, inclusive design, and best practices for accessible content.",
-      keywords: ["AI voice accessibility", "digital inclusion", "WCAG compliance", "accessible content"],
-      readingTime: "10 min read",
-      featured: false,
-      status: "PUBLISHED",
-      publishedAt: new Date("2026-01-08"),
-    },
-  });
-  console.log("Created post 11:", post11.title);
+  // const post11 = await prisma.blogPost.create({
+  //   data: {
+  //     slug: "ai-voice-accessibility-inclusive-content",
+  //     title: "AI Voice Technology and Digital Accessibility",
+  //     excerpt: "How AI voice technology is breaking down barriers and making digital content accessible to everyone. Essential insights for inclusive content creation.",
+  //     content: POST11_CONTENT,
+  //     category: "Educational",
+  //     tags: ["Accessibility", "Inclusion", "WCAG", "Digital Rights"],
+  //     authorName: "Maya Patel",
+  //     authorAvatar: "/images/authors/maya.jpg",
+  //     metaTitle: "AI Voice Accessibility Guide | Creating Inclusive Digital Content",
+  //     metaDescription: "Learn how AI voice technology improves digital accessibility. WCAG compliance, inclusive design, and best practices for accessible content.",
+  //     keywords: ["AI voice accessibility", "digital inclusion", "WCAG compliance", "accessible content"],
+  //     readingTime: "10 min read",
+  //     featured: false,
+  //     status: "PUBLISHED",
+  //     publishedAt: new Date("2026-01-08"),
+  //   },
+  // });
+  // console.log("Created post 11:", post11.title);
 
-  const post12 = await prisma.blogPost.create({
-    data: {
-      slug: "ai-voice-seo-optimization-strategies",
-      title: "Voice Search SEO: Optimizing Content for AI Voice Assistants",
-      excerpt: "Master voice search optimization in the age of AI assistants. Learn how to optimize your content for Alexa, Google Assistant, and Siri.",
-      content: POST12_CONTENT,
-      category: "How-To Guide",
-      tags: ["SEO", "Voice Search", "Optimization", "Digital Marketing"],
-      authorName: "Ryan Chen",
-      authorAvatar: "/images/authors/ryan.jpg",
-      metaTitle: "Voice Search SEO Guide | Optimize for AI Voice Assistants 2026",
-      metaDescription: "Complete guide to voice search SEO optimization. Learn strategies for Alexa, Google Assistant, Siri, and emerging voice platforms.",
-      keywords: ["voice search SEO", "voice optimization", "AI assistant SEO", "voice search strategy"],
-      readingTime: "12 min read",
-      featured: false,
-      status: "PUBLISHED",
-      publishedAt: new Date("2026-01-06"),
-    },
-  });
-  console.log("Created post 12:", post12.title);
+  // const post12 = await prisma.blogPost.create({
+  //   data: {
+  //     slug: "ai-voice-seo-optimization-strategies",
+  //     title: "Voice Search SEO: Optimizing Content for AI Voice Assistants",
+  //     excerpt: "Master voice search optimization in the age of AI assistants. Learn how to optimize your content for Alexa, Google Assistant, and Siri.",
+  //     content: POST12_CONTENT,
+  //     category: "How-To Guide",
+  //     tags: ["SEO", "Voice Search", "Optimization", "Digital Marketing"],
+  //     authorName: "Ryan Chen",
+  //     authorAvatar: "/images/authors/ryan.jpg",
+  //     metaTitle: "Voice Search SEO Guide | Optimize for AI Voice Assistants 2026",
+  //     metaDescription: "Complete guide to voice search SEO optimization. Learn strategies for Alexa, Google Assistant, Siri, and emerging voice platforms.",
+  //     keywords: ["voice search SEO", "voice optimization", "AI assistant SEO", "voice search strategy"],
+  //     readingTime: "12 min read",
+  //     featured: false,
+  //     status: "PUBLISHED",
+  //     publishedAt: new Date("2026-01-06"),
+  //   },
+  // });
+  // console.log("Created post 12:", post12.title);
 
   const post13 = await prisma.blogPost.create({
     data: {
       slug: "comparing-tts-providers-2026-buyers-guide",
       title: "Comparing TTS Providers: A 2026 Buyer's Guide",
-      excerpt: "Comprehensive comparison of leading text-to-speech providers. Features, pricing, voice quality, and use cases to help you choose the right platform.",
+      excerpt:
+        "Comprehensive comparison of leading text-to-speech providers. Features, pricing, voice quality, and use cases to help you choose the right platform.",
       content: POST13_CONTENT,
       category: "Educational",
       tags: ["Comparison", "Buyers Guide", "TTS Providers", "Review"],
       authorName: "Sarah Mitchell",
       authorAvatar: "/images/authors/sarah.jpg",
       metaTitle: "TTS Provider Comparison 2026 | Complete Buyer's Guide",
-      metaDescription: "Compare top TTS providers in 2026. Detailed analysis of features, pricing, voice quality, languages, and use cases for businesses.",
-      keywords: ["TTS provider comparison", "text to speech platforms", "TTS buyers guide", "voice provider review"],
+      metaDescription:
+        "Compare top TTS providers in 2026. Detailed analysis of features, pricing, voice quality, languages, and use cases for businesses.",
+      keywords: [
+        "TTS provider comparison",
+        "text to speech platforms",
+        "TTS buyers guide",
+        "voice provider review",
+      ],
       readingTime: "14 min read",
       featured: false,
       status: "PUBLISHED",
@@ -364,7 +371,6 @@ async function main() {
 
   console.log("\n✅ Seeding completed successfully!");
   console.log(`📝 Created ${13} blog posts total`);
-
 
   console.log("🎉 Seeding completed successfully!");
   console.log(`📊 Created ${3} blog posts`);
@@ -4572,29 +4578,22 @@ Modern TTS platform focused on content creators and businesses seeking professio
 - Regional variations available
 
 **Key Features:**
-✅ Voice cloning (10-15 second samples)
-✅ SSML support for advanced control
-✅ Pronunciation editor
-✅ Batch processing
-✅ Project management
-✅ Audio editing tools
-✅ Team collaboration
-✅ API access (all plans)
-✅ Webhook integrations
-✅ Custom voice training
+- ✅ Voice cloning
+- ✅ SSML support for advanced control
+- ✅ Pronunciation editor
+- ✅ Batch processing
+- ✅ Project management
+- ✅ Audio editing tools
+- ✅ Team collaboration
+- ✅ API access (all plans)
+- ✅ Webhook integrations
+- ✅ Custom voice training
 
 **Pricing:**
-- **Free Tier:** 25 credits (~2,500 characters)
-- **Starter:** $29/month - 50,000 characters
-- **Professional:** $79/month - 200,000 characters
-- **Business:** $199/month - 750,000 characters
-- **Enterprise:** Custom pricing
-
-**Cost Per Million Characters:**
-- Starter: $580
-- Professional: $395
-- Business: $265
-- Enterprise: Negotiable ($150-200)
+- **Free Trial:** $0 — 10,000 credits, 7-day trial, no card needed, Flash voice only, single-speaker, max 500 chars/request
+- **Start:** $4.99/month — 40,000 credits, all voices (Flash + Pro), multi-speaker enabled, no character limit per request, credits never expire
+- **Creator:** $9.99/month — 125,000 credits, all voices (Flash + Pro), multi-speaker enabled, all features included, credits never expire
+- **Pro:** $49.99/month — 400,000 credits, all voices (Flash + Pro), multi-speaker enabled, all features included, priority queue, credits never expire
 
 **Best For:**
 - Podcasters and content creators
@@ -4611,6 +4610,7 @@ Modern TTS platform focused on content creators and businesses seeking professio
 - ✅ Fast generation speeds
 - ✅ Regular voice updates
 - ✅ No hidden fees
+- ✅ Credits never expire
 
 **Cons:**
 - ❌ Smaller voice library than Google/AWS
@@ -4621,7 +4621,7 @@ Modern TTS platform focused on content creators and businesses seeking professio
 Clean interface, minimal learning curve, excellent documentation
 
 **Support: 9/10**
-24/7 chat support, email response within 4 hours, active community
+24/7 chat support, active community
 
 **Overall Rating: 9.1/10**
 
@@ -4661,12 +4661,8 @@ Enterprise-grade TTS from Google Cloud Platform with WaveNet and Neural2 voice t
 - **WaveNet voices:** $16 per 1M characters
 - **Neural2 voices:** $16 per 1M characters
 - **Studio voices:** $160 per 1M characters
+- **Chirp 3 HD voices:** $30 per 1M characters
 - **Free tier:** 4M characters/month (Standard)
-
-**Monthly Cost Estimates:**
-- 100K chars (WaveNet): $1.60
-- 1M chars (WaveNet): $16
-- 10M chars (WaveNet): $160
 
 **Best For:**
 - Large enterprises
@@ -4718,7 +4714,7 @@ AWS text-to-speech service with Neural and Standard voices, part of Amazon Web S
 - Neural and Standard options
 - Newscaster style available
 - Conversational style
-- Generative voices (preview)
+- Generative voices available
 
 **Key Features:**
 - ✅ SSML support
@@ -4734,12 +4730,9 @@ AWS text-to-speech service with Neural and Standard voices, part of Amazon Web S
 **Pricing:**
 - **Standard voices:** $4 per 1M characters
 - **Neural voices:** $16 per 1M characters
+- **Long-Form voices:** $100 per 1M characters
+- **Generative voices:** $30 per 1M characters
 - **Free tier:** 5M characters/month (12 months, Standard)
-
-**Monthly Cost Estimates:**
-- 100K chars (Neural): $1.60
-- 1M chars (Neural): $16
-- 10M chars (Neural): $160
 
 **Best For:**
 - AWS ecosystem users
@@ -4807,17 +4800,12 @@ AI voice platform specializing in voice cloning and ultra-realistic synthesis wi
 
 **Pricing:**
 - **Free:** 10,000 characters/month
-- **Starter:** $5/month - 30,000 characters
-- **Creator:** $22/month - 100,000 characters
-- **Pro:** $99/month - 500,000 characters
-- **Scale:** $330/month - 2M characters
+- **Starter:** $5/month — 30,000 characters
+- **Creator:** $22/month — 100,000 characters
+- **Pro:** $99/month — 500,000 characters
+- **Scale:** $330/month — 2M characters
+- **Business:** $1,320/month — 11M characters
 - **Enterprise:** Custom pricing
-
-**Cost Per Million Characters:**
-- Starter: $167
-- Creator: $220
-- Pro: $198
-- Scale: $165
 
 **Best For:**
 - Voice cloning projects
@@ -4884,16 +4872,12 @@ Content creator-focused TTS platform with emphasis on video integration and coll
 - ✅ Brand kits
 
 **Pricing:**
-- **Free:** 10 minutes of voice generation
-- **Basic:** $19/month - 2 hours
-- **Pro:** $26/month - 4 hours
-- **Enterprise:** $83/month - 12 hours
-- **Custom:** Negotiable
-
-**Cost Per Hour:**
-- Basic: $9.50/hour
-- Pro: $6.50/hour
-- Enterprise: $6.92/hour
+- **Free:** $0
+- **Creator Lite:** $29/month
+- **Creator Plus:** $49/month
+- **Business Lite:** $99/month
+- **Business Plus:** $199/month
+- **Enterprise:** Custom
 
 **Best For:**
 - Video content creators
@@ -4915,7 +4899,6 @@ Content creator-focused TTS platform with emphasis on video integration and coll
 - ❌ Voice quality behind leaders
 - ❌ Limited API access
 - ❌ Fewer advanced features
-- ❌ Time-based pricing can be limiting
 - ❌ Less flexible than developer platforms
 
 **Ease of Use: 9/10**
@@ -4964,11 +4947,6 @@ Enterprise TTS service from Microsoft Azure with Neural TTS and extensive langua
 - **Custom Neural:** $6 per training hour + $0.053 per 1K characters
 - **Free tier:** 5M characters/month (Neural: 500K)
 
-**Monthly Cost Estimates:**
-- 100K chars (Neural): $1.60
-- 1M chars (Neural): $16
-- 10M chars (Neural): $160
-
 **Best For:**
 - Enterprise Microsoft shops
 - Multilingual applications
@@ -4983,7 +4961,7 @@ Enterprise TTS service from Microsoft Azure with Neural TTS and extensive langua
 - ✅ Enterprise reliability
 - ✅ Good documentation
 - ✅ Competitive pricing
-- ✅ Strong security/compliance
+- ✅ Strong security and compliance
 
 **Cons:**
 - ❌ Requires Azure account
@@ -5032,14 +5010,9 @@ Enterprise AI platform with TTS capabilities, focus on business applications and
 - ✅ Enterprise security
 
 **Pricing:**
+- **Lite plan:** Free — 10,000 characters/month
 - **Standard:** $20 per 1M characters
-- **Lite plan:** 10,000 characters/month free
-- Volume discounts available
-
-**Monthly Cost Estimates:**
-- 100K chars: $2.00
-- 1M chars: $20
-- 10M chars: $200 (or less with discount)
+- **Enterprise:** Custom (volume discounts available)
 
 **Best For:**
 - IBM ecosystem users
@@ -5086,19 +5059,17 @@ Enterprise support strong, documentation good, slower innovation
 6. **Murf AI** - 8.0/10 (Solid for content)
 7. **IBM Watson** - 7.5/10 (Decent enterprise)
 
-### Pricing Comparison (1M Characters, Neural Voices)
+### Pricing Comparison (Monthly Plans)
 
-| Provider | Cost | Free Tier |
-|----------|------|-----------|
-| Amazon Polly | $16 | 5M chars/month (12 mo) |
-| Google Cloud | $16 | 4M chars/month |
-| Microsoft Azure | $16 | 500K chars/month |
-| Vox AI Studio | $265-395* | 2,500 chars |
-| ElevenLabs | $165-220* | 10K chars/month |
-| Murf AI | Time-based | 10 minutes |
-| IBM Watson | $20 | 10K chars/month |
-
-*Based on subscription tier; varies by plan
+| Provider | Entry Plan | Free Tier |
+|----------|------------|-----------|
+| Vox AI Studio | $4.99/month (Start) | 10,000 credits, 7-day trial |
+| ElevenLabs | $5/month (Starter) | 10,000 chars/month |
+| Murf AI | $29/month (Creator Lite) | $0 plan available |
+| Google Cloud | Pay-as-you-go ($16/1M) | 4M chars/month |
+| Amazon Polly | Pay-as-you-go ($16/1M) | 5M chars/month (12 months) |
+| Microsoft Azure | Pay-as-you-go ($16/1M) | 500K chars/month |
+| IBM Watson | Pay-as-you-go ($20/1M) | 10K chars/month |
 
 ### Language Support
 
@@ -5112,8 +5083,8 @@ Enterprise support strong, documentation good, slower innovation
 
 ### Ease of Use Rankings
 
-1. **Murf AI** - 9/10 (Best for non-technical)
-2. **Vox AI Studio** - 9.5/10 (Intuitive interface)
+1. **Vox AI Studio** - 9.5/10 (Intuitive interface)
+2. **Murf AI** - 9/10 (Best for non-technical)
 3. **ElevenLabs** - 8.5/10 (User-friendly)
 4. **Microsoft Azure** - 6.5/10 (Technical)
 5. **Google Cloud** - 6.5/10 (Developer-focused)
@@ -5158,54 +5129,54 @@ Enterprise support strong, documentation good, slower innovation
 3. Vox AI Studio (50+ languages)
 
 **Budget-Conscious:**
-1. Amazon Polly (pay-as-you-go)
-2. Vox AI Studio (value pricing)
-3. Murf AI (affordable plans)
+1. Vox AI Studio (best value starting $4.99/month)
+2. Amazon Polly (pay-as-you-go)
+3. ElevenLabs (affordable entry plan)
 
 ## Decision Framework
 
 ### Choose Vox AI Studio if:
 - ✅ You need excellent quality at competitive prices
-- ✅ You're a content creator or small-medium business
+- ✅ You are a content creator or small-medium business
 - ✅ You want an intuitive, user-friendly interface
 - ✅ You need voice cloning capabilities
 - ✅ You value customer support
-- ✅ You want all-in-one solution
+- ✅ You want an all-in-one solution with credits that never expire
 
 ### Choose Google Cloud TTS if:
-- ✅ You're building large-scale applications
+- ✅ You are building large-scale applications
 - ✅ You need maximum reliability (99.95% SLA)
-- ✅ You're already using Google Cloud Platform
-- ✅ You need the most voice/language options
+- ✅ You are already using Google Cloud Platform
+- ✅ You need the most voice and language options
 - ✅ Budget is not primary concern
 - ✅ You have technical resources
 
 ### Choose Amazon Polly if:
-- ✅ You're using AWS infrastructure
+- ✅ You are using AWS infrastructure
 - ✅ You prefer pay-as-you-go pricing
-- ✅ You have technical/developer resources
+- ✅ You have technical and developer resources
 - ✅ You need reliable, basic TTS
 - ✅ You want to start free
-- ✅ You're cost-sensitive at scale
+- ✅ You are cost-sensitive at scale
 
 ### Choose ElevenLabs if:
 - ✅ Voice quality is your top priority
 - ✅ You need professional voice cloning
-- ✅ You're creating audiobooks or character voices
-- ✅ You're willing to pay premium prices
+- ✅ You are creating audiobooks or character voices
+- ✅ You are willing to pay premium prices
 - ✅ You value cutting-edge AI technology
-- ✅ You're a professional content creator
+- ✅ You are a professional content creator
 
 ### Choose Murf AI if:
-- ✅ You're creating video content primarily
+- ✅ You are creating video content primarily
 - ✅ You need team collaboration features
-- ✅ You're non-technical
+- ✅ You are non-technical
 - ✅ You want integrated workflow
-- ✅ You need media library
-- ✅ You're a marketing professional
+- ✅ You need a media library
+- ✅ You are a marketing professional
 
 ### Choose Microsoft Azure if:
-- ✅ You're using Microsoft ecosystem
+- ✅ You are using Microsoft ecosystem
 - ✅ You need enterprise features
 - ✅ You require extensive language support
 - ✅ You need custom voice training
@@ -5213,10 +5184,10 @@ Enterprise support strong, documentation good, slower innovation
 - ✅ You have Azure expertise
 
 ### Choose IBM Watson if:
-- ✅ You're an IBM customer
+- ✅ You are an IBM customer
 - ✅ You need enterprise-grade security
 - ✅ You require custom voice models
-- ✅ You're in regulated industry
+- ✅ You are in a regulated industry
 - ✅ You have existing IBM infrastructure
 - ✅ You need proven enterprise support
 
@@ -5224,38 +5195,38 @@ Enterprise support strong, documentation good, slower innovation
 
 Before committing, test multiple providers:
 
-**1. Create Test Scripts**
-- 500-word sample typical content
-- Include challenging pronunciations
-- Mix of sentence lengths
-- Various punctuation styles
+1. **Create Test Scripts**
+   - 500-word sample of typical content
+   - Include challenging pronunciations
+   - Mix of sentence lengths
+   - Various punctuation styles
 
-**2. Generate Samples**
-- Test 3-5 voices per provider
-- Use same script for comparison
-- Export at same quality settings
-- Note generation time
+2. **Generate Samples**
+   - Test 3-5 voices per provider
+   - Use same script for comparison
+   - Export at same quality settings
+   - Note generation time
 
-**3. Blind Listening Test**
-- Have 5-10 people rate samples
-- Rate naturalness (1-10)
-- Rate clarity (1-10)
-- Note any issues
-- Identify preferences
+3. **Blind Listening Test**
+   - Have 5-10 people rate samples
+   - Rate naturalness (1-10)
+   - Rate clarity (1-10)
+   - Note any issues
+   - Identify preferences
 
-**4. Technical Evaluation**
-- Test API documentation
-- Check integration complexity
-- Evaluate generation speed
-- Assess reliability
-- Review support responsiveness
+4. **Technical Evaluation**
+   - Test API documentation
+   - Check integration complexity
+   - Evaluate generation speed
+   - Assess reliability
+   - Review support responsiveness
 
-**5. Cost Analysis**
-- Calculate monthly usage estimate
-- Factor in growth projections
-- Include hidden costs
-- Consider discounts/tiers
-- Assess ROI
+5. **Cost Analysis**
+   - Calculate monthly usage estimate
+   - Factor in growth projections
+   - Include hidden costs
+   - Consider discounts and tiers
+   - Assess ROI
 
 ## Future-Proofing Considerations
 
@@ -5283,7 +5254,7 @@ Before committing, test multiple providers:
 ## Final Recommendations
 
 **Best Overall Value: Vox AI Studio**
-Excellent balance of quality, features, pricing, and ease of use. Ideal for most users from individuals to enterprises.
+Excellent balance of quality, features, pricing starting at $4.99/month, and ease of use. Ideal for most users from individuals to growing businesses.
 
 **Best for Enterprises: Google Cloud TTS**
 Unmatched scale, reliability, and language support. Worth the complexity for large organizations.
@@ -5302,7 +5273,7 @@ Collaboration features and video integration. Perfect for marketing and creative
 The right TTS provider depends on your specific needs:
 
 - **Quality-focused?** ElevenLabs or Vox AI Studio
-- **Budget-conscious?** Amazon Polly or Vox AI Studio
+- **Budget-conscious?** Vox AI Studio (from $4.99/month) or Amazon Polly
 - **Enterprise scale?** Google Cloud or Microsoft Azure
 - **Content creation?** Vox AI Studio or Murf AI
 - **Developer project?** Amazon Polly or Google Cloud
@@ -5311,8 +5282,6 @@ Most users will find **Vox AI Studio** offers the best combination of quality, f
 
 Start with free trials from your top 2-3 choices, test with real content, and choose based on actual performance with your use case.
 
-The TTS market is competitive and rapidly evolving—providers continuously improve quality and reduce prices. Revisit your decision annually to ensure you're getting the best value.
+The TTS market is competitive and rapidly evolving. Providers continuously improve quality and reduce prices. Revisit your decision annually to ensure you are getting the best value.
 
-Ready to get started? Try Vox AI Studio's free tier and experience professional-quality AI voices today.`;
-
-
+Ready to get started? Try Vox AI Studio free for 7 days — no card needed.`;
