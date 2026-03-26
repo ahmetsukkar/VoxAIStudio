@@ -51,42 +51,50 @@ export async function generateDialogueAudio({
 
   const ai = new GoogleGenAI({ apiKey: env.GenerativeLanguageAPIKey });
 
-  const response = await ai.models.generateContent({
-    model: settings.model,
-    contents: [{ parts: [{ text: prompt }] }],
-    config: {
-      responseModalities: [Modality.AUDIO],
-      speechConfig: {
-        multiSpeakerVoiceConfig: {
-          speakerVoiceConfigs: speakers.map((s) => ({
-            speaker: s.name,
-            voiceConfig: {
-              prebuiltVoiceConfig: { voiceName: s.voice },
-            },
-          })),
+  try {
+    const response = await ai.models.generateContent({
+      model: settings.model,
+      contents: [{ parts: [{ text: prompt }] }],
+      config: {
+        responseModalities: [Modality.AUDIO],
+        speechConfig: {
+          multiSpeakerVoiceConfig: {
+            speakerVoiceConfigs: speakers.map((s) => ({
+              speaker: s.name,
+              voiceConfig: {
+                prebuiltVoiceConfig: { voiceName: s.voice },
+              },
+            })),
+          },
         },
       },
-    },
-  });
+    });
 
-  const base64Audio =
-    response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+    const base64Audio =
+      response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
 
-  if (!base64Audio) {
-    return { success: false, error: "No audio returned" };
+    if (!base64Audio) {
+      return { success: false, error: "No audio returned" };
+    }
+
+    const pcmBuffer = Buffer.from(base64Audio, "base64");
+    const wavBuffer = encodeWav([new Uint8Array(pcmBuffer)]);
+
+    const s3Key = `generated/dialogue/${uuidv4()}.wav`;
+    const audioUrl = await uploadGeneratedAudio(wavBuffer, s3Key);
+
+    // Full text for DB record
+    const speakerMap = Object.fromEntries(speakers.map((s) => [s.id, s]));
+    const fullText = filledLines
+      .map((l) => `${speakerMap[l.speakerId]?.name ?? "Speaker"}: ${l.text}`)
+      .join("\n");
+
+    return { success: true, audioUrl, s3Key, fullText, creditsNeeded };
+  } catch (error) {
+    console.error("Gemini dialogue error:", JSON.stringify(error));
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Gemini API failed",
+    };
   }
-
-  const pcmBuffer = Buffer.from(base64Audio, "base64");
-  const wavBuffer = encodeWav([new Uint8Array(pcmBuffer)]);
-
-  const s3Key = `generated/dialogue/${uuidv4()}.wav`;
-  const audioUrl = await uploadGeneratedAudio(wavBuffer, s3Key);
-
-  // Full text for DB record
-  const speakerMap = Object.fromEntries(speakers.map((s) => [s.id, s]));
-  const fullText = filledLines
-    .map((l) => `${speakerMap[l.speakerId]?.name ?? "Speaker"}: ${l.text}`)
-    .join("\n");
-
-  return { success: true, audioUrl, s3Key, fullText, creditsNeeded };
 }
