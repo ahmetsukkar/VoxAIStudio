@@ -61,8 +61,8 @@ export function buildTTSPrompt(
   emotion: GeminiEmotion = "neutral",
   style: GeminiStyle = "conversational",
   pace: GeminiPace = "normal",
-  locale?: string,              // e.g., "tr-TR" or "en-US" (optional)
-  pronunciationHints?: string,  // optional: "API = 'A P I'; SQL = 'sequel'"
+  locale?: string, // e.g., "tr-TR" or "en-US" (optional)
+  pronunciationHints?: string, // optional: "API = 'A P I'; SQL = 'sequel'"
 ): string {
   const rules = [
     "Read the TRANSCRIPT exactly as written.",
@@ -96,33 +96,30 @@ export function buildDialoguePrompt(
   speakers: DialogueSpeaker[],
   lines: DialogueLine[],
   settings: DialogueSettings,
+  speakerIdToAlias: Map<string, string>,
 ): string {
-  const speakerMap = Object.fromEntries(speakers.map((s) => [s.id, s]));
-
   const filledLines = lines.filter((l) => l.text.trim().length > 0);
 
-  // Director note: style + pace
   const directorParts: string[] = [];
-
-  if (settings.style !== "conversational") {
+  if (settings.style !== "conversational")
     directorParts.push(getStyleInstruction(settings.style));
-  }
-  if (settings.pace !== "normal") {
+  if (settings.pace !== "normal")
     directorParts.push(getPaceInstruction(settings.pace));
-  }
 
-  // Per-speaker emotion instruction
+  // Use alias in emotion instructions too
   const emotionParts = speakers
     .filter((s) => s.emotion !== "neutral")
-    .map((s) => `Make ${s.name} sound ${getEmotionInstruction(s.emotion)}`);
+    .map((s) => {
+      const alias = speakerIdToAlias.get(s.id) ?? s.name;
+      return `Make ${alias} sound ${getEmotionInstruction(s.emotion)}`;
+    });
 
   const allDirectorParts = [...directorParts, ...emotionParts];
 
-  // Build transcript: "SpeakerName: text"
   const transcript = filledLines
     .map((l) => {
-      const speaker = speakerMap[l.speakerId];
-      return `${speaker?.name ?? "Speaker"}: ${l.text}`;
+      const alias = speakerIdToAlias.get(l.speakerId) ?? "Speaker";
+      return `${alias}: ${l.text}`;
     })
     .join("\n");
 

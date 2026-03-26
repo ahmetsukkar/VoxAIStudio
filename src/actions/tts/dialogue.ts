@@ -46,8 +46,18 @@ export async function generateDialogueAudio({
 
   const creditsNeeded = calcGeminiDialogueCredits(filledLines, settings);
 
-  // Build the single prompt
-  const prompt = buildDialoguePrompt(speakers, filledLines, settings);
+  // Always use Latin aliases — works for all models (flash, pro, future)
+  // Speaker names are only for UI/DB, not for the Gemini prompt mapping
+  const speakerIdToAlias = new Map(
+    speakers.map((s, i) => [s.id, `Speaker${i + 1}`]),
+  );
+
+  const prompt = buildDialoguePrompt(
+    speakers,
+    filledLines,
+    settings,
+    speakerIdToAlias,
+  );
 
   const ai = new GoogleGenAI({ apiKey: env.GenerativeLanguageAPIKey });
 
@@ -59,8 +69,8 @@ export async function generateDialogueAudio({
         responseModalities: [Modality.AUDIO],
         speechConfig: {
           multiSpeakerVoiceConfig: {
-            speakerVoiceConfigs: speakers.map((s) => ({
-              speaker: s.name,
+            speakerVoiceConfigs: speakers.map((s, i) => ({
+              speaker: `Speaker${i + 1}`, // Latin alias — model-agnostic
               voiceConfig: {
                 prebuiltVoiceConfig: { voiceName: s.voice },
               },
@@ -83,7 +93,7 @@ export async function generateDialogueAudio({
     const s3Key = `generated/dialogue/${uuidv4()}.wav`;
     const audioUrl = await uploadGeneratedAudio(wavBuffer, s3Key);
 
-    // Full text for DB record
+    // DB record uses real speaker names, not aliases
     const speakerMap = Object.fromEntries(speakers.map((s) => [s.id, s]));
     const fullText = filledLines
       .map((l) => `${speakerMap[l.speakerId]?.name ?? "Speaker"}: ${l.text}`)
