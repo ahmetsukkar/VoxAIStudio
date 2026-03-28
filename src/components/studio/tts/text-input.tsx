@@ -6,6 +6,7 @@ import { Button } from "~/components/ui/button";
 import type { GeneratedAudio } from "~/types/tts";
 import { audioManager } from "~/lib/audio/audio-manager";
 import { usePlanStore } from "~/store/plan-store";
+import { useTranslations } from "next-intl";
 
 interface TextInputProps {
   text: string;
@@ -22,9 +23,9 @@ export default function TextInput({
   audioRef,
   onDownload,
 }: TextInputProps) {
-  // Use plan-aware limit; falls back to global max until plan is loaded
+  const t = useTranslations("studio.tts.textInput");
   const maxChars = usePlanStore((s) => s.maxCharsAllowed);
-  const isTrialTier = usePlanStore((s) => s.isTrialTier); // ← add
+  const isTrialTier = usePlanStore((s) => s.isTrialTier);
   const isOverLimit = text.length > maxChars;
 
   return (
@@ -32,14 +33,12 @@ export default function TextInput({
       <CardContent className="p-2 sm:p-3">
         <div className="mb-2 flex items-start justify-between">
           <div>
-            <h3 className="mb-0.5 text-sm font-bold">Your Text</h3>
-            <p className="text-muted-foreground text-xs">
-              Enter the text you want to convert to speech
-            </p>
+            <h3 className="mb-0.5 text-sm font-bold">{t("title")}</h3>
+            <p className="text-muted-foreground text-xs">{t("subtitle")}</p>
           </div>
           {isTrialTier && (
             <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">
-              Free Trial
+              {t("freeTrial")}
             </span>
           )}
         </div>
@@ -47,7 +46,7 @@ export default function TextInput({
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
-            placeholder={`Type or paste your text here… Maximum ${maxChars.toLocaleString()} characters.`}
+            placeholder={t("placeholder", { max: maxChars.toLocaleString() })}
             maxLength={maxChars}
             rows={8}
             className="border-input bg-background w-full rounded-md border px-3 py-2 text-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-400"
@@ -65,9 +64,9 @@ export default function TextInput({
               }
             >
               {text.length.toLocaleString()} / {maxChars.toLocaleString()}{" "}
-              characters
+              {t("characters")}
               {isTrialTier && (
-                <span className="ml-1 text-amber-600">(Free Trial limit)</span>
+                <span className="ml-1 text-amber-600">{t("trialLimit")}</span>
               )}
             </span>
             {text.length > 0 && (
@@ -78,7 +77,7 @@ export default function TextInput({
                 className="h-6 gap-1 px-2"
               >
                 <X className="h-3 w-3" />
-                Clear
+                {t("clear")}
               </Button>
             )}
           </div>
@@ -86,7 +85,7 @@ export default function TextInput({
             <div className="rounded-lg border border-blue-200 bg-gradient-to-r from-blue-50 to-purple-50 p-3">
               <div className="mb-2 flex items-center justify-between">
                 <h4 className="text-xs font-bold text-blue-900">
-                  Latest Generation
+                  {t("latestGeneration")}
                 </h4>
                 <Button
                   onClick={() => onDownload(currentAudio)}
@@ -95,7 +94,7 @@ export default function TextInput({
                   className="h-6 gap-1 px-2 text-blue-700 hover:bg-blue-100"
                 >
                   <Download className="h-3 w-3" />
-                  <span className="text-xs">Download</span>
+                  <span className="text-xs">{t("download")}</span>
                 </Button>
               </div>
               <p className="mb-2 text-xs text-blue-800">

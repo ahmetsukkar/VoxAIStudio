@@ -1,0 +1,67 @@
+{
+  "tabs": {
+    "tts": "🎙️ تحويل النص إلى كلام",
+    "dialogue": "🎭 استوديو الحوار"
+  },
+  "tts": {
+    "toasts": {
+      "emptyText": "الرجاء إدخال نص!",
+      "success": "تم توليد الكلام بنجاح!",
+      "downloadStarted": "بدأ التنزيل!",
+      "failed": "فشل توليد الكلام"
+    },
+    "textInput": {
+      "title": "النص الخاص بك",
+      "subtitle": "أدخل النص الذي تريد تحويله إلى كلام",
+      "freeTrial": "تجربة مجانية",
+      "placeholder": "اكتب أو الصق نصك هنا… الحد الأقصى {max} حرف.",
+      "characters": "حرف",
+      "trialLimit": "(حد التجربة المجانية)",
+      "clear": "مسح",
+      "latestGeneration": "آخر توليد",
+      "download": "تنزيل"
+    },
+    "settings": {
+      "title": "الإعدادات",
+      "subtitle": "خصّص كلامك",
+      "cost": "التكلفة:",
+      "credit": "رصيد",
+      "credits": "أرصدة",
+      "characters": "حرف",
+      "generating": "جارٍ التوليد...",
+      "generate": "توليد الكلام"
+    },
+    "gemini": {
+      "language": "اللغة",
+      "autoDetect": "🌐 اكتشاف تلقائي",
+      "model": "النموذج",
+      "flashVsPro": "Flash مقابل Pro",
+      "flash": "⚡ Flash — سريع وبأسعار معقولة",
+      "flashDesc": "رصيد / حرف · الأفضل للمقاطع القصيرة والحوارات والتوليد السريع.",
+      "pro": "✨ Pro — أعلى جودة",
+      "proDesc": "رصيد / حرف · الأفضل للكتب الصوتية والسرد الطويل والمحتوى الاحترافي.",
+      "flashLabel": "Flash — موصى به",
+      "proLabel": "Pro — محتوى مطوّل",
+      "flashSubLabel": "الأفضل للحوارات والأسطر القصيرة",
+      "proSubLabel": "أفضل للكتب الصوتية والخطابات",
+      "creditsPerChar": "رصيد / حرف",
+      "freeTrial": "(تجربة مجانية)",
+      "proLocked": "صوت Pro متاح فقط في الخطط المدفوعة. قم بالترقية لتفعيله.",
+      "emotion": "المشاعر",
+      "voice": "الصوت",
+      "style": "الأسلوب",
+      "pace": "الإيقاع"
+    },
+    "voicePicker": {
+      "all": "الكل",
+      "recommended": "موصى به",
+      "male": "ذكر",
+      "female": "أنثى",
+      "voices": "أصوات",
+      "stopPreview": "إيقاف المعاينة",
+      "previewVoice": "معاينة الصوت",
+      "tip": "💡 لنبرة",
+      "tipTone": "، جرّب:"
+    }
+  }
+}

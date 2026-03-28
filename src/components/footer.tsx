@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { AudioWaveform } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function Footer() {
+  const t = useTranslations("common.footer");
+
   return (
     <footer className="border-t border-slate-200 bg-slate-100">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -16,105 +19,72 @@ export default function Footer() {
                   Vox AI Studio
                 </span>
               </div>
-              <p className="max-w-md text-slate-600">
-                Professional-grade voice generation, driven by AI. Turn any text
-                into smooth, natural speech using advanced voice technology.
-              </p>
+              <p className="max-w-md text-slate-600">{t("tagline")}</p>
             </div>
 
             <div>
-              <h3 className="mb-4 font-semibold text-slate-800">Product</h3>
+              <h3 className="mb-4 font-semibold text-slate-800">{t("product")}</h3>
               <ul className="space-y-3 text-sm text-slate-600">
                 <li>
-                  <Link
-                    href="/#features"
-                    className="transition-colors hover:text-indigo-600"
-                  >
-                    Features
+                  <Link href="/#features" className="transition-colors hover:text-indigo-600">
+                    {t("features")}
                   </Link>
                 </li>
                 <li>
-                  <Link
-                    href="/#pricing"
-                    className="transition-colors hover:text-indigo-600"
-                  >
-                    Pricing
+                  <Link href="/#pricing" className="transition-colors hover:text-indigo-600">
+                    {t("pricing")}
                   </Link>
                 </li>
                 <li>
-                  <Link
-                    href="/#testimonials"
-                    className="transition-colors hover:text-indigo-600"
-                  >
-                    Reviews
+                  <Link href="/#testimonials" className="transition-colors hover:text-indigo-600">
+                    {t("reviews")}
                   </Link>
                 </li>
               </ul>
             </div>
 
             <div>
-              <h3 className="mb-3 font-bold">Resources</h3>
+              <h3 className="mb-3 font-bold">{t("resources")}</h3>
               <ul className="space-y-2">
                 <li>
-                  <Link
-                    href="/blog"
-                    className="text-gray-600 hover:text-gray-900"
-                  >
-                    Blog
+                  <Link href="/blog" className="text-gray-600 hover:text-gray-900">
+                    {t("blog")}
                   </Link>
                 </li>
                 <li>
-                  <Link
-                    href="/faq"
-                    className="text-gray-600 hover:text-gray-900"
-                  >
-                    Help & FAQ
+                  <Link href="/faq" className="text-gray-600 hover:text-gray-900">
+                    {t("helpFaq")}
                   </Link>
                 </li>
                 <li>
-                  <Link
-                    href="/contact"
-                    className="text-gray-600 hover:text-gray-900"
-                  >
-                    Contact Us
+                  <Link href="/contact" className="text-gray-600 hover:text-gray-900">
+                    {t("contactUs")}
                   </Link>
                 </li>
               </ul>
             </div>
 
             <div>
-              <h3 className="mb-4 font-semibold text-slate-800">Legal</h3>
+              <h3 className="mb-4 font-semibold text-slate-800">{t("legal")}</h3>
               <ul className="space-y-3 text-sm text-slate-600">
                 <li>
-                  <Link
-                    href="/legal/about"
-                    className="transition-colors hover:text-indigo-600"
-                  >
-                    About Us
+                  <Link href="/legal/about" className="transition-colors hover:text-indigo-600">
+                    {t("aboutUs")}
                   </Link>
                 </li>
                 <li>
-                  <Link
-                    href="/legal/privacy"
-                    className="transition-colors hover:text-indigo-600"
-                  >
-                    Privacy Policy
+                  <Link href="/legal/privacy" className="transition-colors hover:text-indigo-600">
+                    {t("privacyPolicy")}
                   </Link>
                 </li>
                 <li>
-                  <Link
-                    href="/legal/terms"
-                    className="transition-colors hover:text-indigo-600"
-                  >
-                    Terms of Service
+                  <Link href="/legal/terms" className="transition-colors hover:text-indigo-600">
+                    {t("termsOfService")}
                   </Link>
                 </li>
                 <li>
-                  <Link
-                    href="/legal/privacy#cookies"
-                    className="transition-colors hover:text-indigo-600"
-                  >
-                    Cookie Policy
+                  <Link href="/legal/privacy#cookies" className="transition-colors hover:text-indigo-600">
+                    {t("cookiePolicy")}
                   </Link>
                 </li>
               </ul>
@@ -123,7 +93,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-16 border-t border-slate-200 pt-8 text-center text-sm text-slate-500">
-          <p>&copy; 2026 Vox AI Studio. All rights reserved.</p>
+          <p>{t("copyright")}</p>
         </div>
       </div>
     </footer>

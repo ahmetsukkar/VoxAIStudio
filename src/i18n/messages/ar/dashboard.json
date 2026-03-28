@@ -37,5 +37,33 @@
       "button": "عرض الخطط",
       "close": "إغلاق"
     }
+  },
+  "page": {
+    "welcome": "مرحباً بعودتك",
+    "subtitle": "إليك نظرة عامة على مساحة عمل تحويل النص إلى كلام",
+    "loading": "جارٍ تحميل لوحة التحكم...",
+    "stats": {
+      "totalAudio": "إجمالي الصوت",
+      "ttsGenerations": "توليدات TTS",
+      "thisMonth": "هذا الشهر",
+      "projectsCreated": "مشاريع تم إنشاؤها",
+      "thisWeek": "هذا الأسبوع",
+      "recentActivity": "النشاط الأخير",
+      "memberSince": "عضو منذ",
+      "accountCreated": "تاريخ إنشاء الحساب"
+    },
+    "quickActions": {
+      "title": "إجراءات سريعة",
+      "tts": "تحويل النص إلى كلام",
+      "ttsDesc": "توليد صوت مع استنساخ الصوت",
+      "viewAudio": "عرض كل الصوتيات",
+      "viewAudioDesc": "تصفح مكتبة الصوتيات",
+      "settings": "إعدادات الحساب",
+      "settingsDesc": "إدارة ملفك الشخصي"
+    },
+    "recentProjects": {
+      "title": "مشاريع الصوت الأخيرة",
+      "viewAll": "عرض الكل"
+    }
   }
 }

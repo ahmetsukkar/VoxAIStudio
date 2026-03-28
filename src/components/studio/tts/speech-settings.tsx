@@ -9,7 +9,8 @@ import ChatterboxSettings from "./engines/chatterbox-settings";
 import GeminiSettings from "./engines/gemini-settings";
 import type { EngineOptionsMap } from "~/types/engines";
 import { calcTTSCredits } from "~/lib/credits/calculate";
-import { usePlanStore } from "~/store/plan-store"; // ← add
+import { usePlanStore } from "~/store/plan-store";
+import { useTranslations } from "next-intl";
 
 interface SpeechSettingsProps {
   languages: Language[];
@@ -38,7 +39,8 @@ export default function SpeechSettings({
   isGenerating,
   onGenerate,
 }: SpeechSettingsProps) {
-  const isTrialTier = usePlanStore((s) => s.isTrialTier) ?? false; // ← add
+  const t = useTranslations("studio.tts.settings");
+  const isTrialTier = usePlanStore((s) => s.isTrialTier) ?? false;
   const creditsNeeded = calcTTSCredits(
     selectedEngine,
     text,
@@ -53,37 +55,11 @@ export default function SpeechSettings({
           <div className="flex items-center gap-2">
             <Settings className="h-4 w-4" />
             <div>
-              <h3 className="text-sm font-semibold">Settings</h3>
-              <p className="text-muted-foreground text-xs">
-                Customize your speech
-              </p>
+              <h3 className="text-sm font-semibold">{t("title")}</h3>
+              <p className="text-muted-foreground text-xs">{t("subtitle")}</p>
             </div>
           </div>
 
-          {/* Engine Selector */}
-          {/* <div className="space-y-1.5">
-            <Label className="text-xs font-medium">Engine</Label>
-            <Select
-              value={selectedEngine}
-              onValueChange={(value) =>
-                setSelectedEngine(value as TTSProviderType)
-              }
-            >
-              <SelectTrigger className="h-8 w-full text-xs">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="chatterbox" className="text-xs">
-                  Chatterbox — Voice Cloning
-                </SelectItem>
-                <SelectItem value="gemini" className="text-xs">
-                  Gemini 2.5 Flash TTS
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div> */}
-
-          {/* Engine-specific settings */}
           {selectedEngine === "chatterbox" && (
             <ChatterboxSettings
               languages={languages}
@@ -102,18 +78,17 @@ export default function SpeechSettings({
               setOptions={(updated) =>
                 setEngineOptions({ ...engineOptions, gemini: updated })
               }
-              isTrialTier={isTrialTier} // ← pass it down
+              isTrialTier={isTrialTier}
             />
           )}
 
-          {/* Credits display */}
           {text.trim() && (
             <p className="text-muted-foreground text-xs">
-              Cost:{" "}
+              {t("cost")}{" "}
               <span className="font-medium">
-                {creditsNeeded} credit{creditsNeeded > 1 ? "s" : ""}
+                {creditsNeeded} {creditsNeeded > 1 ? t("credits") : t("credit")}
               </span>{" "}
-              ({text.length} characters)
+              ({text.length} {t("characters")})
             </p>
           )}
 
@@ -125,12 +100,12 @@ export default function SpeechSettings({
             {isGenerating ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
-                Generating...
+                {t("generating")}
               </>
             ) : (
               <>
                 <Settings className="h-4 w-4" />
-                Generate Speech
+                {t("generate")}
               </>
             )}
           </Button>

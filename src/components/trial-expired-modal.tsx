@@ -11,6 +11,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
+import { useTranslations } from "next-intl";
 
 interface Props {
   onClose: () => void;
@@ -19,9 +20,10 @@ interface Props {
 export function TrialExpiredModal({ onClose }: Props) {
   const { data: session } = useSession();
   const isVerified = session?.user?.emailVerified;
-
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
+  const t = useTranslations("dashboard.trials");
+  const tVerify = useTranslations("dashboard.verifyBanner");
 
   const handleResend = async () => {
     if (!session?.user?.email) return;
@@ -37,7 +39,6 @@ export function TrialExpiredModal({ onClose }: Props) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
       <div className="relative mx-4 w-full max-w-md space-y-5 rounded-2xl border border-border bg-card p-8 text-center shadow-2xl">
-        {/* Close */}
         <button
           onClick={onClose}
           className="text-muted-foreground hover:text-foreground absolute top-4 right-4 transition-colors"
@@ -45,46 +46,40 @@ export function TrialExpiredModal({ onClose }: Props) {
           <X className="h-5 w-5" />
         </button>
 
-        {/* Icon */}
         <div className="flex justify-center">
           <div className="rounded-full bg-amber-100 p-4 dark:bg-amber-900/30">
             <Clock className="h-10 w-10 text-amber-600 dark:text-amber-400" />
           </div>
         </div>
 
-        {/* Text */}
         <div className="space-y-2">
-          <h2 className="text-xl font-bold">Your Free Trial has expired</h2>
+          <h2 className="text-xl font-bold">{t("expiredTitle")}</h2>
           <p className="text-muted-foreground text-sm leading-relaxed">
-            Your 7-day trial has ended. Upgrade to a paid plan to keep
-            generating speech with Vox AI Studio.
+            {t("expiredDescription")}
           </p>
         </div>
 
-        {/* Action buttons */}
         <div className="space-y-3">
-          {/* Upgrade button */}
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                {/* span wrapper needed so Tooltip works on disabled button */}
                 <span className="block w-full">
                   {isVerified ? (
                     <Link href="/api/auth/checkout?slug=start" className="block">
                       <Button
-                        className="w-full bg-gradient-to-r from-indigo-500 to-cyan-600 hover:from-indigo-600 hover:to-cyan-700 text-white"
+                        className="w-full bg-gradient-to-r from-indigo-500 to-cyan-600 text-white hover:from-indigo-600 hover:to-cyan-700"
                         onClick={onClose}
                       >
-                        Upgrade — starting at 4.99
+                        {t("upgradeButton")}
                       </Button>
                     </Link>
                   ) : (
                     <Button
                       disabled
-                      className="w-full cursor-not-allowed bg-gradient-to-r from-indigo-300 to-cyan-400 opacity-60 text-white"
+                      className="w-full cursor-not-allowed bg-gradient-to-r from-indigo-300 to-cyan-400 text-white opacity-60"
                     >
                       <Lock className="mr-2 h-4 w-4" />
-                      Upgrade — starting at $4.99
+                      {t("upgradeButton")}
                     </Button>
                   )}
                 </span>
@@ -97,17 +92,15 @@ export function TrialExpiredModal({ onClose }: Props) {
             </Tooltip>
           </TooltipProvider>
 
-          {/* Verify button — only shown if NOT verified */}
           {!isVerified && (
             <>
               {sent ? (
                 <div className="rounded-lg border border-green-200 bg-green-50 p-3 dark:border-green-800 dark:bg-green-900/20">
                   <p className="text-sm font-medium text-green-700 dark:text-green-400">
-                    ✓ Verification email sent!
+                    ✓ {tVerify("sent")}
                   </p>
                   <p className="text-muted-foreground mt-0.5 text-xs">
-                    Check your inbox at{" "}
-                    <strong>{session?.user?.email}</strong>
+                    Check your inbox at <strong>{session?.user?.email}</strong>
                   </p>
                 </div>
               ) : (
@@ -117,7 +110,7 @@ export function TrialExpiredModal({ onClose }: Props) {
                   disabled={loading}
                   className="w-full"
                 >
-                  {loading ? "Sending..." : "Verify Email First"}
+                  {loading ? tVerify("sending") : tVerify("resend")}
                 </Button>
               )}
             </>
@@ -128,7 +121,7 @@ export function TrialExpiredModal({ onClose }: Props) {
           onClick={onClose}
           className="text-muted-foreground hover:text-foreground text-xs underline transition-colors"
         >
-          Maybe later
+          {t("dismiss")}
         </button>
       </div>
     </div>

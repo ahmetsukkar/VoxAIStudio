@@ -15,71 +15,71 @@ import DemoSection from "~/components/demo-section";
 import PricingButton from "~/components/pricing-button";
 import AuthCTA from "~/components/auth-cta";
 import type { Metadata } from "next";
+import { getTranslations, getLocale } from "next-intl/server";
 
-export const metadata: Metadata = {
-  title: "Vox AI Studio — AI Text to Speech & Voice Cloning",
-  description:
-    "Convert text into natural, human-like speech instantly. Clone voices, choose from 50+ AI voices, support multiple languages. Try free — no credit card needed.",
-  keywords: [
-    "text to speech",
-    "AI voice generator",
-    "voice cloning",
-    "TTS online",
-    "AI audio generator",
-    "natural speech synthesis",
-    "AI voiceover tool",
-    "text to audio",
-  ],
-  alternates: {
-    canonical: "https://www.voxaistudio.com",
-  },
-  openGraph: {
-    title: "Vox AI Studio — AI Text to Speech & Voice Cloning",
-    description:
-      "Convert text into natural-sounding speech with AI. Clone voices, pick from 50+ voices, multiple languages. Start free.",
-    url: "https://www.voxaistudio.com",
-    images: [
-      {
-        url: "/images/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Vox AI Studio — AI Text to Speech",
-      },
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("home.meta");
+  return {
+    title: t("title"),
+    description: t("description"),
+    keywords: [
+      "text to speech",
+      "AI voice generator",
+      "voice cloning",
+      "TTS online",
+      "AI audio generator",
+      "natural speech synthesis",
+      "AI voiceover tool",
+      "text to audio",
     ],
-  },
-};
+    alternates: { canonical: "https://www.voxaistudio.com" },
+    openGraph: {
+      title: t("title"),
+      description: t("description"),
+      url: "https://www.voxaistudio.com",
+      images: [
+        {
+          url: "/images/og-image.png",
+          width: 1200,
+          height: 630,
+          alt: "Vox AI Studio — AI Text to Speech",
+        },
+      ],
+    },
+  };
+}
 
-export default function HomePage() {
+export default async function HomePage() {
+  const t = await getTranslations("home");
+  const locale = await getLocale();
+  const isRTL = locale === "ar";
+
   const features = [
     {
       icon: <Scissors className="h-8 w-8" />,
-      title: "AI Voice Cloning",
-      description:
-        "Build a unique voice by cloning your own, or choose from a library of ready-to-use professional voices.",
+      title: t("features.items.cloning.title"),
+      description: t("features.items.cloning.description"),
       color: "text-emerald-600",
       bgColor: "bg-emerald-100",
     },
     {
       icon: <Expand className="h-8 w-8" />,
-      title: "Realistic Text‑to‑Speech",
-      description:
-        "Turn written text into speech with natural rhythm, expressive tone, and human-like delivery.",
+      title: t("features.items.tts.title"),
+      description: t("features.items.tts.description"),
       color: "text-blue-600",
       bgColor: "bg-blue-100",
     },
     {
       icon: <Target className="h-8 w-8" />,
-      title: "Languages, Accents & Voices",
-      description:
-        "Choose from a wide range of voices across many languages, including regional accents and different speaking styles.",
+      title: t("features.items.languages.title"),
+      description: t("features.items.languages.description"),
       color: "text-purple-600",
       bgColor: "bg-purple-100",
     },
     {
       icon: <Zap className="h-8 w-8" />,
-      title: "Ultra‑Fast Generation",
-      description:
-        "Create high-quality speech in moments. Our streamlined AI engine produces results with minimal wait time.",
+      title: t("features.items.speed.title"),
+      description: t("features.items.speed.description"),
       color: "text-amber-600",
       bgColor: "bg-amber-100",
     },
@@ -87,25 +87,40 @@ export default function HomePage() {
 
   const testimonials = [
     {
-      name: "Aylin Demir",
-      role: "E‑Learning Producer",
-      content:
-        "Vox AI Studio cut our course narration time dramatically. We can update lessons and regenerate audio the same day without re-recording.",
+      name: t("testimonials.items.t1.name"),
+      role: t("testimonials.items.t1.role"),
+      content: t("testimonials.items.t1.content"),
       rating: 5,
     },
     {
-      name: "Noah Patel",
-      role: "Marketing Manager",
-      content:
-        "The voices sound polished and consistent across campaigns. We launch ads faster and keep the brand tone the same everywhere.",
+      name: t("testimonials.items.t2.name"),
+      role: t("testimonials.items.t2.role"),
+      content: t("testimonials.items.t2.content"),
       rating: 5,
     },
     {
-      name: "Lina Haddad",
-      role: "YouTube Creator",
-      content:
-        "Being able to switch languages and styles is a game changer. My videos feel more local for different audiences without extra production work.",
+      name: t("testimonials.items.t3.name"),
+      role: t("testimonials.items.t3.role"),
+      content: t("testimonials.items.t3.content"),
       rating: 5,
+    },
+  ];
+
+  const howItWorksSteps = [
+    {
+      step: "01",
+      title: t("howItWorks.steps.step1.title"),
+      description: t("howItWorks.steps.step1.description"),
+    },
+    {
+      step: "02",
+      title: t("howItWorks.steps.step2.title"),
+      description: t("howItWorks.steps.step2.description"),
+    },
+    {
+      step: "03",
+      title: t("howItWorks.steps.step3.title"),
+      description: t("howItWorks.steps.step3.description"),
     },
   ];
 
@@ -124,30 +139,10 @@ export default function HomePage() {
             applicationCategory: "MultimediaApplication",
             operatingSystem: "Web",
             offers: [
-              {
-                "@type": "Offer",
-                name: "Free Trial",
-                price: "0",
-                priceCurrency: "USD",
-              },
-              {
-                "@type": "Offer",
-                name: "Starter",
-                price: "4.99",
-                priceCurrency: "USD",
-              },
-              {
-                "@type": "Offer",
-                name: "Creator",
-                price: "9.99",
-                priceCurrency: "USD",
-              },
-              {
-                "@type": "Offer",
-                name: "Pro",
-                price: "49.99",
-                priceCurrency: "USD",
-              },
+              { "@type": "Offer", name: "Free Trial", price: "0", priceCurrency: "USD" },
+              { "@type": "Offer", name: "Starter", price: "4.99", priceCurrency: "USD" },
+              { "@type": "Offer", name: "Creator", price: "9.99", priceCurrency: "USD" },
+              { "@type": "Offer", name: "Pro", price: "49.99", priceCurrency: "USD" },
             ],
             aggregateRating: {
               "@type": "AggregateRating",
@@ -165,23 +160,21 @@ export default function HomePage() {
             <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-indigo-200/60 bg-indigo-100/30 px-4 py-2 text-sm">
               <AudioWaveform className="h-4 w-4 text-indigo-600" />
               <span className="font-medium text-indigo-700">
-                Powered by Advanced AI
+                {t("hero.badge")}
               </span>
             </div>
             <h1 className="mb-6 text-4xl font-bold tracking-tight text-slate-800 sm:text-6xl">
-              Transform Text into{" "}
+              {t("hero.title")}{" "}
               <span className="bg-gradient-to-r from-indigo-600 to-cyan-600 bg-clip-text text-transparent">
-                Natural Speech
+                {t("hero.titleHighlight")}
               </span>
             </h1>
             <p className="mx-auto mb-10 max-w-2xl text-lg text-slate-600 sm:text-xl">
-              AI-powered voice synthesis for professional results. Convert text
-              into lifelike speech with natural tone, multiple languages, and
-              realistic intonation—ready in seconds.
+              {t("hero.description")}
             </p>
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
               <AuthCTA
-                label="Try It Free Now"
+                label={t("hero.tryFree")}
                 icon="AudioLines"
                 size="lg"
                 className="bg-gradient-to-r from-indigo-500 to-cyan-600 px-8 py-6 text-base text-white"
@@ -193,35 +186,33 @@ export default function HomePage() {
                   className="cursor-pointer gap-2 px-8 py-6 text-base"
                 >
                   <Play className="h-5 w-5" />
-                  Listen to Demo
+                  {t("hero.listenDemo")}
                 </Button>
               </Link>
             </div>
           </div>
           <div className="mt-16 text-center">
-            <p className="mb-8 text-sm text-slate-500">
-              Trusted by thousands of creators worldwide
-            </p>
+            <p className="mb-8 text-sm text-slate-500">{t("hero.trustedBy")}</p>
             <div className="grid grid-cols-2 items-center justify-center gap-6 opacity-80 sm:grid-cols-5">
               <div className="text-center">
                 <div className="text-2xl font-bold text-slate-700">50K+</div>
-                <div className="text-xs text-slate-500">Voices Generated</div>
+                <div className="text-xs text-slate-500">{t("stats.voicesGenerated")}</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-slate-700">5K+</div>
-                <div className="text-xs text-slate-500">Active Users</div>
+                <div className="text-xs text-slate-500">{t("stats.activeUsers")}</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-slate-700">99.9%</div>
-                <div className="text-xs text-slate-500">Uptime</div>
+                <div className="text-xs text-slate-500">{t("stats.uptime")}</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-amber-600">4.8★</div>
-                <div className="text-xs text-slate-500">User Rating</div>
+                <div className="text-xs text-slate-500">{t("stats.userRating")}</div>
               </div>
               <div className="col-span-2 text-center sm:col-span-1">
                 <div className="text-2xl font-bold text-slate-700">24/7</div>
-                <div className="text-xs text-slate-500">Voice Synthesis</div>
+                <div className="text-xs text-slate-500">{t("stats.voiceSynthesis")}</div>
               </div>
             </div>
           </div>
@@ -235,16 +226,13 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto mb-16 max-w-2xl text-center">
             <h2 className="text-3xl font-bold tracking-tight text-slate-800 sm:text-4xl">
-              High‑Performance AI Voices,{" "}
+              {t("features.title")}{" "}
               <span className="bg-gradient-to-r from-indigo-600 to-cyan-600 bg-clip-text text-transparent">
-                Ready{" "}
+                {t("features.titleHighlight")}{" "}
               </span>
-              When You Are.
+              {t("features.titleEnd")}
             </h2>
-            <p className="mt-4 text-lg text-slate-600">
-              Create realistic, human‑like speech with everything you
-              need—powered by artificial intelligence.
-            </p>
+            <p className="mt-4 text-lg text-slate-600">{t("features.subtitle")}</p>
           </div>
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {features.map((feature, index) => (
@@ -254,16 +242,14 @@ export default function HomePage() {
               >
                 <CardContent className="p-6">
                   <div className="mb-4 flex justify-center">
-                    <div
-                      className={`${feature.bgColor} mb-4 inline-flex items-center justify-center rounded-lg p-3 ${feature.color}`}
-                    >
+                    <div className={`${feature.bgColor} mb-4 inline-flex items-center justify-center rounded-lg p-3 ${feature.color}`}>
                       {feature.icon}
                     </div>
                   </div>
                   <h3 className="mb-2 flex justify-center text-lg font-semibold text-slate-800">
                     {feature.title}
                   </h3>
-                  <p className="text-sm text-slate-600">
+                  <p className={`text-sm text-slate-600 ${isRTL ? "text-right" : "text-center"}`}>
                     {feature.description}
                   </p>
                 </CardContent>
@@ -279,33 +265,12 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto mb-16 max-w-2xl text-center">
             <h2 className="text-3xl font-bold tracking-tight text-slate-800 sm:text-4xl">
-              Smooth. Quick. Pro‑Grade.
+              {t("howItWorks.title")}
             </h2>
-            <p className="mt-4 text-lg text-slate-600">
-              Get polished results in just three easy steps.
-            </p>
+            <p className="mt-4 text-lg text-slate-600">{t("howItWorks.subtitle")}</p>
           </div>
           <div className="grid gap-8 md:grid-cols-3">
-            {[
-              {
-                step: "01",
-                title: "Add Your Script",
-                description:
-                  "Write or paste your content. The editor supports multiple languages and works well even with advanced formatting.",
-              },
-              {
-                step: "02",
-                title: "Pick a Voice Style",
-                description:
-                  "Browse a large catalog of AI voices—clone your own, use polished presets, or fine-tune the voice settings to match your needs.",
-              },
-              {
-                step: "03",
-                title: "Create & Save Audio",
-                description:
-                  "Generate natural-sounding speech in seconds, then download a high-quality file ready for any project.",
-              },
-            ].map((item, index) => (
+            {howItWorksSteps.map((item, index) => (
               <div key={index} className="relative">
                 <div className="mb-4 flex items-center">
                   <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-indigo-500 to-cyan-600 text-lg font-bold text-white shadow-lg">
@@ -315,9 +280,7 @@ export default function HomePage() {
                     <div className="ml-4 hidden h-0.5 w-full bg-slate-300 md:block" />
                   )}
                 </div>
-                <h3 className="mb-2 text-xl font-semibold text-slate-800">
-                  {item.title}
-                </h3>
+                <h3 className="mb-2 text-xl font-semibold text-slate-800">{item.title}</h3>
                 <p className="text-slate-600">{item.description}</p>
               </div>
             ))}
@@ -330,40 +293,28 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto mb-16 max-w-2xl text-center">
             <h2 className="text-3xl font-bold tracking-tight text-slate-800 sm:text-4xl">
-              Trusted by{" "}
+              {t("testimonials.title")}{" "}
               <span className="bg-gradient-to-r from-indigo-600 to-cyan-600 bg-clip-text text-transparent">
-                Creators
+                {t("testimonials.titleHighlight")}
               </span>
             </h2>
-            <p className="mt-4 text-lg text-slate-600">
-              Discover what people are saying about Vox AI Studio.
-            </p>
+            <p className="mt-4 text-lg text-slate-600">{t("testimonials.subtitle")}</p>
           </div>
           <div className="grid gap-6 md:grid-cols-3">
             {testimonials.map((testimonial, index) => (
-              <Card
-                key={index}
-                className="relative border-slate-200 bg-white/70 backdrop-blur-sm"
-              >
+              <Card key={index} className="relative border-slate-200 bg-white/70 backdrop-blur-sm">
                 <CardContent className="p-6">
                   <div className="mb-4 flex items-center gap-1">
                     {Array.from({ length: testimonial.rating }).map((_, i) => (
-                      <Star
-                        key={i}
-                        className="h-4 w-4 fill-amber-400 text-amber-400"
-                      />
+                      <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />
                     ))}
                   </div>
                   <p className="mb-4 text-slate-600 italic">
                     &ldquo;{testimonial.content}&rdquo;
                   </p>
                   <div>
-                    <div className="font-semibold text-slate-800">
-                      {testimonial.name}
-                    </div>
-                    <div className="text-sm text-slate-500">
-                      {testimonial.role}
-                    </div>
+                    <div className="font-semibold text-slate-800">{testimonial.name}</div>
+                    <div className="text-sm text-slate-500">{testimonial.role}</div>
                   </div>
                 </CardContent>
               </Card>
@@ -373,51 +324,31 @@ export default function HomePage() {
       </section>
 
       {/* ── PRICING ── */}
-      <section
-        id="pricing"
-        className="bg-gradient-to-br from-slate-50 to-indigo-50/50 py-20 sm:py-32"
-      >
+      <section id="pricing" className="bg-gradient-to-br from-slate-50 to-indigo-50/50 py-20 sm:py-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto mb-16 max-w-2xl text-center">
             <h2 className="text-3xl font-bold tracking-tight text-slate-800 sm:text-4xl">
-              Simple, Transparent{" "}
+              {t("pricing.title")}{" "}
               <span className="bg-gradient-to-r from-indigo-600 to-cyan-600 bg-clip-text text-transparent">
-                Pricing
+                {t("pricing.titleHighlight")}
               </span>
             </h2>
-            <p className="mt-4 text-lg text-slate-600">
-              Start free. Scale as you grow. No hidden fees.
-            </p>
+            <p className="mt-4 text-lg text-slate-600">{t("pricing.subtitle")}</p>
           </div>
 
           <div className="grid items-stretch gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {/* ── FREE TRIAL ── */}
+            {/* FREE TRIAL */}
             <Card className="relative flex flex-col overflow-hidden border-slate-200 bg-white/70 backdrop-blur-sm">
               <CardContent className="flex flex-1 flex-col p-6">
                 <div>
-                  <h3 className="text-xl font-bold text-slate-800">
-                    Free Trial
-                  </h3>
+                  <h3 className="text-xl font-bold text-slate-800">{t("pricing.freeTrial.name")}</h3>
                   <div className="mt-3 flex items-baseline gap-1">
-                    <span className="text-4xl font-bold text-slate-800">
-                      $0
-                    </span>
+                    <span className="text-4xl font-bold text-slate-800">{t("pricing.freeTrial.price")}</span>
                   </div>
-                  <p className="mt-1 text-sm text-slate-500">
-                    7-day trial · No card needed
-                  </p>
+                  <p className="mt-1 text-sm text-slate-500">{t("pricing.freeTrial.period")}</p>
                   <ul className="mt-6 space-y-3">
-                    {[
-                      "10,000 credits included",
-                      "Flash voice only",
-                      "Single-speaker (no multi-speaker)",
-                      "Max 500 chars / request",
-                      "Expires after 7 days",
-                    ].map((f) => (
-                      <li
-                        key={f}
-                        className="flex items-start gap-2 text-sm text-slate-700"
-                      >
+                    {(t.raw("pricing.freeTrial.features") as string[]).map((f) => (
+                      <li key={f} className="flex items-start gap-2 text-sm text-slate-700">
                         <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-emerald-500" />
                         {f}
                       </li>
@@ -425,41 +356,23 @@ export default function HomePage() {
                   </ul>
                 </div>
                 <div className="mt-auto pt-8">
-                  <AuthCTA
-                    label="Try for Free"
-                    variant="outline"
-                    size="lg"
-                    className="w-full font-semibold"
-                  />
+                  <AuthCTA label={t("pricing.freeTrial.cta")} variant="outline" size="lg" className="w-full font-semibold" />
                 </div>
               </CardContent>
             </Card>
 
-            {/* ── START ── */}
+            {/* START */}
             <Card className="relative flex flex-col overflow-hidden border-slate-200 bg-white/70 backdrop-blur-sm">
               <CardContent className="flex flex-1 flex-col p-6">
                 <div>
-                  <h3 className="text-xl font-bold text-slate-800">Start</h3>
+                  <h3 className="text-xl font-bold text-slate-800">{t("pricing.start.name")}</h3>
                   <div className="mt-3 flex items-baseline gap-1">
-                    <span className="text-4xl font-bold text-slate-800">
-                      $4.99
-                    </span>
+                    <span className="text-4xl font-bold text-slate-800">{t("pricing.start.price")}</span>
                   </div>
-                  <p className="mt-1 text-sm text-slate-500">
-                    Light users · Credits never expire
-                  </p>
+                  <p className="mt-1 text-sm text-slate-500">{t("pricing.start.period")}</p>
                   <ul className="mt-6 space-y-3">
-                    {[
-                      "40,000 credits",
-                      "All voices (Flash + Pro)",
-                      "Multi-speaker enabled",
-                      "No character limit per request",
-                      "Credits never expire",
-                    ].map((f) => (
-                      <li
-                        key={f}
-                        className="flex items-start gap-2 text-sm text-slate-700"
-                      >
+                    {(t.raw("pricing.start.features") as string[]).map((f) => (
+                      <li key={f} className="flex items-start gap-2 text-sm text-slate-700">
                         <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-emerald-500" />
                         {f}
                       </li>
@@ -467,43 +380,26 @@ export default function HomePage() {
                   </ul>
                 </div>
                 <div className="mt-auto pt-8">
-                  <PricingButton
-                    slug="starter"
-                    label="Get Started"
-                    className="w-full bg-gradient-to-r from-indigo-500 to-cyan-600 hover:from-indigo-600 hover:to-cyan-700"
-                  />
+                  <PricingButton slug="starter" label={t("pricing.start.cta")} className="w-full bg-gradient-to-r from-indigo-500 to-cyan-600 hover:from-indigo-600 hover:to-cyan-700" />
                 </div>
               </CardContent>
             </Card>
 
-            {/* ── CREATOR (Most Popular) ── */}
+            {/* CREATOR */}
             <Card className="relative flex flex-col overflow-hidden border-2 border-indigo-400 bg-white/70 shadow-lg backdrop-blur-sm">
               <div className="absolute top-0 right-0 bg-gradient-to-r from-indigo-500 to-cyan-600 px-3 py-1 text-xs font-semibold text-white">
-                Most Popular
+                {t("pricing.mostPopular")}
               </div>
               <CardContent className="flex flex-1 flex-col p-6">
                 <div>
-                  <h3 className="text-xl font-bold text-slate-800">Creator</h3>
+                  <h3 className="text-xl font-bold text-slate-800">{t("pricing.creator.name")}</h3>
                   <div className="mt-3 flex items-baseline gap-1">
-                    <span className="text-4xl font-bold text-slate-800">
-                      $9.99
-                    </span>
+                    <span className="text-4xl font-bold text-slate-800">{t("pricing.creator.price")}</span>
                   </div>
-                  <p className="mt-1 text-sm text-slate-500">
-                    Regular creators · Credits never expire
-                  </p>
+                  <p className="mt-1 text-sm text-slate-500">{t("pricing.creator.period")}</p>
                   <ul className="mt-6 space-y-3">
-                    {[
-                      "125,000 credits",
-                      "All voices (Flash + Pro)",
-                      "Multi-speaker enabled",
-                      "All features included",
-                      "Credits never expire",
-                    ].map((f) => (
-                      <li
-                        key={f}
-                        className="flex items-start gap-2 text-sm text-slate-700"
-                      >
+                    {(t.raw("pricing.creator.features") as string[]).map((f) => (
+                      <li key={f} className="flex items-start gap-2 text-sm text-slate-700">
                         <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-emerald-500" />
                         {f}
                       </li>
@@ -511,41 +407,23 @@ export default function HomePage() {
                   </ul>
                 </div>
                 <div className="mt-auto pt-8">
-                  <PricingButton
-                    slug="creator"
-                    label="Get Creator"
-                    className="w-full bg-gradient-to-r from-indigo-500 to-cyan-600 hover:from-indigo-600 hover:to-cyan-700"
-                  />
+                  <PricingButton slug="creator" label={t("pricing.creator.cta")} className="w-full bg-gradient-to-r from-indigo-500 to-cyan-600 hover:from-indigo-600 hover:to-cyan-700" />
                 </div>
               </CardContent>
             </Card>
 
-            {/* ── PRO ── */}
+            {/* PRO */}
             <Card className="relative flex flex-col overflow-hidden border-slate-200 bg-white/70 backdrop-blur-sm">
               <CardContent className="flex flex-1 flex-col p-6">
                 <div>
-                  <h3 className="text-xl font-bold text-slate-800">Pro</h3>
+                  <h3 className="text-xl font-bold text-slate-800">{t("pricing.pro.name")}</h3>
                   <div className="mt-3 flex items-baseline gap-1">
-                    <span className="text-4xl font-bold text-slate-800">
-                      $49.99
-                    </span>
+                    <span className="text-4xl font-bold text-slate-800">{t("pricing.pro.price")}</span>
                   </div>
-                  <p className="mt-1 text-sm text-slate-500">
-                    Agencies &amp; heavy users · Credits never expire
-                  </p>
+                  <p className="mt-1 text-sm text-slate-500">{t("pricing.pro.period")}</p>
                   <ul className="mt-6 space-y-3">
-                    {[
-                      "400,000 credits",
-                      "All voices (Flash + Pro)",
-                      "Multi-speaker enabled",
-                      "All features included",
-                      "Priority queue",
-                      "Credits never expire",
-                    ].map((f) => (
-                      <li
-                        key={f}
-                        className="flex items-start gap-2 text-sm text-slate-700"
-                      >
+                    {(t.raw("pricing.pro.features") as string[]).map((f) => (
+                      <li key={f} className="flex items-start gap-2 text-sm text-slate-700">
                         <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-emerald-500" />
                         {f}
                       </li>
@@ -553,30 +431,25 @@ export default function HomePage() {
                   </ul>
                 </div>
                 <div className="mt-auto pt-8">
-                  <PricingButton
-                    slug="pro"
-                    label="Get Pro"
-                    className="w-full bg-gradient-to-r from-indigo-500 to-cyan-600 hover:from-indigo-600 hover:to-cyan-700"
-                  />
+                  <PricingButton slug="pro" label={t("pricing.pro.cta")} className="w-full bg-gradient-to-r from-indigo-500 to-cyan-600 hover:from-indigo-600 hover:to-cyan-700" />
                 </div>
               </CardContent>
             </Card>
           </div>
         </div>
       </section>
+
+      {/* ── CTA ── */}
       <section className="bg-gradient-to-r from-indigo-100/70 to-cyan-100/70 py-20 sm:py-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-bold tracking-tight text-slate-800 sm:text-4xl">
-              Turn Your Words Into Voice—Ready?
+              {t("cta.title")}
             </h2>
-            <p className="mt-4 text-lg text-slate-600">
-              Join thousands of creators using AI to make content sound natural
-              and alive.
-            </p>
+            <p className="mt-4 text-lg text-slate-600">{t("cta.subtitle")}</p>
             <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center">
               <AuthCTA
-                label="Start Free"
+                label={t("cta.startFree")}
                 icon="AudioWaveform"
                 size="lg"
                 className="bg-gradient-to-r from-indigo-500 to-cyan-600 px-8 py-6 text-base text-white"
@@ -588,7 +461,7 @@ export default function HomePage() {
                   className="cursor-pointer gap-2 border-slate-300 px-8 py-6 text-base text-slate-700 hover:bg-slate-100"
                 >
                   <Play className="h-5 w-5" />
-                  Play samples
+                  {t("cta.playSamples")}
                 </Button>
               </Link>
             </div>

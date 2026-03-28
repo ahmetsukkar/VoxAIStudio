@@ -1,27 +1,31 @@
 {
+  "meta": {
+    "title": "Vox AI Studio — AI Text to Speech & Voice Cloning",
+    "description": "Convert text into natural, human-like speech instantly. Clone voices, choose from 50+ AI voices, support multiple languages. Try free — no credit card needed."
+  },
   "hero": {
     "badge": "Powered by Advanced AI",
     "title": "Transform Text into",
     "titleHighlight": "Natural Speech",
     "description": "AI-powered voice synthesis for professional results. Convert text into lifelike speech with natural tone, multiple languages, and realistic intonation—ready in seconds.",
-    "tryItFree": "Try It Free Now",
+    "tryFree": "Try It Free Now",
     "listenDemo": "Listen to Demo",
-    "trustedBy": "Trusted by thousands of creators worldwide",
-    "stats": {
-      "voicesGenerated": "Voices Generated",
-      "activeUsers": "Active Users",
-      "uptime": "Uptime",
-      "userRating": "User Rating",
-      "voiceSynthesis": "Voice Synthesis"
-    }
+    "trustedBy": "Trusted by thousands of creators worldwide"
+  },
+  "stats": {
+    "voicesGenerated": "Voices Generated",
+    "activeUsers": "Active Users",
+    "uptime": "Uptime",
+    "userRating": "User Rating",
+    "voiceSynthesis": "Voice Synthesis"
   },
   "features": {
     "title": "High‑Performance AI Voices,",
     "titleHighlight": "Ready",
-    "titleSuffix": "When You Are.",
-    "description": "Create realistic, human‑like speech with everything you need—powered by artificial intelligence.",
+    "titleEnd": "When You Are.",
+    "subtitle": "Create realistic, human‑like speech with everything you need—powered by artificial intelligence.",
     "items": {
-      "voiceCloning": {
+      "cloning": {
         "title": "AI Voice Cloning",
         "description": "Build a unique voice by cloning your own, or choose from a library of ready-to-use professional voices."
       },
@@ -39,9 +43,30 @@
       }
     }
   },
+  "demo": {
+  "title": "Hear the",
+  "titleHighlight": "Difference",
+  "subtitle": "Listen to real demos of our AI voice technology in action.",
+  "naturalSpeech": {
+    "heading": "Realistic & Emotion‑Rich Speech.",
+    "colText": "Text Sample",
+    "colVoice": "Voice Type",
+    "colAudio": "Audio Output"
+  },
+  "multilingual": {
+    "heading": "Multilingual Support",
+    "colLanguage": "Language",
+    "colText": "Text Sample",
+    "colAudio": "Audio Output"
+  },
+  "play": "Play",
+  "pause": "Pause",
+  "ctaText": "Ready to create your own AI-generated voices?",
+  "ctaButton": "Try It Free Now"
+},
   "howItWorks": {
     "title": "Smooth. Quick. Pro‑Grade.",
-    "description": "Get polished results in just three easy steps.",
+    "subtitle": "Get polished results in just three easy steps.",
     "steps": {
       "step1": {
         "title": "Add Your Script",
@@ -60,19 +85,19 @@
   "testimonials": {
     "title": "Trusted by",
     "titleHighlight": "Creators",
-    "description": "Discover what people are saying about Vox AI Studio.",
+    "subtitle": "Discover what people are saying about Vox AI Studio.",
     "items": {
-      "testimonial1": {
+      "t1": {
         "name": "Aylin Demir",
         "role": "E‑Learning Producer",
         "content": "Vox AI Studio cut our course narration time dramatically. We can update lessons and regenerate audio the same day without re-recording."
       },
-      "testimonial2": {
+      "t2": {
         "name": "Noah Patel",
         "role": "Marketing Manager",
         "content": "The voices sound polished and consistent across campaigns. We launch ads faster and keep the brand tone the same everywhere."
       },
-      "testimonial3": {
+      "t3": {
         "name": "Lina Haddad",
         "role": "YouTube Creator",
         "content": "Being able to switch languages and styles is a game changer. My videos feel more local for different audiences without extra production work."
@@ -82,7 +107,7 @@
   "pricing": {
     "title": "Simple, Transparent",
     "titleHighlight": "Pricing",
-    "description": "Start free. Scale as you grow. No hidden fees.",
+    "subtitle": "Start free. Scale as you grow. No hidden fees.",
     "mostPopular": "Most Popular",
     "freeTrial": {
       "name": "Free Trial",
@@ -97,7 +122,7 @@
         "Expires after 7 days"
       ]
     },
-    "starter": {
+    "start": {
       "name": "Start",
       "price": "$4.99",
       "period": "Light users · Credits never expire",
@@ -140,7 +165,7 @@
   },
   "cta": {
     "title": "Turn Your Words Into Voice—Ready?",
-    "description": "Join thousands of creators using AI to make content sound natural and alive.",
+    "subtitle": "Join thousands of creators using AI to make content sound natural and alive.",
     "startFree": "Start Free",
     "playSamples": "Play samples"
   }

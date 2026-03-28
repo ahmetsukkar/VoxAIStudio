@@ -1,0 +1,67 @@
+{
+  "tabs": {
+    "tts": "🎙️ Text to Speech",
+    "dialogue": "🎭 Dialogue Studio"
+  },
+  "tts": {
+    "toasts": {
+      "emptyText": "Please enter some text!",
+      "success": "Speech generated successfully!",
+      "downloadStarted": "Download started!",
+      "failed": "Failed to generate speech"
+    },
+    "textInput": {
+      "title": "Your Text",
+      "subtitle": "Enter the text you want to convert to speech",
+      "freeTrial": "Free Trial",
+      "placeholder": "Type or paste your text here… Maximum {max} characters.",
+      "characters": "characters",
+      "trialLimit": "(Free Trial limit)",
+      "clear": "Clear",
+      "latestGeneration": "Latest Generation",
+      "download": "Download"
+    },
+    "settings": {
+      "title": "Settings",
+      "subtitle": "Customize your speech",
+      "cost": "Cost:",
+      "credit": "credit",
+      "credits": "credits",
+      "characters": "characters",
+      "generating": "Generating...",
+      "generate": "Generate Speech"
+    },
+    "gemini": {
+      "language": "Language",
+      "autoDetect": "🌐 Auto Detect",
+      "model": "Model",
+      "flashVsPro": "Flash vs Pro",
+      "flash": "⚡ Flash — Fast & Affordable",
+      "flashDesc": "credits / char · Best for short clips, dialogues, and quick generations.",
+      "pro": "✨ Pro — Highest Quality",
+      "proDesc": "credits / char · Best for audiobooks, long narrations, and professional content.",
+      "flashLabel": "Flash — Recommended",
+      "proLabel": "Pro — Long-form Content",
+      "flashSubLabel": "Best for dialogues & short lines",
+      "proSubLabel": "Better for audiobooks & speeches",
+      "creditsPerChar": "credits / char",
+      "freeTrial": "(Free Trial)",
+      "proLocked": "Pro voice is only available on paid plans. Upgrade to unlock it.",
+      "emotion": "Emotion",
+      "voice": "Voice",
+      "style": "Style",
+      "pace": "Pace"
+    },
+    "voicePicker": {
+      "all": "All",
+      "recommended": "Recommended",
+      "male": "Male",
+      "female": "Female",
+      "voices": "voices",
+      "stopPreview": "Stop preview",
+      "previewVoice": "Preview voice",
+      "tip": "💡 For",
+      "tipTone": "tone, try:"
+    }
+  }
+}

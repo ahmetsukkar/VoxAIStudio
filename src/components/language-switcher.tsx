@@ -2,6 +2,7 @@
 
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { useLocale } from "next-intl";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,7 +14,7 @@ import { ChevronDown, Globe } from "lucide-react";
 import { localeConfig, locales, type Locale } from "~/i18n/config";
 
 interface LanguageSwitcherProps {
-  currentLocale: Locale;
+  currentLocale?: Locale;
 }
 
 export default function LanguageSwitcher({
@@ -21,17 +22,17 @@ export default function LanguageSwitcher({
 }: LanguageSwitcherProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const detectedLocale = useLocale() as Locale;
+  const locale = currentLocale ?? detectedLocale;
 
-  const handleLocaleChange = (locale: Locale) => {
-    // Save locale preference in cookie (1 year expiry)
-    document.cookie = `locale=${locale};path=/;max-age=31536000;SameSite=Lax`;
-
+  const handleLocaleChange = (newLocale: Locale) => {
+    document.cookie = `locale=${newLocale};path=/;max-age=31536000;SameSite=Lax`;
     startTransition(() => {
       router.refresh();
     });
   };
 
-  const current = localeConfig[currentLocale];
+  const current = localeConfig[locale];
 
   return (
     <DropdownMenu>
@@ -48,13 +49,13 @@ export default function LanguageSwitcher({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-[140px]">
-        {locales.map((locale) => {
-          const config = localeConfig[locale];
-          const isActive = locale === currentLocale;
+        {locales.map((l) => {
+          const config = localeConfig[l];
+          const isActive = l === locale;
           return (
             <DropdownMenuItem
-              key={locale}
-              onClick={() => handleLocaleChange(locale)}
+              key={l}
+              onClick={() => handleLocaleChange(l)}
               className={`flex cursor-pointer items-center gap-2 ${
                 isActive ? "bg-indigo-50 font-semibold text-indigo-600" : ""
               }`}

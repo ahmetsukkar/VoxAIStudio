@@ -6,23 +6,23 @@ import { getUserCredits } from "~/actions/tts";
 import { getUserPlanStatus } from "~/actions/user-plan";
 import { useCreditsStore } from "~/store/credits-store";
 import { usePlanStore } from "~/store/plan-store";
+import { useTranslations } from "next-intl";
 
 export default function Credits() {
   const { credits, setCredits } = useCreditsStore();
   const { setPlan } = usePlanStore();
   const [mounted, setMounted] = useState(false);
+  const t = useTranslations("dashboard.sidebar");
 
   useEffect(() => {
     setMounted(true);
 
-    // Load credits
     getUserCredits()
       .then((r) => {
         if (r.success) setCredits(r.credits);
       })
       .catch(console.error);
 
-    // Load plan status (trial vs paid)
     getUserPlanStatus()
       .then((r) => {
         if (r.success && r.plan) setPlan(r.plan);
@@ -39,7 +39,7 @@ export default function Credits() {
             {mounted ? (credits ?? "...") : "..."}
           </span>
           <span className="text-muted-foreground text-xs leading-tight">
-            Credits
+            {t("credits")}
           </span>
         </div>
       </div>

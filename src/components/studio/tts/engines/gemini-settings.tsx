@@ -42,6 +42,7 @@ import {
 import type { GeminiOptions } from "~/types/engines";
 import VoicePicker from "./voice-picker";
 import { CREDITS_PER_CHAR } from "~/config/credits";
+import { useTranslations } from "next-intl";
 
 interface GeminiSettingsProps {
   options: GeminiOptions;
@@ -54,6 +55,7 @@ export default function GeminiSettings({
   setOptions,
   isTrialTier = false,
 }: GeminiSettingsProps) {
+  const t = useTranslations("studio.tts.gemini");
   const isPro = options.model === "gemini-2.5-pro-preview-tts";
 
   return (
@@ -61,7 +63,7 @@ export default function GeminiSettings({
       {/* Language */}
       <div className="space-y-1.5">
         <Label className="flex items-center gap-1.5 text-xs font-medium">
-          <Globe className="h-3 w-3" /> Language
+          <Globe className="h-3 w-3" /> {t("language")}
         </Label>
         <Select
           value={options.language}
@@ -72,7 +74,7 @@ export default function GeminiSettings({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="auto" className="text-xs">
-              🌐 Auto Detect
+              {t("autoDetect")}
             </SelectItem>
             {SupportedLanguages.map((lang) => (
               <SelectItem key={lang.code} value={lang.code} className="text-xs">
@@ -92,7 +94,7 @@ export default function GeminiSettings({
       {/* Model Toggle */}
       <div className="space-y-1.5">
         <Label className="flex items-center gap-1.5 text-xs font-medium">
-          <Cpu className="h-3 w-3" /> Model
+          <Cpu className="h-3 w-3" /> {t("model")}
           <Popover>
             <PopoverTrigger asChild>
               <span className="text-muted-foreground hover:text-foreground ml-0.5 cursor-pointer transition-colors">
@@ -101,25 +103,23 @@ export default function GeminiSettings({
             </PopoverTrigger>
             <PopoverContent side="right" className="w-64 p-3" sideOffset={6}>
               <p className="text-foreground mb-2 text-xs font-semibold">
-                Flash vs Pro
+                {t("flashVsPro")}
               </p>
               <div className="space-y-2">
                 <div className="bg-muted rounded-md p-2">
                   <p className="text-foreground text-xs font-medium">
-                    ⚡ Flash — Fast & Affordable
+                    {t("flash")}
                   </p>
                   <p className="text-muted-foreground mt-0.5 text-[11px]">
-                    {CREDITS_PER_CHAR.geminiFlashTTS} credits / char · Best for
-                    short clips, dialogues, and quick generations.
+                    {CREDITS_PER_CHAR.geminiFlashTTS} {t("flashDesc")}
                   </p>
                 </div>
                 <div className="bg-muted rounded-md p-2">
                   <p className="text-foreground text-xs font-medium">
-                    ✨ Pro — Highest Quality
+                    {t("pro")}
                   </p>
                   <p className="text-muted-foreground mt-0.5 text-[11px]">
-                    {CREDITS_PER_CHAR.geminiProTTS} credits / char · Best for
-                    audiobooks, long narrations, and professional content.
+                    {CREDITS_PER_CHAR.geminiProTTS} {t("proDesc")}
                   </p>
                 </div>
               </div>
@@ -137,19 +137,19 @@ export default function GeminiSettings({
               >
                 <div className="space-y-0.5">
                   <p className="flex items-center gap-1.5 text-xs font-semibold">
-                    {isPro ? "Pro — Long-form Content" : "Flash — Recommended"}
+                    {isPro ? t("proLabel") : t("flashLabel")}
                     {isTrialTier && <Lock className="h-3 w-3 text-amber-500" />}
                   </p>
                   <p className="text-muted-foreground text-xs">
-                    {isPro
-                      ? "Better for audiobooks & speeches"
-                      : "Best for dialogues & short lines"}
+                    {isPro ? t("proSubLabel") : t("flashSubLabel")}
                     <br />
                     {isPro
-                      ? `(${CREDITS_PER_CHAR.geminiProTTS} credits / char)`
-                      : `(${CREDITS_PER_CHAR.geminiFlashTTS} credits / char)`}
+                      ? `(${CREDITS_PER_CHAR.geminiProTTS} ${t("creditsPerChar")})`
+                      : `(${CREDITS_PER_CHAR.geminiFlashTTS} ${t("creditsPerChar")})`}
                     {isTrialTier && (
-                      <span className="ml-1 text-amber-600">(Free Trial)</span>
+                      <span className="ml-1 text-amber-600">
+                        {t("freeTrial")}
+                      </span>
                     )}
                   </p>
                 </div>
@@ -173,7 +173,7 @@ export default function GeminiSettings({
                 side="right"
                 className="max-w-[200px] text-center text-xs"
               >
-                Pro voice is only available on paid plans. Upgrade to unlock it.
+                {t("proLocked")}
               </TooltipContent>
             )}
           </Tooltip>
@@ -183,7 +183,7 @@ export default function GeminiSettings({
       {/* Emotion */}
       <div className="space-y-1.5">
         <Label className="flex items-center gap-1.5 text-xs font-medium">
-          <Smile className="h-3 w-3" /> Emotion
+          <Smile className="h-3 w-3" /> {t("emotion")}
         </Label>
         <Select
           value={options.emotion}
@@ -211,7 +211,7 @@ export default function GeminiSettings({
       {/* Voice */}
       <div className="space-y-1.5">
         <Label className="flex items-center gap-1.5 text-xs font-medium">
-          <Mic2 className="h-3 w-3" /> Voice
+          <Mic2 className="h-3 w-3" /> {t("voice")}
         </Label>
         <VoicePicker
           value={options.voice}
@@ -223,7 +223,7 @@ export default function GeminiSettings({
       {/* Style */}
       <div className="space-y-1.5">
         <Label className="flex items-center gap-1.5 text-xs font-medium">
-          <Volume2 className="h-3 w-3" /> Style
+          <Volume2 className="h-3 w-3" /> {t("style")}
         </Label>
         <Select
           value={options.style}
@@ -251,7 +251,7 @@ export default function GeminiSettings({
       {/* Pace */}
       <div className="space-y-1.5">
         <Label className="flex items-center gap-1.5 text-xs font-medium">
-          <Timer className="h-3 w-3" /> Pace
+          <Timer className="h-3 w-3" /> {t("pace")}
         </Label>
         <Select
           value={options.pace}

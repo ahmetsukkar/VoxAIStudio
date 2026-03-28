@@ -37,5 +37,33 @@
       "button": "See Plans",
       "close": "Close"
     }
+  },
+  "page": {
+    "welcome": "Welcome back",
+    "subtitle": "Here's an overview of your Text-to-Speech workspace",
+    "loading": "Loading your dashboard...",
+    "stats": {
+      "totalAudio": "Total Audio",
+      "ttsGenerations": "TTS generations",
+      "thisMonth": "This Month",
+      "projectsCreated": "Projects created",
+      "thisWeek": "This Week",
+      "recentActivity": "Recent activity",
+      "memberSince": "Member Since",
+      "accountCreated": "Account created"
+    },
+    "quickActions": {
+      "title": "Quick Actions",
+      "tts": "Text-to-Speech",
+      "ttsDesc": "Generate audio with voice cloning",
+      "viewAudio": "View All Audio",
+      "viewAudioDesc": "Browse your audio library",
+      "settings": "Account Settings",
+      "settingsDesc": "Manage your profile"
+    },
+    "recentProjects": {
+      "title": "Recent Audio Projects",
+      "viewAll": "View All"
+    }
   }
 }

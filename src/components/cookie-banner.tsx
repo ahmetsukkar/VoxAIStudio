@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import CookieConsent from "react-cookie-consent";
+import { useTranslations } from "next-intl";
 
 type ConsentStatus = "granted" | "denied";
 
@@ -26,6 +27,7 @@ function updateConsent(params: ConsentParams) {
 
 export function CookieBanner() {
   const [showBanner, setShowBanner] = useState(false);
+  const t = useTranslations("common.cookie");
 
   useEffect(() => {
     setShowBanner(true);
@@ -36,8 +38,8 @@ export function CookieBanner() {
   return (
     <CookieConsent
       location="bottom"
-      buttonText="Accept All Cookies"
-      declineButtonText="Reject Non-Essential"
+      buttonText={t("accept")}
+      declineButtonText={t("decline")}
       enableDeclineButton
       cookieName="vox-ai-studio-cookie-consent"
       style={{
@@ -80,9 +82,7 @@ export function CookieBanner() {
       }}
     >
       <span style={{ fontSize: "14px", lineHeight: "1.6" }}>
-        We use cookies to improve your experience, analyze site traffic, and
-        serve personalized advertisements through <strong>Google AdSense</strong>
-        . By clicking "Accept All Cookies", you consent to our use of cookies.{" "}
+        {t("message")}{" "}
         <a
           href="/legal/privacy"
           style={{ color: "#a78bfa", textDecoration: "underline" }}

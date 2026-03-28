@@ -5,21 +5,25 @@ import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { Play, Pause } from "lucide-react";
 import AuthCTA from "./auth-cta";
+import { useTranslations } from "next-intl";
 
-const S3_VOICE_SAMPLES = "https://vox-ai-studio.s3.us-east-1.amazonaws.com/samples/voices/Public";
+const S3_VOICE_SAMPLES =
+  "https://vox-ai-studio.s3.us-east-1.amazonaws.com/samples/voices/Public";
 
 export default function DemoSection() {
+  const t = useTranslations("home.demo");
   const [playingId, setPlayingId] = useState<string | null>(null);
+
   const naturalSpeechSamples = [
     {
       id: "warm-narrator",
-      text: "Welcome back. In the next minute, I’ll guide you through a simple story that feels natural and clear.",
+      text: "Welcome back. In the next minute, I'll guide you through a simple story that feels natural and clear.",
       voiceType: "Warm Narrator (Neutral English)",
       audioUrl: `${S3_VOICE_SAMPLES}/warm-narrator.wav`,
     },
     {
       id: "energetic-host",
-      text: "Alright everyone—big news today! We’re kicking off with the fastest updates and a quick takeaway you can use.",
+      text: "Alright everyone—big news today! We're kicking off with the fastest updates and a quick takeaway you can use.",
       voiceType: "Energetic Male Host",
       audioUrl: `${S3_VOICE_SAMPLES}/energetic-host.wav`,
     },
@@ -31,7 +35,7 @@ export default function DemoSection() {
     },
     {
       id: "customer-support",
-      text: "Thanks for reaching out—let’s sort this out together. First, I’ll confirm a couple of details and then fix it.",
+      text: "Thanks for reaching out—let's sort this out together. First, I'll confirm a couple of details and then fix it.",
       voiceType: "Customer Support Agent (Professional)",
       audioUrl: `${S3_VOICE_SAMPLES}/customer-support.wav`,
     },
@@ -112,56 +116,56 @@ export default function DemoSection() {
           );
         });
 
-      audio.onended = () => {
-        setPlayingId(null);
-      };
-
-      audio.onerror = () => {
-        setPlayingId(null);
-      };
+      audio.onended = () => setPlayingId(null);
+      audio.onerror = () => setPlayingId(null);
     }
   };
+
   return (
-    <section id="demo" className="bg-gradient-to-br from-indigo-50/50 to-cyan-50/30 py-20 sm:py-32">
+    <section
+      id="demo"
+      className="bg-gradient-to-br from-indigo-50/50 to-cyan-50/30 py-20 sm:py-32"
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Section Header */}
         <div className="mx-auto mb-16 max-w-2xl text-center">
           <h2 className="text-3xl font-bold tracking-tight text-slate-800 sm:text-4xl">
-            Hear the{" "}
+            {t("title")}{" "}
             <span className="bg-gradient-to-r from-indigo-600 to-cyan-600 bg-clip-text text-transparent">
-              Difference
+              {t("titleHighlight")}
             </span>
           </h2>
-          <p className="mt-4 text-lg text-slate-600">
-            Listen to real demos of our AI voice technology in action.
-          </p>
+          <p className="mt-4 text-lg text-slate-600">{t("subtitle")}</p>
         </div>
+
+        {/* Natural Speech Table */}
         <div className="mb-16">
           <h3 className="mb-6 text-center text-2xl font-semibold text-slate-800">
-            Realistic & Emotion‑Rich Speech.
+            {t("naturalSpeech.heading")}
           </h3>
           <Card className="overflow-hidden border-slate-200">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-slate-50">
                   <tr>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">
-                      Text Sample
+                    <th className="px-6 py-4 text-start text-sm font-semibold text-slate-700">
+                      {t("naturalSpeech.colText")}
                     </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">
-                      Voice Type
+                    <th className="px-6 py-4 text-start text-sm font-semibold text-slate-700">
+                      {t("naturalSpeech.colVoice")}
                     </th>
                     <th className="px-6 py-4 text-center text-sm font-semibold text-slate-700">
-                      Audio Output
+                      {t("naturalSpeech.colAudio")}
                     </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200">
                   {naturalSpeechSamples.map((sample) => (
                     <tr key={sample.id} className="hover:bg-slate-50/50">
-                      <td className="px-6 py-4 text-sm text-slate-600">
+                      <td className="px-6 py-4 text-start text-sm text-slate-600">
                         &ldquo;{sample.text}&rdquo;
                       </td>
-                      <td className="px-6 py-4 text-sm font-medium text-slate-700">
+                      <td className="px-6 py-4 text-start text-sm font-medium text-slate-700">
                         {sample.voiceType}
                       </td>
                       <td className="px-6 py-4">
@@ -177,12 +181,12 @@ export default function DemoSection() {
                             {playingId === sample.id ? (
                               <>
                                 <Pause className="h-4 w-4" />
-                                Pause
+                                {t("pause")}
                               </>
                             ) : (
                               <>
                                 <Play className="h-4 w-4" />
-                                Play
+                                {t("play")}
                               </>
                             )}
                           </Button>
@@ -202,34 +206,35 @@ export default function DemoSection() {
             </div>
           </Card>
         </div>
-        {/* Multilingual Support Demo */}
+
+        {/* Multilingual Table */}
         <div>
           <h3 className="mb-6 text-center text-2xl font-semibold text-slate-800">
-            Multilingual Support
+            {t("multilingual.heading")}
           </h3>
           <Card className="overflow-hidden border-slate-200">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-slate-50">
                   <tr>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">
-                      Language
+                    <th className="px-6 py-4 text-start text-sm font-semibold text-slate-700">
+                      {t("multilingual.colLanguage")}
                     </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">
-                      Text Sample
+                    <th className="px-6 py-4 text-start text-sm font-semibold text-slate-700">
+                      {t("multilingual.colText")}
                     </th>
                     <th className="px-6 py-4 text-center text-sm font-semibold text-slate-700">
-                      Audio Output
+                      {t("multilingual.colAudio")}
                     </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200">
                   {multilingualSamples.map((sample) => (
                     <tr key={sample.id} className="hover:bg-slate-50/50">
-                      <td className="px-6 py-4 text-sm font-medium text-slate-700">
+                      <td className="px-6 py-4 text-start text-sm font-medium text-slate-700">
                         {sample.language}
                       </td>
-                      <td className="px-6 py-4 text-sm text-slate-600">
+                      <td className="px-6 py-4 text-start text-sm text-slate-600">
                         &ldquo;{sample.text}&rdquo;
                       </td>
                       <td className="px-6 py-4">
@@ -245,12 +250,12 @@ export default function DemoSection() {
                             {playingId === sample.id ? (
                               <>
                                 <Pause className="h-4 w-4" />
-                                Pause
+                                {t("pause")}
                               </>
                             ) : (
                               <>
                                 <Play className="h-4 w-4" />
-                                Play
+                                {t("play")}
                               </>
                             )}
                           </Button>
@@ -270,12 +275,12 @@ export default function DemoSection() {
             </div>
           </Card>
         </div>
+
+        {/* Bottom CTA */}
         <div className="mt-12 text-center">
-          <p className="mb-6 text-slate-600">
-            Ready to create your own AI-generated voices?
-          </p>
+          <p className="mb-6 text-slate-600">{t("ctaText")}</p>
           <AuthCTA
-            label="Try It Free Now"
+            label={t("ctaButton")}
             icon="AudioWaveform"
             size="lg"
             className="bg-gradient-to-r from-indigo-500 to-cyan-600 px-8 py-6 text-base text-white"
