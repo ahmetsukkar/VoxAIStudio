@@ -1,0 +1,40 @@
+{
+  "navigation": {
+    "features": "Features",
+    "pricing": "Pricing",
+    "reviews": "Reviews",
+    "blog": "Blog",
+    "about": "About",
+    "signIn": "Sign In",
+    "myDashboard": "My Dashboard",
+    "tryItFree": "Try It Free"
+  },
+  "footer": {
+    "tagline": "Professional-grade voice generation, driven by AI. Turn any text into smooth, natural speech using advanced voice technology.",
+    "product": "Product",
+    "resources": "Resources",
+    "legal": "Legal",
+    "features": "Features",
+    "pricing": "Pricing",
+    "reviews": "Reviews",
+    "blog": "Blog",
+    "helpFaq": "Help & FAQ",
+    "contactUs": "Contact Us",
+    "aboutUs": "About Us",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "cookiePolicy": "Cookie Policy",
+    "copyright": "© 2026 Vox AI Studio. All rights reserved."
+  },
+  "cookie": {
+    "message": "We use cookies to enhance your experience. By continuing to visit this site you agree to our use of cookies.",
+    "accept": "Accept",
+    "decline": "Decline"
+  },
+  "language": {
+    "select": "Language",
+    "en": "English",
+    "ar": "العربية",
+    "tr": "Türkçe"
+  }
+}

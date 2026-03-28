@@ -1,0 +1,41 @@
+{
+  "sidebar": {
+    "dashboard": "لوحة التحكم",
+    "studio": "الاستوديو",
+    "projects": "المشاريع",
+    "createBlogPost": "إنشاء مقال",
+    "sendEmail": "إرسال بريد إلكتروني",
+    "settings": "الإعدادات",
+    "credits": "الأرصدة",
+    "upgrade": "ترقية الخطة",
+    "upgradeDescription": "احصل على المزيد من الأرصدة وافتح جميع الميزات.",
+    "upgradeButton": "ترقية الآن",
+    "manageSubscription": "إدارة الاشتراك"
+  },
+  "verifyBanner": {
+    "message": "يرجى التحقق من بريدك الإلكتروني لفتح جميع الميزات.",
+    "resend": "إعادة إرسال بريد التحقق",
+    "sending": "جارٍ الإرسال...",
+    "sent": "تم الإرسال!"
+  },
+  "trials": {
+    "expiredTitle": "انتهت فترة التجربة",
+    "expiredDescription": "قم بالترقية لمواصلة توليد الأصوات مع Vox AI Studio.",
+    "upgradeButton": "ترقية الآن",
+    "dismiss": "ربما لاحقاً"
+  },
+  "modals": {
+    "verifyToGenerate": {
+      "title": "تحقق من بريدك أولاً",
+      "description": "يجب التحقق من بريدك الإلكتروني قبل توليد الصوت.",
+      "resend": "إعادة إرسال بريد التحقق",
+      "close": "إغلاق"
+    },
+    "upgrade": {
+      "title": "ترقية خطتك",
+      "description": "لقد نفدت أرصدتك. قم بالترقية للمتابعة.",
+      "button": "عرض الخطط",
+      "close": "إغلاق"
+    }
+  }
+}

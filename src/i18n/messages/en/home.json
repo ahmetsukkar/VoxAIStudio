@@ -1,0 +1,147 @@
+{
+  "hero": {
+    "badge": "Powered by Advanced AI",
+    "title": "Transform Text into",
+    "titleHighlight": "Natural Speech",
+    "description": "AI-powered voice synthesis for professional results. Convert text into lifelike speech with natural tone, multiple languages, and realistic intonation—ready in seconds.",
+    "tryItFree": "Try It Free Now",
+    "listenDemo": "Listen to Demo",
+    "trustedBy": "Trusted by thousands of creators worldwide",
+    "stats": {
+      "voicesGenerated": "Voices Generated",
+      "activeUsers": "Active Users",
+      "uptime": "Uptime",
+      "userRating": "User Rating",
+      "voiceSynthesis": "Voice Synthesis"
+    }
+  },
+  "features": {
+    "title": "High‑Performance AI Voices,",
+    "titleHighlight": "Ready",
+    "titleSuffix": "When You Are.",
+    "description": "Create realistic, human‑like speech with everything you need—powered by artificial intelligence.",
+    "items": {
+      "voiceCloning": {
+        "title": "AI Voice Cloning",
+        "description": "Build a unique voice by cloning your own, or choose from a library of ready-to-use professional voices."
+      },
+      "tts": {
+        "title": "Realistic Text‑to‑Speech",
+        "description": "Turn written text into speech with natural rhythm, expressive tone, and human-like delivery."
+      },
+      "languages": {
+        "title": "Languages, Accents & Voices",
+        "description": "Choose from a wide range of voices across many languages, including regional accents and different speaking styles."
+      },
+      "speed": {
+        "title": "Ultra‑Fast Generation",
+        "description": "Create high-quality speech in moments. Our streamlined AI engine produces results with minimal wait time."
+      }
+    }
+  },
+  "howItWorks": {
+    "title": "Smooth. Quick. Pro‑Grade.",
+    "description": "Get polished results in just three easy steps.",
+    "steps": {
+      "step1": {
+        "title": "Add Your Script",
+        "description": "Write or paste your content. The editor supports multiple languages and works well even with advanced formatting."
+      },
+      "step2": {
+        "title": "Pick a Voice Style",
+        "description": "Browse a large catalog of AI voices—clone your own, use polished presets, or fine-tune the voice settings to match your needs."
+      },
+      "step3": {
+        "title": "Create & Save Audio",
+        "description": "Generate natural-sounding speech in seconds, then download a high-quality file ready for any project."
+      }
+    }
+  },
+  "testimonials": {
+    "title": "Trusted by",
+    "titleHighlight": "Creators",
+    "description": "Discover what people are saying about Vox AI Studio.",
+    "items": {
+      "testimonial1": {
+        "name": "Aylin Demir",
+        "role": "E‑Learning Producer",
+        "content": "Vox AI Studio cut our course narration time dramatically. We can update lessons and regenerate audio the same day without re-recording."
+      },
+      "testimonial2": {
+        "name": "Noah Patel",
+        "role": "Marketing Manager",
+        "content": "The voices sound polished and consistent across campaigns. We launch ads faster and keep the brand tone the same everywhere."
+      },
+      "testimonial3": {
+        "name": "Lina Haddad",
+        "role": "YouTube Creator",
+        "content": "Being able to switch languages and styles is a game changer. My videos feel more local for different audiences without extra production work."
+      }
+    }
+  },
+  "pricing": {
+    "title": "Simple, Transparent",
+    "titleHighlight": "Pricing",
+    "description": "Start free. Scale as you grow. No hidden fees.",
+    "mostPopular": "Most Popular",
+    "freeTrial": {
+      "name": "Free Trial",
+      "price": "$0",
+      "period": "7-day trial · No card needed",
+      "cta": "Try for Free",
+      "features": [
+        "10,000 credits included",
+        "Flash voice only",
+        "Single-speaker (no multi-speaker)",
+        "Max 500 chars / request",
+        "Expires after 7 days"
+      ]
+    },
+    "starter": {
+      "name": "Start",
+      "price": "$4.99",
+      "period": "Light users · Credits never expire",
+      "cta": "Get Started",
+      "features": [
+        "40,000 credits",
+        "All voices (Flash + Pro)",
+        "Multi-speaker enabled",
+        "No character limit per request",
+        "Credits never expire"
+      ]
+    },
+    "creator": {
+      "name": "Creator",
+      "price": "$9.99",
+      "period": "Regular creators · Credits never expire",
+      "cta": "Get Creator",
+      "features": [
+        "125,000 credits",
+        "All voices (Flash + Pro)",
+        "Multi-speaker enabled",
+        "All features included",
+        "Credits never expire"
+      ]
+    },
+    "pro": {
+      "name": "Pro",
+      "price": "$49.99",
+      "period": "Agencies & heavy users · Credits never expire",
+      "cta": "Get Pro",
+      "features": [
+        "400,000 credits",
+        "All voices (Flash + Pro)",
+        "Multi-speaker enabled",
+        "All features included",
+        "Priority queue",
+        "Credits never expire"
+      ]
+    }
+  },
+  "cta": {
+    "title": "Turn Your Words Into Voice—Ready?",
+    "description": "Join thousands of creators using AI to make content sound natural and alive.",
+    "startFree": "Start Free",
+    "playSamples": "Play samples"
+  }
+}
