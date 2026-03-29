@@ -14,6 +14,7 @@ import VoicePicker from "~/components/studio/tts/engines/voice-picker";
 import type { DialogueSpeaker } from "~/types/dialogue";
 import { speakerColors } from "~/types/dialogue";
 import { GeminiEmotions } from "~/data/GeminiOptions";
+import { useTranslations } from "next-intl";
 
 interface SpeakerCardProps {
   speaker: DialogueSpeaker;
@@ -23,6 +24,9 @@ interface SpeakerCardProps {
 const MAX_NAME_CHARS = 30;
 
 export default function SpeakerCard({ speaker, onChange }: SpeakerCardProps) {
+  const t = useTranslations("studio.dialogue.speakerCard");
+  const tEmotions = useTranslations("studio.tts.emotions");
+
   const colors = speakerColors[speaker.color];
   const isNameNearLimit = MAX_NAME_CHARS - speaker.name.length <= 5;
 
@@ -38,7 +42,9 @@ export default function SpeakerCard({ speaker, onChange }: SpeakerCardProps) {
           </div>
           <div className="flex-1 space-y-0.5">
             <div className="flex items-center justify-between">
-              <label className="text-muted-foreground text-xs">Name</label>
+              <label className="text-muted-foreground text-xs">
+                {t("name")}
+              </label>
               <span
                 className={`text-xs ${
                   isNameNearLimit ? "text-orange-500" : "text-muted-foreground"
@@ -55,11 +61,11 @@ export default function SpeakerCard({ speaker, onChange }: SpeakerCardProps) {
             />
           </div>
         </div>
-        
-        {/* Emotion */}                
+
+        {/* Emotion */}
         <div className="space-y-1">
           <Label className="flex items-center gap-1.5 text-xs font-medium">
-            <Smile className="h-3 w-3" /> Emotion
+            <Smile className="h-3 w-3" /> {t("emotion")}
           </Label>
           <Select
             value={speaker.emotion}
@@ -76,7 +82,7 @@ export default function SpeakerCard({ speaker, onChange }: SpeakerCardProps) {
             <SelectContent>
               {GeminiEmotions.map((em) => (
                 <SelectItem key={em.value} value={em.value} className="text-xs">
-                  {em.label}
+                  {tEmotions(em.value)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -86,7 +92,7 @@ export default function SpeakerCard({ speaker, onChange }: SpeakerCardProps) {
         {/* Voice */}
         <div className="space-y-1">
           <Label className="flex items-center gap-1.5 text-xs font-medium">
-            <Volume2 className="h-3 w-3" /> Voice
+            <Volume2 className="h-3 w-3" /> {t("voice")}
           </Label>
           <VoicePicker
             value={speaker.voice}

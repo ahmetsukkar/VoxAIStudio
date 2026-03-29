@@ -36,6 +36,7 @@ export default function VoicePicker({
   emotion,
 }: VoicePickerProps) {
   const t = useTranslations("studio.tts.voicePicker");
+  const tDesc = useTranslations("studio.tts.voiceDescriptions");
   const [open, setOpen] = useState(false);
   const [filter, setFilter] = useState<FilterTab>("All");
   const [playingVoice, setPlayingVoice] = useState<string | null>(null);
@@ -195,7 +196,7 @@ export default function VoicePicker({
                         <span className="truncate">{voice.name}</span>
                       </span>
                       <span className="text-muted-foreground text-[10px]">
-                        {voice.description}
+                        {tDesc(voice.description)}
                       </span>
                       <span
                         className={cn(

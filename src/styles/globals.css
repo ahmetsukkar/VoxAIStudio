@@ -159,3 +159,7 @@
   font-family: "Segoe UI", "Arial", "Tahoma", sans-serif;
   letter-spacing: 0;
 }
+
+[dir="rtl"] .sessions-rtl-wrapper [class*="flex-row"] {
+  flex-direction: row-reverse;
+}

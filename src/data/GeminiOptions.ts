@@ -23,29 +23,29 @@ export type GeminiModel =
 
 export type GeminiVoiceCategory = "Male" | "Female";
 
-export const GeminiEmotions: { value: GeminiEmotion; label: string }[] = [
-  { value: "neutral",    label: "Neutral" },
-  { value: "cheerful",   label: "Cheerful" },
-  { value: "sad",        label: "Sad" },
-  { value: "angry",      label: "Angry" },
-  { value: "excited",    label: "Excited" },
-  { value: "whispering", label: "Whispering" },
-  { value: "emotional",  label: "Emotional" },
+export const GeminiEmotions: { value: GeminiEmotion }[] = [
+  { value: "neutral" },
+  { value: "cheerful" },
+  { value: "sad" },
+  { value: "angry" },
+  { value: "excited" },
+  { value: "whispering" },
+  { value: "emotional" },
 ];
 
-export const GeminiStyles: { value: GeminiStyle; label: string }[] = [
-  { value: "conversational",   label: "Conversational" },
-  { value: "newsreader",       label: "News Reader" },
-  { value: "storytelling",     label: "Storytelling" },
-  { value: "podcast",          label: "Podcast" },
-  { value: "audiobook",        label: "Audiobook" },
-  { value: "customer-support", label: "Customer Support" },
+export const GeminiStyles: { value: GeminiStyle }[] = [
+  { value: "conversational" },
+  { value: "newsreader" },
+  { value: "storytelling" },
+  { value: "podcast" },
+  { value: "audiobook" },
+  { value: "customer-support" },
 ];
 
-export const GeminiPaces: { value: GeminiPace; label: string }[] = [
-  { value: "normal", label: "Normal" },
-  { value: "slow",   label: "Slow" },
-  { value: "fast",   label: "Fast" },
+export const GeminiPaces: { value: GeminiPace }[] = [
+  { value: "normal" },
+  { value: "slow" },
+  { value: "fast" },
 ];
 
 const S3_VOICE_SAMPLES = "https://vox-ai-studio.s3.us-east-1.amazonaws.com/samples/voices/Gemini";
@@ -98,12 +98,10 @@ export const GeminiVoiceEmotionMap: Record<GeminiEmotion, string[]> = {
   emotional:  ["Sulafat", "Aoede", "Achird", "Despina", "Algieba"],
 };
 
-// ── Supported Languages (BCP-47) ─────────────────────────────────────────────
-
 export interface SupportedLanguage {
   code: string;
   label: string;
-  countryCode: string; 
+  countryCode: string;
 }
 
 export const SupportedLanguages: SupportedLanguage[] = [
@@ -187,9 +185,6 @@ export const SupportedLanguages: SupportedLanguage[] = [
   { code: "vi",  label: "Vietnamese",          countryCode: "vn" },
 ];
 
-
-// Lookup map for fast label resolution: code → label
 export const LanguageLabelMap: Record<string, string> = Object.fromEntries(
   SupportedLanguages.map((l) => [l.code, l.label]),
 );
-

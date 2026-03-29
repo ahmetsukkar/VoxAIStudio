@@ -30,7 +30,7 @@ export default function TTSStudio() {
   const [userUploadedVoices, setUserUploadedVoices] = useState<UploadedVoice[]>(
     [],
   );
-  
+
   const t = useTranslations("studio.tts.toasts")
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [showVerifyModal, setShowVerifyModal] = useState(false);

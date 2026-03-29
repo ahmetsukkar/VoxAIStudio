@@ -1,0 +1,68 @@
+{
+  "title": "Your Audio Projects",
+  "loading": "Loading your projects...",
+  "newAudio": "New Audio",
+  "audios": "audios",
+  "audio": "audio",
+  "loadMoreBelow": "· load more below",
+  "filtered": "of {total} audios (filtered)",
+  "filters": {
+    "searchPlaceholder": "Search by text...",
+    "allTypes": "All Types",
+    "allModels": "All Models",
+    "allLanguages": "All Languages",
+    "newestFirst": "Newest First",
+    "oldestFirst": "Oldest First",
+    "textAZ": "Text A-Z",
+    "clear": "Clear",
+    "typeOptions": {
+        "TTS": "TTS",
+        "Dialogue": "Dialogue"
+    }
+  },
+  "badges": {
+    "voiceCloning": "Voice Cloning",
+    "aiVoiceFlash": "AI Voice · Flash",
+    "aiVoicePro": "AI Voice · Pro"
+  },
+  "details": {
+    "credits": "credits"
+  },
+  "empty": {
+    "noMatches": "No audio matches your filters",
+    "noProjects": "No audio projects yet",
+    "noMatchesSub": "Try adjusting or clearing your filters.",
+    "noProjectsSub": "Start creating text-to-speech audio to see them here.",
+    "clearFilters": "Clear Filters",
+    "createFirst": "Create Your First Audio"
+  },
+  "deleteConfirm": "Are you sure you want to delete this audio project?",
+  "loadMore": "Load More",
+  "loadingMore": "Loading...",
+  "pace": {
+  "normal": "Normal",
+  "slow": "Slow",
+  "fast": "Fast"
+},
+"style": {
+  "conversational": "Conversational",
+  "newsreader": "News Reader",
+  "storytelling": "Storytelling",
+  "podcast": "Podcast",
+  "audiobook": "Audiobook",
+  "customer-support": "Customer Support"
+},
+"emotion": {
+  "neutral": "Neutral",
+  "cheerful": "Cheerful",
+  "sad": "Sad",
+  "angry": "Angry",
+  "excited": "Excited",
+  "whispering": "Whispering",
+  "emotional": "Emotional"
+},
+"types": {
+  "TTS": "TTS",
+  "Dialogue": "Dialogue"
+}
+}

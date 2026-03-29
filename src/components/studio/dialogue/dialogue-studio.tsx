@@ -39,9 +39,11 @@ import {
 } from "~/components/ui/tooltip";
 import PricingModal from "~/components/pricing-modal";
 import { TrialExpiredModal } from "~/components/trial-expired-modal";
+import { useTranslations } from "next-intl";
 
 export default function DialogueStudio() {
   const { data: session } = useSession();
+  const t = useTranslations("studio.dialogue");
   const [speakers, setSpeakers] = useState<DialogueSpeaker[]>([
     {
       id: "s1",
@@ -147,7 +149,7 @@ export default function DialogueStudio() {
       });
       setVerifySent(true);
     } catch {
-      toast.error("Failed to send verification email. Please try again.");
+      toast.error(t("toasts.verifyFailed"));
     } finally {
       setVerifyLoading(false);
     }
@@ -155,7 +157,7 @@ export default function DialogueStudio() {
 
   const handleGenerate = async () => {
     if (lines.some((l) => !l.text.trim())) {
-      toast.error("Please fill in all dialogue lines before generating.");
+      toast.error(t("toasts.fillLines"));
       return;
     }
 
@@ -188,12 +190,10 @@ export default function DialogueStudio() {
         .getElementById("main-scroll")
         ?.scrollTo({ top: 0, behavior: "smooth" });
 
-      toast.success("Dialogue generated successfully!");
+      toast.success(t("toasts.success"));
     } catch (error) {
       console.error("Dialogue generation error:", error);
-      toast.error(
-        error instanceof Error ? error.message : "Failed to generate dialogue",
-      );
+      toast.error(error instanceof Error ? error.message : t("toasts.failed"));
     } finally {
       setIsGenerating(false);
     }
@@ -207,7 +207,7 @@ export default function DialogueStudio() {
     if (!audioUrl) {
       return (
         <p className="text-muted-foreground py-6 text-center text-xs italic">
-          Waiting for first generation...
+          {t("waitingForGeneration")}
         </p>
       );
     }
@@ -239,14 +239,12 @@ export default function DialogueStudio() {
           </div>
 
           <h2 className="mb-2 text-xl font-bold text-slate-800">
-            {isExpired
-              ? "Your Free Trial has expired"
-              : "Multi-Speaker is not available on the Free Trial"}
+            {isExpired ? t("freeTrial.expiredTitle") : t("freeTrial.title")}
           </h2>
           <p className="mb-6 max-w-sm text-sm text-slate-500">
             {isExpired
-              ? "Your 7-day trial has ended. Upgrade to a paid plan to access Multi-Speaker and all features."
-              : "Upgrade to any paid plan to unlock Multi-Speaker conversations, Pro voices, and much more."}
+              ? t("freeTrial.expiredSubtitle")
+              : t("freeTrial.subtitle")}
           </p>
 
           {/* Upgrade button — same verified/unverified logic */}
@@ -259,7 +257,7 @@ export default function DialogueStudio() {
                       onClick={() => setShowPricingModal(true)}
                       className="bg-gradient-to-r from-indigo-500 to-cyan-600 hover:from-indigo-600 hover:to-cyan-700"
                     >
-                      Upgrade — starting at $4.99
+                      {t("freeTrial.upgradeButton")}
                     </Button>
                   ) : (
                     <Button
@@ -267,7 +265,7 @@ export default function DialogueStudio() {
                       className="cursor-not-allowed bg-gradient-to-r from-indigo-300 to-cyan-400 opacity-60"
                     >
                       <Lock className="mr-2 h-4 w-4" />
-                      Upgrade — starting at $4.99
+                      {t("freeTrial.upgradeButton")}
                     </Button>
                   )}
                 </span>
@@ -289,23 +287,23 @@ export default function DialogueStudio() {
               {verifySent ? (
                 <div className="rounded-lg border border-green-200 bg-green-50 px-4 py-2 dark:border-green-800 dark:bg-green-900/20">
                   <p className="text-sm font-medium text-green-700 dark:text-green-400">
-                    ✓ Verification email sent!
+                    {t("freeTrial.verificationSent")}
                   </p>
                   <p className="text-muted-foreground mt-0.5 text-xs">
-                    Check your inbox at <strong>{session?.user?.email}</strong>
+                    {t("freeTrial.checkInbox")} <strong>{session?.user?.email}</strong>
                   </p>
                 </div>
               ) : (
                 <p className="text-xs text-slate-400">
-                  First{" "}
+                  {t("freeTrial.verifyFirst")}
                   <button
                     onClick={handleResendVerification}
                     disabled={verifyLoading}
                     className="text-indigo-500 underline hover:text-indigo-700 disabled:opacity-50"
                   >
-                    {verifyLoading ? "Sending..." : "verify your email"}
+                    {verifyLoading ? t("freeTrial.sending") : t("freeTrial.verifyEmail")}
                   </button>{" "}
-                  to unlock purchasing.
+                  {t("freeTrial.verifyNote")}
                 </p>
               )}
             </div>
@@ -334,7 +332,7 @@ export default function DialogueStudio() {
         <div className="hidden space-y-2 sm:space-y-3 lg:col-span-1 lg:block">
           <Card className="shadow-lg">
             <CardContent className="p-2 sm:p-3">
-              <h3 className="mb-2 text-sm font-bold">Player</h3>
+              <h3 className="mb-2 text-sm font-bold">{t("player")}</h3>
               <AudioPlayer refProp={audioRef} />
             </CardContent>
           </Card>
@@ -363,7 +361,7 @@ export default function DialogueStudio() {
             >
               <span className="flex items-center gap-2">
                 <Settings2 className="h-4 w-4" />
-                Settings
+                {t("settingsToggle")}
                 {creditsNeeded > 0 && (
                   <span className="text-muted-foreground text-xs font-normal">
                     · {creditsNeeded} credits
@@ -418,7 +416,7 @@ export default function DialogueStudio() {
                 disabled={isOverLimit}
               >
                 <Plus className="mr-2 h-4 w-4" />
-                Add Line
+                {t("addLine")}
               </Button>
             </CardContent>
           </Card>
@@ -427,7 +425,7 @@ export default function DialogueStudio() {
           <div className="space-y-2">
             <div className="flex items-center justify-between px-1 text-xs">
               <span className="text-muted-foreground">
-                Total conversation length
+                {t("totalConversationLength")}
               </span>
               <span
                 className={
@@ -439,7 +437,7 @@ export default function DialogueStudio() {
                 }
               >
                 {totalChars.toLocaleString()} / {maxChars.toLocaleString()}{" "}
-                characters
+                {t("characters")}
               </span>
             </div>
 
@@ -450,22 +448,22 @@ export default function DialogueStudio() {
             >
               {isGenerating ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Generating…
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
+                  {t("generating")}
                 </>
               ) : (
-                "🎭 Generate Full Conversation"
+                t("generate")
               )}
             </Button>
 
             {isOverLimit && (
               <p className="text-center text-xs text-red-500">
-                Total exceeds {maxChars.toLocaleString()} characters. Please
-                shorten some lines.
+                {t("overLimit", { max: maxChars.toLocaleString() })}
               </p>
             )}
             {!isGenerating && totalChars === 0 && (
               <p className="text-muted-foreground text-center text-xs">
-                Fill in the lines above to generate audio
+                {t("fillLines")}
               </p>
             )}
           </div>

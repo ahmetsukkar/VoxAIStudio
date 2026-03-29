@@ -1,13 +1,22 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { Music, Play, Download, Loader2, Pause, ArrowRight, Mic } from "lucide-react";
+import {
+  Music,
+  Play,
+  Download,
+  Loader2,
+  Pause,
+  ArrowRight,
+  Mic,
+} from "lucide-react";
 import { Button } from "~/components/ui/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getRecentGenerations, type EngineGroup } from "~/actions/tts";
 import type { AudioProject } from "@prisma/client";
 import { audioManager } from "~/lib/audio/audio-manager";
+import { useTranslations } from "next-intl";
 
 interface RecentGenerationsProps {
   group: EngineGroup;
@@ -24,6 +33,8 @@ export default function RecentGenerations({
   limit = 4,
   showHeader = true,
 }: RecentGenerationsProps) {
+  const t = useTranslations("studio.recentGenerations");
+
   const [projects, setProjects] = useState<AudioProject[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [playingId, setPlayingId] = useState<string | null>(null);
@@ -59,35 +70,33 @@ export default function RecentGenerations({
 
   const headerTitle =
     group === "Dialogue"
-      ? "Recent Generations"
+      ? t("dialogueTitle")
       : group === "TTS"
-        ? "Recent Generations"
-        : "Recent Audio Projects";
+        ? t("ttsTitle")
+        : t("defaultTitle");
 
   const headerSub =
     group === "Dialogue"
-      ? "Your multi-speaker generation history"
+      ? t("dialogueSub")
       : group === "TTS"
-        ? "Your speech generation history"
-        : "Your latest generated audio";
+        ? t("ttsSub")
+        : t("defaultSub");
 
   const emptyState = (
     <div className="flex flex-col items-center justify-center py-12 text-center">
       <div className="border-muted bg-muted/20 mb-4 flex h-20 w-20 items-center justify-center rounded-full border-2 border-dashed">
         <Music className="text-muted-foreground h-8 w-8" />
       </div>
-      <h3 className="mb-2 text-lg font-semibold">No audio projects yet</h3>
+      <h3 className="mb-2 text-lg font-semibold">{t("noProjectsYet")}</h3>
       <p className="text-muted-foreground mb-4 text-sm">
-        {group === "Dialogue"
-          ? "Start by creating your first multi-speaker audio"
-          : "Start generating speech with AI voice cloning"}
+        {group === "Dialogue" ? t("startDialogue") : t("startTtsAlt")}
       </p>
       <Button
         onClick={() => router.push("/dashboard/studio")}
         className="gap-2 bg-purple-600 hover:bg-purple-700"
       >
         <Mic className="h-4 w-4" />
-        Create Your First Audio
+        {t("createFirstAudio")}
       </Button>
     </div>
   );
@@ -123,16 +132,19 @@ export default function RecentGenerations({
                       {project.language}
                     </span>
                     <span className="text-muted-foreground text-xs">
-                      {new Date(project.createdAt).toLocaleDateString(undefined, {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
+                      {new Date(project.createdAt).toLocaleDateString(
+                        undefined,
+                        {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        },
+                      )}
                     </span>
                   </div>
                 </div>
 
-                {/* Actions — stack on mobile, row on desktop */}
+                {/* Actions */}
                 <div className="flex shrink-0 items-center gap-1.5">
                   <Button
                     variant="outline"
@@ -163,7 +175,7 @@ export default function RecentGenerations({
                 href="/dashboard/projects"
                 className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1 text-sm hover:underline"
               >
-                View all <ArrowRight className="h-3.5 w-3.5" />
+                {t("viewAllLink")} <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
           </>
@@ -235,7 +247,7 @@ export default function RecentGenerations({
                       ) : (
                         <Play className="h-3 w-3" />
                       )}
-                      {playingId === project.id ? "Pause" : "Play"}
+                      {playingId === project.id ? t("pause") : t("play")}
                     </Button>
                     <Button
                       onClick={() => handleDownload(project)}
@@ -254,7 +266,7 @@ export default function RecentGenerations({
                 href="/dashboard/projects"
                 className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1 text-sm underline-offset-4 hover:underline"
               >
-                View all in Projects →
+                {t("viewAll")}
               </Link>
             </div>
           </>
@@ -269,11 +281,11 @@ export default function RecentGenerations({
               </div>
             </div>
             <div className="space-y-3">
-              <h3 className="text-xl font-bold text-gray-900">No generations yet</h3>
+              <h3 className="text-xl font-bold text-gray-900">
+                {t("noGenerationsYet")}
+              </h3>
               <p className="text-muted-foreground mx-auto max-w-md text-lg leading-relaxed">
-                {group === "Dialogue"
-                  ? "Start by creating your first multi-speaker audio"
-                  : "Start by entering some text and generating your first speech"}
+                {group === "Dialogue" ? t("startDialogue") : t("startTts")}
               </p>
             </div>
           </div>

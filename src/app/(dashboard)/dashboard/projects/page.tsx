@@ -30,15 +30,18 @@ import { Input } from "~/components/ui/input";
 import { useRouter } from "next/navigation";
 import type { AudioProject } from "@prisma/client";
 import { LanguageLabelMap } from "~/data/GeminiOptions";
+import { useTranslations } from "next-intl";
 
 type SortBy = "newest" | "oldest" | "name";
 
-// ── Engine helpers ────────────────────────────────────────────────────────────
-
-function getEngineLabel(engine: string): string {
-  if (engine === "chatterbox") return "Voice Cloning";
-  if (engine === "gemini-2.5-flash-preview-tts") return "AI Voice · Flash";
-  if (engine === "gemini-2.5-pro-preview-tts") return "AI Voice · Pro";
+function getEngineLabel(
+  engine: string,
+  t: ReturnType<typeof useTranslations>,
+): string {
+  if (engine === "chatterbox") return t("badges.voiceCloning");
+  if (engine === "gemini-2.5-flash-preview-tts")
+    return t("badges.aiVoiceFlash");
+  if (engine === "gemini-2.5-pro-preview-tts") return t("badges.aiVoicePro");
   return engine;
 }
 
@@ -46,7 +49,7 @@ function getTypeLabel(name: string | null): "TTS" | "Dialogue" {
   return name === "Dialogue" ? "Dialogue" : "TTS";
 }
 
-function TypeBadge({ name }: { name: string | null }) {
+function TypeBadge({ name, label }: { name: string | null; label: string }) {
   const type = getTypeLabel(name);
   const styles =
     type === "Dialogue"
@@ -56,13 +59,12 @@ function TypeBadge({ name }: { name: string | null }) {
     <span
       className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold ${styles}`}
     >
-      {type}
+      {label}
     </span>
   );
 }
 
-function ModelBadge({ engine }: { engine: string }) {
-  const label = getEngineLabel(engine);
+function ModelBadge({ engine, label }: { engine: string; label: string }) {
   const styles =
     engine === "chatterbox"
       ? "bg-orange-100 text-orange-700 border-orange-200"
@@ -85,14 +87,25 @@ function DetailTag({ icon, label }: { icon: React.ReactNode; label: string }) {
   );
 }
 
-function ProjectDetails({ project }: { project: AudioProject }) {
+function ProjectDetails({
+  project,
+  creditsLabel,
+}: {
+  project: AudioProject;
+  creditsLabel: string;
+}) {
+  const t = useTranslations("projects");
   const isDialogue = getTypeLabel(project.name) === "Dialogue";
   const isChatterbox = project.engine === "chatterbox";
+  const engineLabel = getEngineLabel(project.engine, t);
 
   return (
     <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
-      <TypeBadge name={project.name} />
-      <ModelBadge engine={project.engine} />
+      <TypeBadge
+        name={project.name}
+        label={t(`types.${getTypeLabel(project.name)}`)}
+      />
+      <ModelBadge engine={project.engine} label={engineLabel} />
 
       {project.language && project.language !== "autodetect" && (
         <DetailTag
@@ -100,37 +113,42 @@ function ProjectDetails({ project }: { project: AudioProject }) {
           label={project.language.toUpperCase()}
         />
       )}
-
       {project.geminiVoice && (
         <DetailTag
           icon={<Mic className="h-3 w-3" />}
           label={project.geminiVoice}
         />
       )}
-
       {!isChatterbox && (
         <>
           {project.geminiEmotion && !isDialogue && (
             <DetailTag
               icon={<span className="text-[10px]">😊</span>}
-              label={project.geminiEmotion}
+              label={
+                t(`emotion.${project.geminiEmotion}` as never) ??
+                project.geminiEmotion
+              }
             />
           )}
           {project.geminiStyle && (
             <DetailTag
               icon={<MessageSquare className="h-3 w-3" />}
-              label={project.geminiStyle}
+              label={
+                t(`style.${project.geminiStyle}` as never) ??
+                project.geminiStyle
+              }
             />
           )}
           {project.geminiPace && (
             <DetailTag
               icon={<Zap className="h-3 w-3" />}
-              label={project.geminiPace}
+              label={
+                t(`pace.${project.geminiPace}` as never) ?? project.geminiPace
+              }
             />
           )}
         </>
       )}
-
       {isChatterbox && (
         <>
           {project.exaggeration != null && (
@@ -147,20 +165,19 @@ function ProjectDetails({ project }: { project: AudioProject }) {
           )}
         </>
       )}
-
       {project.creditsSpent != null && (
         <DetailTag
           icon={<Coins className="h-3 w-3" />}
-          label={`${project.creditsSpent} credits`}
+          label={`${project.creditsSpent} ${creditsLabel}`}
         />
       )}
     </div>
   );
 }
 
-// ── Main Page ─────────────────────────────────────────────────────────────────
-
 export default function Projects() {
+  const t = useTranslations("projects");
+
   const [isLoading, setIsLoading] = useState(true);
   const [isFiltering, setIsFiltering] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -186,9 +203,7 @@ export default function Projects() {
     const value = e.target.value;
     setSearchQuery(value);
     if (debounceTimer.current) clearTimeout(debounceTimer.current);
-    debounceTimer.current = setTimeout(() => {
-      setDebouncedSearch(value);
-    }, 400);
+    debounceTimer.current = setTimeout(() => setDebouncedSearch(value), 400);
   };
 
   useEffect(() => {
@@ -205,7 +220,6 @@ export default function Projects() {
     sortBy,
   };
 
-  // ── Initial load: meta + first page ──
   useEffect(() => {
     const init = async () => {
       try {
@@ -238,10 +252,8 @@ export default function Projects() {
     void init();
   }, []);
 
-  // ── Re-fetch on filter change — uses isFiltering, NOT isLoading ──
   useEffect(() => {
     if (isLoading) return;
-
     const fetchFiltered = async () => {
       setIsFiltering(true);
       try {
@@ -261,7 +273,6 @@ export default function Projects() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterType, filterEngine, filterLanguage, sortBy, debouncedSearch]);
 
-  // ── Load more ──
   const handleLoadMore = useCallback(async () => {
     if (!nextCursor || isLoadingMore) return;
     setIsLoadingMore(true);
@@ -304,7 +315,7 @@ export default function Projects() {
 
   const handleDelete = async (projectId: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!confirm("Are you sure you want to delete this audio project?")) return;
+    if (!confirm(t("deleteConfirm"))) return;
     const result = await deleteAudioProject(projectId);
     if (result.success) {
       setAudioProjects((prev) => prev.filter((p) => p.id !== projectId));
@@ -324,7 +335,7 @@ export default function Projects() {
 
   const engineOptions = allEngines.map((e) => ({
     value: e,
-    label: getEngineLabel(e),
+    label: getEngineLabel(e, t),
   }));
   const languageOptions = allLanguages.map((l) => ({
     value: l,
@@ -336,9 +347,7 @@ export default function Projects() {
       <div className="flex min-h-[400px] items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="text-primary h-8 w-8 animate-spin" />
-          <p className="text-muted-foreground text-sm">
-            Loading your projects...
-          </p>
+          <p className="text-muted-foreground text-sm">{t("loading")}</p>
         </div>
       </div>
     );
@@ -353,13 +362,13 @@ export default function Projects() {
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="space-y-1">
               <h1 className="from-primary to-primary/70 bg-gradient-to-r bg-clip-text text-2xl font-bold tracking-tight text-transparent sm:text-3xl">
-                Your Audio Projects
+                {t("title")}
               </h1>
               <p className="text-muted-foreground flex items-center gap-1.5 text-sm">
                 {isFiltering && <Loader2 className="h-3 w-3 animate-spin" />}
                 {hasActiveFilters
-                  ? `${audioProjects.length} of ${totalCount} audios (filtered)`
-                  : `${totalCount} ${totalCount === 1 ? "audio" : "audios"}${nextCursor ? " · load more below" : ""}`}
+                  ? `${audioProjects.length} ${t("filtered", { total: totalCount })}`
+                  : `${totalCount} ${totalCount === 1 ? t("audio") : t("audios")}${nextCursor ? ` ${t("loadMoreBelow")}` : ""}`}
               </p>
             </div>
             <Button
@@ -367,7 +376,7 @@ export default function Projects() {
               className="gap-2 self-start bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 sm:self-auto"
             >
               <Plus className="h-4 w-4" />
-              New Audio
+              {t("newAudio")}
             </Button>
           </div>
 
@@ -378,7 +387,7 @@ export default function Projects() {
                 <div className="relative w-full">
                   <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                   <Input
-                    placeholder="Search by text..."
+                    placeholder={t("filters.searchPlaceholder")}
                     value={searchQuery}
                     onChange={handleSearchChange}
                     className="pl-9"
@@ -391,9 +400,11 @@ export default function Projects() {
                     onChange={(e) => setFilterType(e.target.value)}
                     className="border-input bg-background flex-1 rounded-md border px-3 py-2 text-sm"
                   >
-                    <option value="all">All Types</option>
-                    <option value="TTS">TTS</option>
-                    <option value="Dialogue">Dialogue</option>
+                    <option value="all">{t("filters.allTypes")}</option>
+                    <option value="TTS">{t("filters.typeOptions.TTS")}</option>
+                    <option value="Dialogue">
+                      {t("filters.typeOptions.Dialogue")}
+                    </option>
                   </select>
 
                   {engineOptions.length > 0 && (
@@ -402,7 +413,7 @@ export default function Projects() {
                       onChange={(e) => setFilterEngine(e.target.value)}
                       className="border-input bg-background flex-1 rounded-md border px-3 py-2 text-sm"
                     >
-                      <option value="all">All Models</option>
+                      <option value="all">{t("filters.allModels")}</option>
                       {engineOptions.map((o) => (
                         <option key={o.value} value={o.value}>
                           {o.label}
@@ -417,7 +428,7 @@ export default function Projects() {
                       onChange={(e) => setFilterLanguage(e.target.value)}
                       className="border-input bg-background flex-1 rounded-md border px-3 py-2 text-sm"
                     >
-                      <option value="all">All Languages</option>
+                      <option value="all">{t("filters.allLanguages")}</option>
                       {languageOptions.map((o) => (
                         <option key={o.value} value={o.value}>
                           {o.label}
@@ -431,9 +442,9 @@ export default function Projects() {
                     onChange={(e) => setSortBy(e.target.value as SortBy)}
                     className="border-input bg-background flex-1 rounded-md border px-3 py-2 text-sm"
                   >
-                    <option value="newest">Newest First</option>
-                    <option value="oldest">Oldest First</option>
-                    <option value="name">Text A-Z</option>
+                    <option value="newest">{t("filters.newestFirst")}</option>
+                    <option value="oldest">{t("filters.oldestFirst")}</option>
+                    <option value="name">{t("filters.textAZ")}</option>
                   </select>
 
                   {hasActiveFilters && (
@@ -443,7 +454,7 @@ export default function Projects() {
                       onClick={clearFilters}
                       className="text-muted-foreground"
                     >
-                      Clear
+                      {t("filters.clear")}
                     </Button>
                   )}
                 </div>
@@ -460,13 +471,13 @@ export default function Projects() {
                 </div>
                 <h3 className="mb-2 text-xl font-semibold">
                   {hasActiveFilters
-                    ? "No audio matches your filters"
-                    : "No audio projects yet"}
+                    ? t("empty.noMatches")
+                    : t("empty.noProjects")}
                 </h3>
                 <p className="text-muted-foreground mb-6 max-w-md text-sm">
                   {hasActiveFilters
-                    ? "Try adjusting or clearing your filters."
-                    : "Start creating text-to-speech audio to see them here."}
+                    ? t("empty.noMatchesSub")
+                    : t("empty.noProjectsSub")}
                 </p>
                 {hasActiveFilters ? (
                   <Button
@@ -474,7 +485,7 @@ export default function Projects() {
                     onClick={clearFilters}
                     className="gap-2"
                   >
-                    Clear Filters
+                    {t("empty.clearFilters")}
                   </Button>
                 ) : (
                   <Button
@@ -482,7 +493,7 @@ export default function Projects() {
                     className="gap-2 bg-purple-600 hover:bg-purple-700"
                   >
                     <Mic className="h-4 w-4" />
-                    Create Your First Audio
+                    {t("empty.createFirst")}
                   </Button>
                 )}
               </CardContent>
@@ -511,7 +522,10 @@ export default function Projects() {
                             <p className="line-clamp-2 text-sm font-medium text-gray-900">
                               {project.text}
                             </p>
-                            <ProjectDetails project={project} />
+                            <ProjectDetails
+                              project={project}
+                              creditsLabel={t("details.credits")}
+                            />
                             <div className="text-muted-foreground mt-1 flex items-center gap-1 text-xs">
                               <Calendar className="h-3 w-3" />
                               {new Date(project.createdAt).toLocaleDateString(
@@ -559,7 +573,6 @@ export default function Projects() {
                 </div>
               </div>
 
-              {/* Load More */}
               {nextCursor && (
                 <div className="flex justify-center pt-2">
                   <Button
@@ -569,11 +582,15 @@ export default function Projects() {
                     className="gap-2"
                   >
                     {isLoadingMore ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />{" "}
+                        {t("loadingMore")}
+                      </>
                     ) : (
-                      <ChevronDown className="h-4 w-4" />
+                      <>
+                        <ChevronDown className="h-4 w-4" /> {t("loadMore")}
+                      </>
                     )}
-                    {isLoadingMore ? "Loading..." : "Load More"}
                   </Button>
                 </div>
               )}

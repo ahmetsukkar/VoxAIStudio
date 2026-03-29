@@ -23,6 +23,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover";
+import { useTranslations } from "next-intl";
 
 interface DialogueSettingsProps {
   settings: DialogueSettings;
@@ -37,6 +38,10 @@ export default function DialogueSettingsPanel({
   creditsNeeded,
   totalChars,
 }: DialogueSettingsProps) {
+  const t = useTranslations("studio.dialogue.settings");
+  const tStyles = useTranslations("studio.tts.styles");
+  const tPaces = useTranslations("studio.tts.paces");
+
   const isPro = settings.model === "gemini-2.5-pro-preview-tts";
 
   return (
@@ -44,16 +49,14 @@ export default function DialogueSettingsPanel({
       <CardContent className="space-y-4 p-2 sm:p-3">
         {/* Header */}
         <div>
-          <h3 className="text-sm font-bold">Settings</h3>
-          <p className="text-muted-foreground text-xs">
-            Applied to full dialogue
-          </p>
+          <h3 className="text-sm font-bold">{t("title")}</h3>
+          <p className="text-muted-foreground text-xs">{t("subtitle")}</p>
         </div>
 
         {/* Language */}
         <div className="space-y-1.5">
           <Label className="flex items-center gap-1.5 text-xs font-medium">
-            <Globe className="h-3 w-3" /> Language
+            <Globe className="h-3 w-3" /> {t("language")}
           </Label>
           <Select
             value={settings.language}
@@ -66,7 +69,7 @@ export default function DialogueSettingsPanel({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="auto" className="text-xs">
-                🌐 Auto Detect
+                {t("autoDetect")}
               </SelectItem>
               {SupportedLanguages.map((lang) => (
                 <SelectItem
@@ -90,7 +93,7 @@ export default function DialogueSettingsPanel({
         {/* Model Toggle — Flash / Pro */}
         <div className="space-y-1.5">
           <Label className="flex items-center gap-1.5 text-xs font-medium">
-            <Cpu className="h-3 w-3" /> Model
+            <Cpu className="h-3 w-3" /> {t("model")}
             <Popover>
               <PopoverTrigger asChild>
                 <span className="text-muted-foreground hover:text-foreground ml-0.5 cursor-pointer transition-colors">
@@ -99,25 +102,23 @@ export default function DialogueSettingsPanel({
               </PopoverTrigger>
               <PopoverContent side="right" className="w-64 p-3" sideOffset={6}>
                 <p className="text-foreground mb-2 text-xs font-semibold">
-                  Flash vs Pro
+                  {t("flashVsPro")}
                 </p>
                 <div className="space-y-2">
                   <div className="bg-muted rounded-md p-2">
                     <p className="text-foreground text-xs font-medium">
-                      ⚡ Flash — Fast & Affordable
+                      {t("flash")}
                     </p>
                     <p className="text-muted-foreground mt-0.5 text-[11px]">
-                      {CREDITS_PER_CHAR.geminiFlashTTS} credits / char · Best
-                      for short clips, dialogues, and quick generations.
+                      {CREDITS_PER_CHAR.geminiFlashTTS} {t("flashDesc")}
                     </p>
                   </div>
                   <div className="bg-muted rounded-md p-2">
                     <p className="text-foreground text-xs font-medium">
-                      ✨ Pro — Highest Quality
+                      {t("pro")}
                     </p>
                     <p className="text-muted-foreground mt-0.5 text-[11px]">
-                      {CREDITS_PER_CHAR.geminiProTTS} credits / char · Best for
-                      audiobooks, long narrations, and professional content.
+                      {CREDITS_PER_CHAR.geminiProTTS} {t("proDesc")}
                     </p>
                   </div>
                 </div>
@@ -128,13 +129,11 @@ export default function DialogueSettingsPanel({
             <div className="space-y-0.5">
               <p className="text-xs font-semibold">
                 {settings.model === "gemini-2.5-flash-preview-tts"
-                  ? "Flash — Recommended"
-                  : "Pro — Long-form Content"}
+                  ? t("flashLabel")
+                  : t("proLabel")}
               </p>
               <p className="text-muted-foreground text-xs">
-                {isPro
-                  ? "Better for audiobooks & speeches"
-                  : "Best for dialogues & short lines"}
+                {isPro ? t("proSubLabel") : t("flashSubLabel")}
                 <br />
                 {isPro
                   ? `(${CREDITS_PER_CHAR.geminiProDialogue} credits / char)`
@@ -158,7 +157,7 @@ export default function DialogueSettingsPanel({
         {/* Style */}
         <div className="space-y-1.5">
           <Label className="flex items-center gap-1.5 text-xs font-medium">
-            <Mic2 className="h-3 w-3" /> Style
+            <Mic2 className="h-3 w-3" /> {t("style")}
           </Label>
           <Select
             value={settings.style}
@@ -175,7 +174,7 @@ export default function DialogueSettingsPanel({
             <SelectContent>
               {GeminiStyles.map((s) => (
                 <SelectItem key={s.value} value={s.value} className="text-xs">
-                  {s.label}
+                  {tStyles(s.value)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -185,7 +184,7 @@ export default function DialogueSettingsPanel({
         {/* Pace */}
         <div className="space-y-1.5">
           <Label className="flex items-center gap-1.5 text-xs font-medium">
-            <Gauge className="h-3 w-3" /> Pace
+            <Gauge className="h-3 w-3" /> {t("pace")}
           </Label>
           <Select
             value={settings.pace}
@@ -202,7 +201,7 @@ export default function DialogueSettingsPanel({
             <SelectContent>
               {GeminiPaces.map((p) => (
                 <SelectItem key={p.value} value={p.value} className="text-xs">
-                  {p.label}
+                  {tPaces(p.value)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -212,11 +211,11 @@ export default function DialogueSettingsPanel({
         {/* Credits Estimate */}
         {totalChars > 0 && (
           <div className="text-muted-foreground flex items-center justify-between rounded-md border px-3 py-2 text-xs">
-            <span>Estimated cost</span>
+            <span>{t("estimatedCost")}</span>
             <span className="text-foreground font-semibold">
-              {creditsNeeded} credit{creditsNeeded !== 1 ? "s" : ""}
+              {creditsNeeded} {creditsNeeded !== 1 ? t("credits") : t("credit")}
               <span className="text-muted-foreground ml-1 font-normal">
-                ({totalChars} chars)
+                ({totalChars} {t("chars")})
               </span>
             </span>
           </div>

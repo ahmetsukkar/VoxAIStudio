@@ -28,6 +28,9 @@ async function loadMessages(locale: Locale) {
     'faq',
     'contact',
     'legal',
+    'studio',
+    'projects',
+    'settings',
   ];
 
   const messages: Record<string, unknown> = {};

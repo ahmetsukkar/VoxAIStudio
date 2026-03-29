@@ -62,6 +62,131 @@
       "previewVoice": "معاينة الصوت",
       "tip": "💡 لنبرة",
       "tipTone": "، جرّب:"
+    },
+    "emotions": {
+      "neutral": "محايد",
+      "cheerful": "مبتهج",
+      "sad": "حزين",
+      "angry": "غاضب",
+      "excited": "متحمس",
+      "whispering": "همس",
+      "emotional": "عاطفي"
+    },
+    "styles": {
+      "conversational": "محادثة",
+      "newsreader": "قارئ أخبار",
+      "storytelling": "سرد قصصي",
+      "podcast": "بودكاست",
+      "audiobook": "كتاب صوتي",
+      "customer-support": "دعم العملاء"
+    },
+    "paces": {
+      "normal": "عادي",
+      "slow": "بطيء",
+      "fast": "سريع"
+    },
+    "voiceDescriptions": {
+      "Bright": "مشرق",
+      "Upbeat": "متفائل",
+      "Informative": "إعلامي",
+      "Firm": "حازم",
+      "Excitable": "متحمس",
+      "Youthful": "شبابي",
+      "Breezy": "خفيف",
+      "Easy-going": "هادئ",
+      "Breathy": "أنفاسي",
+      "Clear": "واضح",
+      "Smooth": "سلس",
+      "Gravelly": "خشن",
+      "Soft": "ناعم",
+      "Even": "متزن",
+      "Mature": "ناضج",
+      "Forward": "جريء",
+      "Friendly": "ودود",
+      "Casual": "عفوي",
+      "Gentle": "لطيف",
+      "Lively": "حيوي",
+      "Knowledgeable": "مثقف",
+      "Warm": "دافئ"
     }
+  },
+  "dialogue": {
+    "player": "المشغّل",
+    "waitingForGeneration": "في انتظار أول توليد...",
+    "settings": {
+      "title": "الإعدادات",
+      "subtitle": "تُطبَّق على الحوار كاملاً",
+      "language": "اللغة",
+      "autoDetect": "🌐 اكتشاف تلقائي",
+      "model": "النموذج",
+      "flashVsPro": "Flash مقابل Pro",
+      "flash": "⚡ Flash — سريع وبأسعار معقولة",
+      "flashDesc": "رصيد / حرف · الأفضل للمقاطع القصيرة والحوارات والتوليد السريع.",
+      "pro": "✨ Pro — أعلى جودة",
+      "proDesc": "رصيد / حرف · الأفضل للكتب الصوتية والسرد الطويل والمحتوى الاحترافي.",
+      "flashLabel": "Flash — موصى به",
+      "proLabel": "Pro — محتوى مطوّل",
+      "flashSubLabel": "الأفضل للحوارات والأسطر القصيرة",
+      "proSubLabel": "أفضل للكتب الصوتية والخطابات",
+      "style": "الأسلوب",
+      "pace": "الإيقاع",
+      "estimatedCost": "التكلفة التقديرية",
+      "credit": "رصيد",
+      "credits": "أرصدة",
+      "chars": "حرف"
+    },
+    "speakerCard": {
+      "name": "الاسم",
+      "emotion": "المشاعر",
+      "voice": "الصوت"
+    },
+    "lineItem": {
+      "placeholder": "أدخل نص الحوار…"
+    },
+    "totalConversationLength": "إجمالي طول المحادثة",
+    "characters": "حرف",
+    "addLine": "إضافة سطر",
+    "generate": "🎭 توليد المحادثة كاملة",
+    "generating": "جارٍ التوليد…",
+    "fillLines": "أكمل السطور أعلاه لتوليد الصوت",
+    "overLimit": "الإجمالي يتجاوز {max} حرف. الرجاء تقصير بعض السطور.",
+    "settingsToggle": "الإعدادات",
+    "freeTrial": {
+      "title": "المحادثة المتعددة الأصوات غير متاحة في التجربة المجانية",
+      "subtitle": "قم بالترقية إلى أي خطة مدفوعة لفتح المحادثات المتعددة الأصوات والأصوات الاحترافية والمزيد.",
+      "expiredTitle": "انتهت صلاحية تجربتك المجانية",
+      "expiredSubtitle": "انتهت تجربتك المجانية لمدة 7 أيام. قم بالترقية إلى خطة مدفوعة للوصول إلى جميع الميزات.",
+      "upgradeButton": "ترقية — تبدأ من $4.99",
+      "verifyEmail": "تحقق من بريدك الإلكتروني",
+      "verifyNote": "لفتح إمكانية الشراء.",
+      "sending": "جارٍ الإرسال...",
+      "verifyFirst": "أولاً",
+      "verificationSent": "✓ تم إرسال بريد التحقق!",
+      "checkInbox": "تحقق من صندوق الوارد على"
+    },
+    "toasts": {
+      "fillLines": "يرجى ملء جميع سطور الحوار قبل التوليد.",
+      "success": "تم توليد الحوار بنجاح!",
+      "failed": "فشل توليد الحوار",
+      "verifyFailed": "فشل إرسال بريد التحقق. يرجى المحاولة مرة أخرى."
+    }
+  },
+  "recentGenerations": {
+    "ttsTitle": "التوليدات الأخيرة",
+    "ttsSub": "سجل توليد الكلام الخاص بك",
+    "dialogueTitle": "التوليدات الأخيرة",
+    "dialogueSub": "سجل توليد المحادثات المتعددة الأصوات",
+    "defaultTitle": "مشاريع الصوت الأخيرة",
+    "defaultSub": "أحدث ملفاتك الصوتية المولّدة",
+    "noProjectsYet": "لا توجد مشاريع صوتية بعد",
+    "noGenerationsYet": "لا توجد توليدات بعد",
+    "startDialogue": "ابدأ بإنشاء أول محادثة متعددة الأصوات",
+    "startTts": "ابدأ بإدخال نص وتوليد أول كلام لك",
+    "startTtsAlt": "ابدأ بتوليد الكلام باستخدام الذكاء الاصطناعي",
+    "createFirstAudio": "أنشئ أول ملف صوتي",
+    "viewAll": "عرض الكل في المشاريع →",
+    "viewAllLink": "عرض الكل",
+    "play": "تشغيل",
+    "pause": "إيقاف مؤقت"
   }
 }

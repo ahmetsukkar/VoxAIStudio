@@ -56,6 +56,10 @@ export default function GeminiSettings({
   isTrialTier = false,
 }: GeminiSettingsProps) {
   const t = useTranslations("studio.tts.gemini");
+  const tEmotions = useTranslations("studio.tts.emotions");
+  const tStyles = useTranslations("studio.tts.styles");
+  const tPaces = useTranslations("studio.tts.paces");
+
   const isPro = options.model === "gemini-2.5-pro-preview-tts";
 
   return (
@@ -201,7 +205,7 @@ export default function GeminiSettings({
                 value={emotion.value}
                 className="text-xs"
               >
-                {emotion.label}
+                {tEmotions(emotion.value)}
               </SelectItem>
             ))}
           </SelectContent>
@@ -241,7 +245,7 @@ export default function GeminiSettings({
                 value={style.value}
                 className="text-xs"
               >
-                {style.label}
+                {tStyles(style.value)}
               </SelectItem>
             ))}
           </SelectContent>
@@ -269,7 +273,7 @@ export default function GeminiSettings({
                 value={pace.value}
                 className="text-xs"
               >
-                {pace.label}
+                {tPaces(pace.value)}
               </SelectItem>
             ))}
           </SelectContent>

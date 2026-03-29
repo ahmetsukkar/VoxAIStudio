@@ -5,17 +5,16 @@ import {
   Scissors,
   Expand,
   Target,
-  CheckCircle2,
   Play,
   AudioWaveform,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
 import DemoSection from "~/components/demo-section";
-import PricingButton from "~/components/pricing-button";
+import PricingCards from "~/components/pricing-cards";
 import AuthCTA from "~/components/auth-cta";
 import type { Metadata } from "next";
-import { getTranslations, getLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("home.meta");
@@ -51,78 +50,6 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function HomePage() {
   const t = await getTranslations("home");
-  const locale = await getLocale();
-  const isRTL = locale === "ar";
-
-  const features = [
-    {
-      icon: <Scissors className="h-8 w-8" />,
-      title: t("features.items.cloning.title"),
-      description: t("features.items.cloning.description"),
-      color: "text-emerald-600",
-      bgColor: "bg-emerald-100",
-    },
-    {
-      icon: <Expand className="h-8 w-8" />,
-      title: t("features.items.tts.title"),
-      description: t("features.items.tts.description"),
-      color: "text-blue-600",
-      bgColor: "bg-blue-100",
-    },
-    {
-      icon: <Target className="h-8 w-8" />,
-      title: t("features.items.languages.title"),
-      description: t("features.items.languages.description"),
-      color: "text-purple-600",
-      bgColor: "bg-purple-100",
-    },
-    {
-      icon: <Zap className="h-8 w-8" />,
-      title: t("features.items.speed.title"),
-      description: t("features.items.speed.description"),
-      color: "text-amber-600",
-      bgColor: "bg-amber-100",
-    },
-  ];
-
-  const testimonials = [
-    {
-      name: t("testimonials.items.t1.name"),
-      role: t("testimonials.items.t1.role"),
-      content: t("testimonials.items.t1.content"),
-      rating: 5,
-    },
-    {
-      name: t("testimonials.items.t2.name"),
-      role: t("testimonials.items.t2.role"),
-      content: t("testimonials.items.t2.content"),
-      rating: 5,
-    },
-    {
-      name: t("testimonials.items.t3.name"),
-      role: t("testimonials.items.t3.role"),
-      content: t("testimonials.items.t3.content"),
-      rating: 5,
-    },
-  ];
-
-  const howItWorksSteps = [
-    {
-      step: "01",
-      title: t("howItWorks.steps.step1.title"),
-      description: t("howItWorks.steps.step1.description"),
-    },
-    {
-      step: "02",
-      title: t("howItWorks.steps.step2.title"),
-      description: t("howItWorks.steps.step2.description"),
-    },
-    {
-      step: "03",
-      title: t("howItWorks.steps.step3.title"),
-      description: t("howItWorks.steps.step3.description"),
-    },
-  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/20 to-slate-100">
@@ -134,15 +61,14 @@ export default async function HomePage() {
             "@type": "SoftwareApplication",
             name: "Vox AI Studio",
             url: "https://www.voxaistudio.com",
-            description:
-              "AI-powered text-to-speech and voice cloning platform. Convert text into natural human-like speech in seconds.",
+            description: "AI-powered text-to-speech and voice cloning platform.",
             applicationCategory: "MultimediaApplication",
             operatingSystem: "Web",
             offers: [
-              { "@type": "Offer", name: "Free Trial", price: "0", priceCurrency: "USD" },
-              { "@type": "Offer", name: "Starter", price: "4.99", priceCurrency: "USD" },
-              { "@type": "Offer", name: "Creator", price: "9.99", priceCurrency: "USD" },
-              { "@type": "Offer", name: "Pro", price: "49.99", priceCurrency: "USD" },
+              { "@type": "Offer", name: "Free Trial", price: "0",     priceCurrency: "USD" },
+              { "@type": "Offer", name: "Starter",    price: "4.99",  priceCurrency: "USD" },
+              { "@type": "Offer", name: "Creator",    price: "9.99",  priceCurrency: "USD" },
+              { "@type": "Offer", name: "Pro",        price: "49.99", priceCurrency: "USD" },
             ],
             aggregateRating: {
               "@type": "AggregateRating",
@@ -235,22 +161,26 @@ export default async function HomePage() {
             <p className="mt-4 text-lg text-slate-600">{t("features.subtitle")}</p>
           </div>
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {features.map((feature, index) => (
-              <Card
-                key={index}
-                className="group relative overflow-hidden border-slate-200 bg-white/70 backdrop-blur-sm transition-all hover:shadow-lg"
-              >
+            {(
+              [
+                { key: "cloning",   icon: <Scissors className="h-8 w-8" />, color: "text-emerald-600", bgColor: "bg-emerald-100" },
+                { key: "tts",       icon: <Expand    className="h-8 w-8" />, color: "text-blue-600",   bgColor: "bg-blue-100"   },
+                { key: "languages", icon: <Target    className="h-8 w-8" />, color: "text-purple-600", bgColor: "bg-purple-100" },
+                { key: "speed",     icon: <Zap       className="h-8 w-8" />, color: "text-amber-600",  bgColor: "bg-amber-100"  },
+              ] as const
+            ).map((f) => (
+              <Card key={f.key} className="group relative overflow-hidden border-slate-200 bg-white/70 backdrop-blur-sm transition-all hover:shadow-lg">
                 <CardContent className="p-6">
                   <div className="mb-4 flex justify-center">
-                    <div className={`${feature.bgColor} mb-4 inline-flex items-center justify-center rounded-lg p-3 ${feature.color}`}>
-                      {feature.icon}
+                    <div className={`${f.bgColor} mb-4 inline-flex items-center justify-center rounded-lg p-3 ${f.color}`}>
+                      {f.icon}
                     </div>
                   </div>
                   <h3 className="mb-2 flex justify-center text-lg font-semibold text-slate-800">
-                    {feature.title}
+                    {t(`features.items.${f.key}.title`)}
                   </h3>
-                  <p className={`text-sm text-slate-600 ${isRTL ? "text-right" : "text-center"}`}>
-                    {feature.description}
+                  <p className="text-sm text-slate-600">
+                    {t(`features.items.${f.key}.description`)}
                   </p>
                 </CardContent>
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 to-blue-500/5 opacity-0 transition-opacity group-hover:opacity-100" />
@@ -270,18 +200,22 @@ export default async function HomePage() {
             <p className="mt-4 text-lg text-slate-600">{t("howItWorks.subtitle")}</p>
           </div>
           <div className="grid gap-8 md:grid-cols-3">
-            {howItWorksSteps.map((item, index) => (
-              <div key={index} className="relative">
+            {(["step1", "step2", "step3"] as const).map((step, index) => (
+              <div key={step} className="relative">
                 <div className="mb-4 flex items-center">
                   <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-indigo-500 to-cyan-600 text-lg font-bold text-white shadow-lg">
-                    {item.step}
+                    {String(index + 1).padStart(2, "0")}
                   </div>
                   {index < 2 && (
                     <div className="ml-4 hidden h-0.5 w-full bg-slate-300 md:block" />
                   )}
                 </div>
-                <h3 className="mb-2 text-xl font-semibold text-slate-800">{item.title}</h3>
-                <p className="text-slate-600">{item.description}</p>
+                <h3 className="mb-2 text-xl font-semibold text-slate-800">
+                  {t(`howItWorks.steps.${step}.title`)}
+                </h3>
+                <p className="text-slate-600">
+                  {t(`howItWorks.steps.${step}.description`)}
+                </p>
               </div>
             ))}
           </div>
@@ -301,20 +235,24 @@ export default async function HomePage() {
             <p className="mt-4 text-lg text-slate-600">{t("testimonials.subtitle")}</p>
           </div>
           <div className="grid gap-6 md:grid-cols-3">
-            {testimonials.map((testimonial, index) => (
-              <Card key={index} className="relative border-slate-200 bg-white/70 backdrop-blur-sm">
+            {(["t1", "t2", "t3"] as const).map((key) => (
+              <Card key={key} className="relative border-slate-200 bg-white/70 backdrop-blur-sm">
                 <CardContent className="p-6">
                   <div className="mb-4 flex items-center gap-1">
-                    {Array.from({ length: testimonial.rating }).map((_, i) => (
+                    {Array.from({ length: 5 }).map((_, i) => (
                       <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />
                     ))}
                   </div>
                   <p className="mb-4 text-slate-600 italic">
-                    &ldquo;{testimonial.content}&rdquo;
+                    &ldquo;{t(`testimonials.items.${key}.content`)}&rdquo;
                   </p>
                   <div>
-                    <div className="font-semibold text-slate-800">{testimonial.name}</div>
-                    <div className="text-sm text-slate-500">{testimonial.role}</div>
+                    <div className="font-semibold text-slate-800">
+                      {t(`testimonials.items.${key}.name`)}
+                    </div>
+                    <div className="text-sm text-slate-500">
+                      {t(`testimonials.items.${key}.role`)}
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -335,107 +273,7 @@ export default async function HomePage() {
             </h2>
             <p className="mt-4 text-lg text-slate-600">{t("pricing.subtitle")}</p>
           </div>
-
-          <div className="grid items-stretch gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {/* FREE TRIAL */}
-            <Card className="relative flex flex-col overflow-hidden border-slate-200 bg-white/70 backdrop-blur-sm">
-              <CardContent className="flex flex-1 flex-col p-6">
-                <div>
-                  <h3 className="text-xl font-bold text-slate-800">{t("pricing.freeTrial.name")}</h3>
-                  <div className="mt-3 flex items-baseline gap-1">
-                    <span className="text-4xl font-bold text-slate-800">{t("pricing.freeTrial.price")}</span>
-                  </div>
-                  <p className="mt-1 text-sm text-slate-500">{t("pricing.freeTrial.period")}</p>
-                  <ul className="mt-6 space-y-3">
-                    {(t.raw("pricing.freeTrial.features") as string[]).map((f) => (
-                      <li key={f} className="flex items-start gap-2 text-sm text-slate-700">
-                        <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-emerald-500" />
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div className="mt-auto pt-8">
-                  <AuthCTA label={t("pricing.freeTrial.cta")} variant="outline" size="lg" className="w-full font-semibold" />
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* START */}
-            <Card className="relative flex flex-col overflow-hidden border-slate-200 bg-white/70 backdrop-blur-sm">
-              <CardContent className="flex flex-1 flex-col p-6">
-                <div>
-                  <h3 className="text-xl font-bold text-slate-800">{t("pricing.start.name")}</h3>
-                  <div className="mt-3 flex items-baseline gap-1">
-                    <span className="text-4xl font-bold text-slate-800">{t("pricing.start.price")}</span>
-                  </div>
-                  <p className="mt-1 text-sm text-slate-500">{t("pricing.start.period")}</p>
-                  <ul className="mt-6 space-y-3">
-                    {(t.raw("pricing.start.features") as string[]).map((f) => (
-                      <li key={f} className="flex items-start gap-2 text-sm text-slate-700">
-                        <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-emerald-500" />
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div className="mt-auto pt-8">
-                  <PricingButton slug="starter" label={t("pricing.start.cta")} className="w-full bg-gradient-to-r from-indigo-500 to-cyan-600 hover:from-indigo-600 hover:to-cyan-700" />
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* CREATOR */}
-            <Card className="relative flex flex-col overflow-hidden border-2 border-indigo-400 bg-white/70 shadow-lg backdrop-blur-sm">
-              <div className="absolute top-0 right-0 bg-gradient-to-r from-indigo-500 to-cyan-600 px-3 py-1 text-xs font-semibold text-white">
-                {t("pricing.mostPopular")}
-              </div>
-              <CardContent className="flex flex-1 flex-col p-6">
-                <div>
-                  <h3 className="text-xl font-bold text-slate-800">{t("pricing.creator.name")}</h3>
-                  <div className="mt-3 flex items-baseline gap-1">
-                    <span className="text-4xl font-bold text-slate-800">{t("pricing.creator.price")}</span>
-                  </div>
-                  <p className="mt-1 text-sm text-slate-500">{t("pricing.creator.period")}</p>
-                  <ul className="mt-6 space-y-3">
-                    {(t.raw("pricing.creator.features") as string[]).map((f) => (
-                      <li key={f} className="flex items-start gap-2 text-sm text-slate-700">
-                        <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-emerald-500" />
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div className="mt-auto pt-8">
-                  <PricingButton slug="creator" label={t("pricing.creator.cta")} className="w-full bg-gradient-to-r from-indigo-500 to-cyan-600 hover:from-indigo-600 hover:to-cyan-700" />
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* PRO */}
-            <Card className="relative flex flex-col overflow-hidden border-slate-200 bg-white/70 backdrop-blur-sm">
-              <CardContent className="flex flex-1 flex-col p-6">
-                <div>
-                  <h3 className="text-xl font-bold text-slate-800">{t("pricing.pro.name")}</h3>
-                  <div className="mt-3 flex items-baseline gap-1">
-                    <span className="text-4xl font-bold text-slate-800">{t("pricing.pro.price")}</span>
-                  </div>
-                  <p className="mt-1 text-sm text-slate-500">{t("pricing.pro.period")}</p>
-                  <ul className="mt-6 space-y-3">
-                    {(t.raw("pricing.pro.features") as string[]).map((f) => (
-                      <li key={f} className="flex items-start gap-2 text-sm text-slate-700">
-                        <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-emerald-500" />
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div className="mt-auto pt-8">
-                  <PricingButton slug="pro" label={t("pricing.pro.cta")} className="w-full bg-gradient-to-r from-indigo-500 to-cyan-600 hover:from-indigo-600 hover:to-cyan-700" />
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          <PricingCards variant="page" />
         </div>
       </section>
 
