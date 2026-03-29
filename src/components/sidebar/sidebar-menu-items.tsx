@@ -14,11 +14,13 @@ import Link from "next/link";
 import { cn } from "~/lib/utils";
 import { useEffect, useState } from "react";
 import { authClient } from "~/lib/auth-client";
+import { useTranslations } from "next-intl";
 
 export default function SidebarMenuItems() {
   const path = usePathname();
   const { setOpenMobile, isMobile } = useSidebar();
   const [isAdmin, setIsAdmin] = useState(false);
+  const t = useTranslations("dashboard.sidebar");
 
   useEffect(() => {
     const checkAdmin = async () => {
@@ -31,37 +33,37 @@ export default function SidebarMenuItems() {
 
   const baseItems = [
     {
-      title: "Dashboard",
+      title: t("dashboard"),
       url: "/dashboard",
       icon: LayoutDashboard,
       adminOnly: false,
     },
     {
-      title: "Studio",
+      title: t("studio"),
       url: "/dashboard/studio",
       icon: Wand2,
       adminOnly: false,
     },
     {
-      title: "Projects",
+      title: t("projects"),
       url: "/dashboard/projects",
       icon: FolderOpen,
       adminOnly: false,
     },
     {
-      title: "Create Blog Post",
+      title: t("createBlogPost"),
       url: "/dashboard/blog/create",
       icon: Rss,
       adminOnly: true,
     },
     {
-      title: "Send Email",
+      title: t("sendEmail"),
       url: "/dashboard/send-email",
       icon: Mail,
       adminOnly: true,
     },
     {
-      title: "Settings",
+      title: t("settings"),
       url: "/dashboard/settings",
       icon: Settings,
       adminOnly: false,

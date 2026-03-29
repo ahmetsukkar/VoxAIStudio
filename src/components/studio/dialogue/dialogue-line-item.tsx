@@ -16,6 +16,7 @@ import type {
 } from "~/types/dialogue";
 import { speakerColors } from "~/types/dialogue";
 import { MAX_CHARS_PER_DIALOGUE_LINE } from "~/config/credits";
+import { useTranslations } from "next-intl";
 
 interface DialogueLineItemProps {
   line: DialogueLine;
@@ -32,6 +33,8 @@ export default function DialogueLineItem({
   onChange,
   onDelete,
 }: DialogueLineItemProps) {
+  const t = useTranslations("studio.dialogue.lineItem");
+
   const speaker = speakers.find((s) => s.id === line.speakerId);
   const avatarColor = speaker ? speakerColors[speaker.color].bg : "bg-gray-400";
   const isNearLimit = line.text.length >= MAX_CHARS_PER_DIALOGUE_LINE * 0.9;
@@ -79,16 +82,14 @@ export default function DialogueLineItem({
           )}
         </div>
 
-        {/* Text area — no maxLength so user can type freely; total is checked at submit */}
         <textarea
           value={line.text}
           onChange={(e) => onChange({ ...line, text: e.target.value })}
           rows={2}
-          placeholder="Enter dialogue text…"
+          placeholder={t("placeholder")}
           className="border-input bg-background w-full rounded-md border px-3 py-2 text-sm focus:outline-none"
         />
 
-        {/* Per-line counter — soft guidance only */}
         <p
           className={`text-right text-xs ${
             isNearLimit ? "text-orange-500" : "text-muted-foreground"

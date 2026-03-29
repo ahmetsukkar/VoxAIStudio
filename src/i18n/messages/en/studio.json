@@ -1,0 +1,192 @@
+{
+  "tabs": {
+    "tts": "🎙️ Text to Speech",
+    "dialogue": "🎭 Dialogue Studio"
+  },
+  "tts": {
+    "toasts": {
+      "emptyText": "Please enter some text!",
+      "success": "Speech generated successfully!",
+      "downloadStarted": "Download started!",
+      "failed": "Failed to generate speech"
+    },
+    "textInput": {
+      "title": "Your Text",
+      "subtitle": "Enter the text you want to convert to speech",
+      "freeTrial": "Free Trial",
+      "placeholder": "Type or paste your text here… Maximum {max} characters.",
+      "characters": "characters",
+      "trialLimit": "(Free Trial limit)",
+      "clear": "Clear",
+      "latestGeneration": "Latest Generation",
+      "download": "Download"
+    },
+    "settings": {
+      "title": "Settings",
+      "subtitle": "Customize your speech",
+      "cost": "Cost:",
+      "credit": "credit",
+      "credits": "credits",
+      "characters": "characters",
+      "generating": "Generating...",
+      "generate": "Generate Speech"
+    },
+    "gemini": {
+      "language": "Language",
+      "autoDetect": "🌐 Auto Detect",
+      "model": "Model",
+      "flashVsPro": "Flash vs Pro",
+      "flash": "⚡ Flash — Fast & Affordable",
+      "flashDesc": "credits / char · Best for short clips, dialogues, and quick generations.",
+      "pro": "✨ Pro — Highest Quality",
+      "proDesc": "credits / char · Best for audiobooks, long narrations, and professional content.",
+      "flashLabel": "Flash — Recommended",
+      "proLabel": "Pro — Long-form Content",
+      "flashSubLabel": "Best for dialogues & short lines",
+      "proSubLabel": "Better for audiobooks & speeches",
+      "creditsPerChar": "credits / char",
+      "freeTrial": "(Free Trial)",
+      "proLocked": "Pro voice is only available on paid plans. Upgrade to unlock it.",
+      "emotion": "Emotion",
+      "voice": "Voice",
+      "style": "Style",
+      "pace": "Pace"
+    },
+    "voicePicker": {
+      "all": "All",
+      "recommended": "Recommended",
+      "male": "Male",
+      "female": "Female",
+      "voices": "voices",
+      "stopPreview": "Stop preview",
+      "previewVoice": "Preview voice",
+      "tip": "💡 For",
+      "tipTone": "tone, try:"
+    },
+    "emotions": {
+      "neutral": "Neutral",
+      "cheerful": "Cheerful",
+      "sad": "Sad",
+      "angry": "Angry",
+      "excited": "Excited",
+      "whispering": "Whispering",
+      "emotional": "Emotional"
+    },
+    "styles": {
+      "conversational": "Conversational",
+      "newsreader": "News Reader",
+      "storytelling": "Storytelling",
+      "podcast": "Podcast",
+      "audiobook": "Audiobook",
+      "customer-support": "Customer Support"
+    },
+    "paces": {
+      "normal": "Normal",
+      "slow": "Slow",
+      "fast": "Fast"
+    },
+    "voiceDescriptions": {
+      "Bright": "Bright",
+      "Upbeat": "Upbeat",
+      "Informative": "Informative",
+      "Firm": "Firm",
+      "Excitable": "Excitable",
+      "Youthful": "Youthful",
+      "Breezy": "Breezy",
+      "Easy-going": "Easy-going",
+      "Breathy": "Breathy",
+      "Clear": "Clear",
+      "Smooth": "Smooth",
+      "Gravelly": "Gravelly",
+      "Soft": "Soft",
+      "Even": "Even",
+      "Mature": "Mature",
+      "Forward": "Forward",
+      "Friendly": "Friendly",
+      "Casual": "Casual",
+      "Gentle": "Gentle",
+      "Lively": "Lively",
+      "Knowledgeable": "Knowledgeable",
+      "Warm": "Warm"
+    }
+  },
+  "dialogue": {
+    "player": "Player",
+    "waitingForGeneration": "Waiting for first generation...",
+    "settings": {
+      "title": "Settings",
+      "subtitle": "Applied to full dialogue",
+      "language": "Language",
+      "autoDetect": "🌐 Auto Detect",
+      "model": "Model",
+      "flashVsPro": "Flash vs Pro",
+      "flash": "⚡ Flash — Fast & Affordable",
+      "flashDesc": "credits / char · Best for short clips, dialogues, and quick generations.",
+      "pro": "✨ Pro — Highest Quality",
+      "proDesc": "credits / char · Best for audiobooks, long narrations, and professional content.",
+      "flashLabel": "Flash — Recommended",
+      "proLabel": "Pro — Long-form Content",
+      "flashSubLabel": "Best for dialogues & short lines",
+      "proSubLabel": "Better for audiobooks & speeches",
+      "style": "Style",
+      "pace": "Pace",
+      "estimatedCost": "Estimated cost",
+      "credit": "credit",
+      "credits": "credits",
+      "chars": "chars"
+    },
+    "speakerCard": {
+      "name": "Name",
+      "emotion": "Emotion",
+      "voice": "Voice"
+    },
+    "lineItem": {
+      "placeholder": "Enter dialogue text…"
+    },
+    "totalConversationLength": "Total conversation length",
+    "characters": "characters",
+    "addLine": "Add Line",
+    "generate": "🎭 Generate Full Conversation",
+    "generating": "Generating…",
+    "fillLines": "Fill in the lines above to generate audio",
+    "overLimit": "Total exceeds {max} characters. Please shorten some lines.",
+    "settingsToggle": "Settings",
+    "freeTrial": {
+      "title": "Multi-Speaker is not available on the Free Trial",
+      "subtitle": "Upgrade to any paid plan to unlock Multi-Speaker conversations, Pro voices, and much more.",
+      "expiredTitle": "Your Free Trial has expired",
+      "expiredSubtitle": "Your 7-day trial has ended. Upgrade to a paid plan to access Multi-Speaker and all features.",
+      "upgradeButton": "Upgrade — starting at $4.99",
+      "verifyEmail": "verify your email",
+      "verifyNote": "to unlock purchasing.",
+      "sending": "Sending...",
+      "verifyFirst": "First",
+      "verificationSent": "✓ Verification email sent!",
+      "checkInbox": "Check your inbox at"
+    },
+    "toasts": {
+      "fillLines": "Please fill in all dialogue lines before generating.",
+      "success": "Dialogue generated successfully!",
+      "failed": "Failed to generate dialogue",
+      "verifyFailed": "Failed to send verification email. Please try again."
+    }
+  },
+  "recentGenerations": {
+    "ttsTitle": "Recent Generations",
+    "ttsSub": "Your speech generation history",
+    "dialogueTitle": "Recent Generations",
+    "dialogueSub": "Your multi-speaker generation history",
+    "defaultTitle": "Recent Audio Projects",
+    "defaultSub": "Your latest generated audio",
+    "noProjectsYet": "No audio projects yet",
+    "noGenerationsYet": "No generations yet",
+    "startDialogue": "Start by creating your first multi-speaker audio",
+    "startTts": "Start by entering some text and generating your first speech",
+    "startTtsAlt": "Start generating speech with AI voice cloning",
+    "createFirstAudio": "Create Your First Audio",
+    "viewAll": "View all in Projects →",
+    "viewAllLink": "View all",
+    "play": "Play",
+    "pause": "Pause"
+  }
+}

@@ -18,6 +18,7 @@ import { GeminiVoices } from "~/data/GeminiOptions";
 import { useCreditsStore } from "~/store/credits-store";
 import { VerifyToGenerateModal } from "~/components/verify-to-generate-modal";
 import { TrialExpiredModal } from "~/components/trial-expired-modal";
+import { useTranslations } from "next-intl";
 
 export default function TTSStudio() {
   const [isLoading, setIsLoading] = useState(true);
@@ -29,6 +30,8 @@ export default function TTSStudio() {
   const [userUploadedVoices, setUserUploadedVoices] = useState<UploadedVoice[]>(
     [],
   );
+
+  const t = useTranslations("studio.tts.toasts")
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [showVerifyModal, setShowVerifyModal] = useState(false);
   const [showTrialExpiredModal, setShowTrialExpiredModal] = useState(false);
@@ -97,7 +100,7 @@ export default function TTSStudio() {
 
   const generateSpeech = async () => {
     if (!text.trim()) {
-      toast.error("Please enter some text!");
+      toast.error(t("emptyText"));
       return;
     }
 
@@ -157,12 +160,10 @@ export default function TTSStudio() {
         .getElementById("main-scroll")
         ?.scrollTo({ top: 0, behavior: "smooth" });
 
-      toast.success("Speech generated successfully!");
+      toast.success(t("success"));
     } catch (error) {
       console.error("Generation error:", error);
-      toast.error(
-        error instanceof Error ? error.message : "Failed to generate speech",
-      );
+      toast.error(error instanceof Error ? error.message : t("failed"));
     } finally {
       setIsGenerating(false);
     }
@@ -170,7 +171,7 @@ export default function TTSStudio() {
 
   const downloadAudio = (audio: GeneratedAudio) => {
     window.open(audio.audioUrl, "_blank");
-    toast.success("Download started!");
+    toast.success(t("downloadStarted"));
   };
 
   if (isLoading) {

@@ -1,0 +1,69 @@
+{
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "studio": "Studio",
+    "projects": "Projects",
+    "createBlogPost": "Create Blog Post",
+    "sendEmail": "Send Email",
+    "settings": "Settings",
+    "credits": "Credits",
+    "upgrade": "Buy Credits",
+    "upgradeDescription": "Get more credits and unlock all features.",
+    "upgradeButton": "Upgrade Now",
+    "manageSubscription": "Manage Subscription"
+  },
+  "verifyBanner": {
+    "message": "Please verify your email address to unlock all features.",
+    "resend": "Resend verification email",
+    "sending": "Sending...",
+    "sent": "Email sent!"
+  },
+  "trials": {
+    "expiredTitle": "Your Trial Has Expired",
+    "expiredDescription": "Upgrade to continue generating voices with Vox AI Studio.",
+    "upgradeButton": "Upgrade Now",
+    "dismiss": "Maybe later"
+  },
+  "modals": {
+    "verifyToGenerate": {
+      "title": "Verify Your Email First",
+      "description": "You need to verify your email address before generating audio.",
+      "resend": "Resend Verification Email",
+      "close": "Close"
+    },
+    "upgrade": {
+      "title": "Upgrade Your Plan",
+      "description": "You've run out of credits. Upgrade to continue.",
+      "button": "See Plans",
+      "close": "Close"
+    }
+  },
+  "page": {
+    "welcome": "Welcome back",
+    "subtitle": "Here's an overview of your Text-to-Speech workspace",
+    "loading": "Loading your dashboard...",
+    "stats": {
+      "totalAudio": "Total Audio",
+      "ttsGenerations": "TTS generations",
+      "thisMonth": "This Month",
+      "projectsCreated": "Projects created",
+      "thisWeek": "This Week",
+      "recentActivity": "Recent activity",
+      "memberSince": "Member Since",
+      "accountCreated": "Account created"
+    },
+    "quickActions": {
+      "title": "Quick Actions",
+      "tts": "Text-to-Speech",
+      "ttsDesc": "Generate audio with voice cloning",
+      "viewAudio": "View All Audio",
+      "viewAudioDesc": "Browse your audio library",
+      "settings": "Account Settings",
+      "settingsDesc": "Manage your profile"
+    },
+    "recentProjects": {
+      "title": "Recent Audio Projects",
+      "viewAll": "View All"
+    }
+  }
+}

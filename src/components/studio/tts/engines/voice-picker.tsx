@@ -15,6 +15,7 @@ import {
   type GeminiEmotion,
 } from "~/data/GeminiOptions";
 import { cn } from "~/lib/utils";
+import { useTranslations } from "next-intl";
 
 interface VoicePickerProps {
   value: string;
@@ -34,6 +35,8 @@ export default function VoicePicker({
   onChange,
   emotion,
 }: VoicePickerProps) {
+  const t = useTranslations("studio.tts.voicePicker");
+  const tDesc = useTranslations("studio.tts.voiceDescriptions");
   const [open, setOpen] = useState(false);
   const [filter, setFilter] = useState<FilterTab>("All");
   const [playingVoice, setPlayingVoice] = useState<string | null>(null);
@@ -68,7 +71,7 @@ export default function VoicePicker({
       return sortedVoices.filter((v) => v.category === "Male");
     if (filter === "Female")
       return sortedVoices.filter((v) => v.category === "Female");
-    return sortedVoices; // "All" — recommended at top
+    return sortedVoices;
   })();
 
   const stopAudio = () => {
@@ -103,6 +106,15 @@ export default function VoicePicker({
 
   const isSelectedPlaying = playingVoice === selectedVoice.name;
   const isSelectedRecommended = recommendedNames.includes(selectedVoice.name);
+
+  // Map internal FilterTab value → translated display label
+  const tabLabel = (tab: FilterTab) => {
+    if (tab === "All") return t("all");
+    if (tab === "Recommended") return `⭐ ${t("recommended")}`;
+    if (tab === "Male") return t("male");
+    if (tab === "Female") return t("female");
+    return tab;
+  };
 
   return (
     <div className="space-y-1.5">
@@ -144,11 +156,11 @@ export default function VoicePicker({
                       : "text-muted-foreground hover:bg-muted hover:text-foreground",
                   )}
                 >
-                  {tab === "Recommended" ? `⭐ ${tab}` : tab}
+                  {tabLabel(tab)}
                 </button>
               ))}
               <span className="text-muted-foreground ml-auto self-center text-[10px]">
-                {filteredVoices.length} voices
+                {filteredVoices.length} {t("voices")}
               </span>
             </div>
 
@@ -172,7 +184,6 @@ export default function VoicePicker({
                           : "hover:bg-muted border-transparent",
                     )}
                   >
-                    {/* ✅ Recommended dot — top right corner */}
                     {isRecommended && (
                       <span className="absolute top-1 right-1 h-1.5 w-1.5 rounded-full bg-yellow-400" />
                     )}
@@ -185,7 +196,7 @@ export default function VoicePicker({
                         <span className="truncate">{voice.name}</span>
                       </span>
                       <span className="text-muted-foreground text-[10px]">
-                        {voice.description}
+                        {tDesc(voice.description)}
                       </span>
                       <span
                         className={cn(
@@ -193,7 +204,7 @@ export default function VoicePicker({
                           categoryColors[voice.category],
                         )}
                       >
-                        {voice.category}
+                        {voice.category === "Male" ? t("male") : t("female")}
                       </span>
                     </div>
 
@@ -205,7 +216,7 @@ export default function VoicePicker({
                           ? "text-blue-500 hover:text-blue-600"
                           : "text-muted-foreground hover:text-foreground",
                       )}
-                      title={isPlaying ? "Stop preview" : "Preview voice"}
+                      title={isPlaying ? t("stopPreview") : t("previewVoice")}
                     >
                       {isPlaying ? (
                         <Square className="h-3 w-3 fill-current" />
@@ -230,7 +241,9 @@ export default function VoicePicker({
               : "border-input text-muted-foreground hover:bg-muted hover:text-foreground",
           )}
           title={
-            isSelectedPlaying ? "Stop preview" : `Preview ${selectedVoice.name}`
+            isSelectedPlaying
+              ? t("stopPreview")
+              : `${t("previewVoice")} ${selectedVoice.name}`
           }
         >
           {isSelectedPlaying ? (
@@ -241,11 +254,11 @@ export default function VoicePicker({
         </button>
       </div>
 
-      {/* Tip note — shown when emotion is set and recommended voices exist */}
+      {/* Tip note */}
       {hasRecommendations && emotion && (
         <p className="text-muted-foreground text-[11px]">
-          💡 For <span className="font-medium capitalize">{emotion}</span> tone,
-          try:{" "}
+          {t("tip")} <span className="font-medium capitalize">{emotion}</span>{" "}
+          {t("tipTone")}{" "}
           <span className="text-foreground font-medium">
             {recommendedNames.slice(0, 4).join(", ")}
           </span>

@@ -1,0 +1,68 @@
+{
+  "title": "مشاريعك الصوتية",
+  "loading": "جارٍ تحميل مشاريعك...",
+  "newAudio": "ملف صوتي جديد",
+  "audios": "ملفات صوتية",
+  "audio": "ملف صوتي",
+  "loadMoreBelow": "· تحميل المزيد أدناه",
+  "filtered": "من {total} ملف (مُصفَّى)",
+  "filters": {
+    "searchPlaceholder": "البحث بالنص...",
+    "allTypes": "جميع الأنواع",
+    "allModels": "جميع النماذج",
+    "allLanguages": "جميع اللغات",
+    "newestFirst": "الأحدث أولاً",
+    "oldestFirst": "الأقدم أولاً",
+    "textAZ": "النص أ-ي",
+    "clear": "مسح",
+    "typeOptions": {
+    "TTS": "تحويل النص إلى كلام",
+    "Dialogue": "حوار"
+    }
+  },
+  "badges": {
+    "voiceCloning": "استنساخ الصوت",
+    "aiVoiceFlash": "صوت AI · Flash",
+    "aiVoicePro": "صوت AI · Pro"
+  },
+  "details": {
+    "credits": "أرصدة"
+  },
+  "empty": {
+    "noMatches": "لا توجد ملفات تطابق الفلاتر",
+    "noProjects": "لا توجد مشاريع صوتية بعد",
+    "noMatchesSub": "حاول تعديل الفلاتر أو مسحها.",
+    "noProjectsSub": "ابدأ بإنشاء تحويل النص إلى كلام لتراها هنا.",
+    "clearFilters": "مسح الفلاتر",
+    "createFirst": "أنشئ أول ملف صوتي"
+  },
+  "deleteConfirm": "هل أنت متأكد أنك تريد حذف هذا المشروع الصوتي؟",
+  "loadMore": "تحميل المزيد",
+  "loadingMore": "جارٍ التحميل...",
+  "pace": {
+  "normal": "عادي",
+  "slow": "بطيء",
+  "fast": "سريع"
+},
+"style": {
+  "conversational": "محادثة",
+  "newsreader": "قارئ أخبار",
+  "storytelling": "سرد قصصي",
+  "podcast": "بودكاست",
+  "audiobook": "كتاب صوتي",
+  "customer-support": "دعم العملاء"
+},
+"emotion": {
+  "neutral": "محايد",
+  "cheerful": "مبهج",
+  "sad": "حزين",
+  "angry": "غاضب",
+  "excited": "متحمس",
+  "whispering": "همس",
+  "emotional": "عاطفي"
+},
+"types": {
+  "TTS": "تحويل نص",
+  "Dialogue": "حوار"
+}
+}

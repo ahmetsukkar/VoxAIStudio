@@ -1,12 +1,14 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import "~/styles/globals.css";
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { Toaster } from "~/components/ui/sonner";
 import { CookieBanner } from "~/components/cookie-banner";
 import { GoogleAnalytics } from "@next/third-parties/google";
-import Script from "next/script"
+import Script from "next/script";
 import { env } from "~/env";
+import { getLocale, getMessages } from "next-intl/server";
+import { localeConfig, type Locale } from "~/i18n/config";
+import IntlProvider from "~/components/intl-provider";
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.BETTER_AUTH_WWWURL),
@@ -67,13 +69,17 @@ const geist = Geist({
   variable: "--font-geist-sans",
 });
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+  const dir = localeConfig[locale as Locale]?.dir ?? "ltr";
+  const messages = await getMessages();
+
   return (
-    <html lang="en" className={geist.variable}>
+    <html lang={locale} dir={dir} className={geist.variable}>
       <head>
         <Script id="google-consent-init" strategy="beforeInteractive">
           {`
@@ -90,8 +96,10 @@ export default function RootLayout({
         </Script>
       </head>
       <body>
-        {children}
-        <CookieBanner />
+        <IntlProvider locale={locale} messages={messages}>
+          {children}
+          <CookieBanner />
+        </IntlProvider>
         <Toaster />
       </body>
       <GoogleAnalytics gaId={env.GOOGLE_ANALYTICS_ID} />

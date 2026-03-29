@@ -1,0 +1,69 @@
+{
+  "sidebar": {
+    "dashboard": "لوحة التحكم",
+    "studio": "الاستوديو",
+    "projects": "المشاريع",
+    "createBlogPost": "إنشاء مقال",
+    "sendEmail": "إرسال بريد إلكتروني",
+    "settings": "الإعدادات",
+    "credits": "الأرصدة",
+    "upgrade": "شراء رصيد",
+    "upgradeDescription": "احصل على المزيد من الأرصدة وافتح جميع الميزات.",
+    "upgradeButton": "ترقية الآن",
+    "manageSubscription": "إدارة الاشتراك"
+  },
+  "verifyBanner": {
+    "message": "يرجى التحقق من بريدك الإلكتروني لفتح جميع الميزات.",
+    "resend": "إعادة إرسال بريد التحقق",
+    "sending": "جارٍ الإرسال...",
+    "sent": "تم الإرسال!"
+  },
+  "trials": {
+    "expiredTitle": "انتهت فترة التجربة",
+    "expiredDescription": "قم بالترقية لمواصلة توليد الأصوات مع Vox AI Studio.",
+    "upgradeButton": "ترقية الآن",
+    "dismiss": "ربما لاحقاً"
+  },
+  "modals": {
+    "verifyToGenerate": {
+      "title": "تحقق من بريدك أولاً",
+      "description": "يجب التحقق من بريدك الإلكتروني قبل توليد الصوت.",
+      "resend": "إعادة إرسال بريد التحقق",
+      "close": "إغلاق"
+    },
+    "upgrade": {
+      "title": "ترقية خطتك",
+      "description": "لقد نفدت أرصدتك. قم بالترقية للمتابعة.",
+      "button": "عرض الخطط",
+      "close": "إغلاق"
+    }
+  },
+  "page": {
+    "welcome": "مرحباً بعودتك",
+    "subtitle": "إليك نظرة عامة على مساحة عمل تحويل النص إلى كلام",
+    "loading": "جارٍ تحميل لوحة التحكم...",
+    "stats": {
+      "totalAudio": "إجمالي الصوت",
+      "ttsGenerations": "توليدات TTS",
+      "thisMonth": "هذا الشهر",
+      "projectsCreated": "مشاريع تم إنشاؤها",
+      "thisWeek": "هذا الأسبوع",
+      "recentActivity": "النشاط الأخير",
+      "memberSince": "عضو منذ",
+      "accountCreated": "تاريخ إنشاء الحساب"
+    },
+    "quickActions": {
+      "title": "إجراءات سريعة",
+      "tts": "تحويل النص إلى كلام",
+      "ttsDesc": "توليد صوت مع استنساخ الصوت",
+      "viewAudio": "عرض كل الصوتيات",
+      "viewAudioDesc": "تصفح مكتبة الصوتيات",
+      "settings": "إعدادات الحساب",
+      "settingsDesc": "إدارة ملفك الشخصي"
+    },
+    "recentProjects": {
+      "title": "مشاريع الصوت الأخيرة",
+      "viewAll": "عرض الكل"
+    }
+  }
+}

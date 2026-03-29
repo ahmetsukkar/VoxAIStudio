@@ -5,10 +5,16 @@ import { AudioWaveform } from "lucide-react";
 import { Button } from "./ui/button";
 import { authClient } from "~/lib/auth-client";
 import AuthCTA from "~/components/auth-cta";
+import LanguageSwitcher from "~/components/language-switcher";
+import { useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
+import type { Locale } from "~/i18n/config";
 
 export default function Navigation() {
   const { data: session, isPending } = authClient.useSession();
   const isLoggedIn = !!session?.user;
+  const t = useTranslations("common.navigation");
+  const locale = useLocale() as Locale;
 
   return (
     <nav className="sticky top-0 z-50 border-b border-slate-200/60 bg-slate-50/95 backdrop-blur supports-[backdrop-filter]:bg-slate-50/80">
@@ -30,44 +36,45 @@ export default function Navigation() {
               href="/#features"
               className="text-slate-600 transition-colors hover:text-indigo-600"
             >
-              Features
+              {t("features")}
             </Link>
             <Link
               href="/#pricing"
               className="text-slate-600 transition-colors hover:text-indigo-600"
             >
-              Pricing
+              {t("pricing")}
             </Link>
             <Link
               href="/#testimonials"
               className="text-slate-600 transition-colors hover:text-indigo-600"
             >
-              Reviews
+              {t("reviews")}
             </Link>
             <Link
               href="/blog"
               className="text-slate-600 transition-colors hover:text-indigo-600"
             >
-              Blog
+              {t("blog")}
             </Link>
             <Link
               href="/legal/about"
               className="text-slate-600 transition-colors hover:text-indigo-600"
             >
-              About
+              {t("about")}
             </Link>
           </div>
 
           <div className="flex items-center gap-3">
+            <LanguageSwitcher currentLocale={locale} />
             {!isPending && !isLoggedIn && (
               <Link href="/auth/sign-in">
                 <Button variant="ghost" size="sm" className="cursor-pointer">
-                  Sign In
+                  {t("signIn")}
                 </Button>
               </Link>
             )}
             <AuthCTA
-              label={isLoggedIn ? "My Dashboard" : "Try It Free"}
+              label={isLoggedIn ? t("myDashboard") : t("tryItFree")}
               icon={isLoggedIn ? "LayoutDashboard" : "ArrowRight"}
               iconPosition="left"
               size="sm"

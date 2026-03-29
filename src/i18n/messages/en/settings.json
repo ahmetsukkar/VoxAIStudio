@@ -1,0 +1,14 @@
+{
+  "title": "Account Settings",
+  "subtitle": "Manage your account preferences and security settings",
+  "loading": "Loading your settings...",
+  "emailVerification": {
+    "title": "Email Verification",
+    "verified": "Your email is verified",
+    "notVerified": "⚠️ Not verified — verify to unlock purchases",
+    "resend": "Resend verification email",
+    "sending": "Sending...",
+    "toastSuccess": "Verification email sent! Check your inbox.",
+    "toastError": "Failed to send. Please try again."
+  }
+}

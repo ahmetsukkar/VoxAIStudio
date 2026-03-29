@@ -19,44 +19,54 @@ import BreadcrumbPageClient from "~/components/sidebar/breadcrumb-page-client";
 import AppSidebar from "~/components/sidebar/app-sidebar";
 import VerifyEmailBanner from "~/components/dashboard/verify-email-banner";
 import UpgradeModalTrigger from "~/components/upgrade-modal-trigger";
+import IntlProvider from "~/components/intl-provider";
+import { getLocale, getMessages } from "next-intl/server";
 
 export const metadata: Metadata = {
   title: "Publish Vox AI Studio",
   description: "Publish Vox AI Studio - Transform text into natural speech",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
-    <Providers>
-      <SidebarProvider>
-        <AppSidebar />
-        <SidebarInset className="flex h-screen flex-col">
-          <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 border-border/40 sticky top-0 z-10 border-b px-6 py-3 shadow-sm backdrop-blur">
-            <div className="flex shrink-0 grow items-center gap-3">
-              <SidebarTrigger className="hover:bg-muted -ml-1 h-8 w-8 transition-colors" />
-              <Separator
-                orientation="vertical"
-                className="mr-2 h-6 data-[orientation=vertical]:h-6"
-              />
-              <Breadcrumb>
-                <BreadcrumbList>
-                  <BreadcrumbItem>
-                    <BreadcrumbPageClient />
-                  </BreadcrumbItem>
-                </BreadcrumbList>
-              </Breadcrumb>
-            </div>
-          </header>
-          <VerifyEmailBanner />
-          <main id="main-scroll" className="from-background to-muted/20 flex-1 overflow-y-auto bg-gradient-to-br p-6">
-            {children}
-          </main>
-        </SidebarInset>
-      </SidebarProvider>
-      <Toaster />
-      <UpgradeModalTrigger />
-    </Providers>
+    <IntlProvider locale={locale} messages={messages}>
+      <Providers>
+        <SidebarProvider>
+          <AppSidebar />
+          <SidebarInset className="flex h-screen flex-col">
+            <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 border-border/40 sticky top-0 z-10 border-b px-6 py-3 shadow-sm backdrop-blur">
+              <div className="flex shrink-0 grow items-center gap-3">
+                <SidebarTrigger className="hover:bg-muted -ml-1 h-8 w-8 transition-colors" />
+                <Separator
+                  orientation="vertical"
+                  className="mr-2 h-6 data-[orientation=vertical]:h-6"
+                />
+                <Breadcrumb>
+                  <BreadcrumbList>
+                    <BreadcrumbItem>
+                      <BreadcrumbPageClient />
+                    </BreadcrumbItem>
+                  </BreadcrumbList>
+                </Breadcrumb>
+              </div>
+            </header>
+            <VerifyEmailBanner />
+            <main
+              id="main-scroll"
+              className="from-background to-muted/20 flex-1 overflow-y-auto bg-gradient-to-br p-6"
+            >
+              {children}
+            </main>
+          </SidebarInset>
+        </SidebarProvider>
+        <Toaster />
+        <UpgradeModalTrigger />
+      </Providers>
+    </IntlProvider>
   );
 }

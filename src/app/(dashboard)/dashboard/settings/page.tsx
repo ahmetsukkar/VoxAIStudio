@@ -12,11 +12,12 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
+import { useLocale, useTranslations } from "next-intl";
 
 function EmailVerificationCard() {
+  const t = useTranslations("settings.emailVerification");
   const { data: session } = useSession();
   const [isSending, setIsSending] = useState(false);
-
   const isVerified = session?.user?.emailVerified;
 
   if (!session) return null;
@@ -28,9 +29,9 @@ function EmailVerificationCard() {
         email: session.user.email,
         callbackURL: "/dashboard",
       });
-      toast.success("Verification email sent! Check your inbox.");
+      toast.success(t("toastSuccess"));
     } catch {
-      toast.error("Failed to send. Please try again.");
+      toast.error(t("toastError"));
     } finally {
       setIsSending(false);
     }
@@ -41,7 +42,7 @@ function EmailVerificationCard() {
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-base font-semibold">
           <MailCheck className="h-5 w-5" />
-          Email Verification
+          {t("title")}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -53,11 +54,11 @@ function EmailVerificationCard() {
             {isVerified ? (
               <p className="mt-1 flex items-center gap-1.5 text-sm font-medium text-green-600 dark:text-green-400">
                 <ShieldCheck className="h-4 w-4" />
-                Your email is verified
+                {t("verified")}
               </p>
             ) : (
               <p className="mt-1 text-sm font-medium text-amber-600 dark:text-amber-400">
-                ⚠️ Not verified — verify to unlock purchases
+                {t("notVerified")}
               </p>
             )}
           </div>
@@ -71,10 +72,10 @@ function EmailVerificationCard() {
               {isSending ? (
                 <>
                   <Loader2 className="mr-2 h-3 w-3 animate-spin" />
-                  Sending...
+                  {t("sending")}
                 </>
               ) : (
-                "Resend verification email"
+                t("resend")
               )}
             </Button>
           )}
@@ -85,6 +86,9 @@ function EmailVerificationCard() {
 }
 
 export default function SettingPage() {
+  const locale = useLocale();
+  const isRTL = locale === "ar";
+  const t = useTranslations("settings");
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -105,13 +109,15 @@ export default function SettingPage() {
       <div className="flex min-h-[400px] items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="text-primary h-8 w-8 animate-spin" />
-          <p className="text-muted-foreground text-sm">
-            Loading your settings...
-          </p>
+          <p className="text-muted-foreground text-sm">{t("loading")}</p>
         </div>
       </div>
     );
   }
+
+  const cardWrapper =
+    "w-full max-w-2xl [&_button[type='submit']]:border-0 [&_button[type='submit']]:bg-purple-600 [&_button[type='submit']]:text-white [&_button[type='submit']:hover]:bg-purple-700";
+
   return (
     <>
       <RedirectToSignIn />
@@ -119,21 +125,30 @@ export default function SettingPage() {
         <div className="space-y-8">
           <div className="space-y-2">
             <h1 className="from-foreground to-foreground/70 bg-gradient-to-r bg-clip-text text-3xl font-bold tracking-tight text-transparent">
-              Account Settings
+              {t("title")}
             </h1>
-            <p className="text-muted-foreground text-lg">
-              Manage your account preferences and security settings
-            </p>
+            <p className="text-muted-foreground text-lg">{t("subtitle")}</p>
           </div>
 
-          <div className="flex flex-col items-center justify-center gap-6">
+          <div
+            dir={isRTL ? "rtl" : "ltr"}
+            className="flex flex-col items-center justify-center gap-6"
+          >
             <EmailVerificationCard />
 
-            <div className="w-full max-w-2xl [&_button[type='submit']]:border-0 [&_button[type='submit']]:bg-purple-600 [&_button[type='submit']]:text-white [&_button[type='submit']:hover]:bg-purple-700">
+            <div className={cardWrapper}>
               <UpdateNameCard />
             </div>
 
-            <div className="w-full max-w-2xl overflow-hidden [&_*]:min-w-0 [&_*]:break-all [&_button[type='submit']]:border-0 [&_button[type='submit']]:bg-purple-600 [&_button[type='submit']]:text-white [&_button[type='submit']:hover]:bg-purple-700">
+            {/* SecuritySettingsCards: scoped RTL fix only for session rows */}
+            <div
+              className={
+                cardWrapper +
+                (isRTL
+                  ? " [&_.flex-row]:flex-row-reverse [&_.flex-row_.ms-auto]:!me-auto [&_.flex-row_.ms-auto]:!ms-0"
+                  : "")
+              }
+            >
               <SecuritySettingsCards className="w-full max-w-2xl" />
             </div>
           </div>
