@@ -13,17 +13,27 @@ import IntlProvider from "~/components/intl-provider";
 export const metadata: Metadata = {
   metadataBase: new URL(env.BETTER_AUTH_WWWURL),
   title: {
-    default: "Vox AI Studio",
+    default: "Vox AI Studio — Free AI Text to Speech & Voice Generator Online",
     template: "%s | Vox AI Studio",
   },
   description:
-    "Transform any text into natural, human-like speech with AI. Clone voices, generate audio, and power your projects with Vox AI Studio.",
+    "Convert text to speech free with 30+ AI voices. Create multi-speaker dialogues, podcasts, and voiceovers online. AI voice generator powered by Google Gemini. Try free today.",
   keywords: [
     "text to speech",
+    "text to speech free",
+    "text to speech online",
+    "convert text to speech",
     "AI voice generator",
+    "AI text to speech",
+    "TTS online",
+    "multi speaker text to speech",
+    "AI voice studio",
     "voice cloning",
-    "TTS",
-    "AI audio",
+    "AI audio generator",
+    "natural speech synthesis",
+    "text to audio",
+    "gemini text to speech",
+    "ai dialogue generator",
   ],
   authors: [{ name: "Vox AI Studio", url: env.BETTER_AUTH_WWWURL }],
   creator: "Vox AI Studio",
@@ -36,7 +46,7 @@ export const metadata: Metadata = {
     description: "Transform any text into natural, human-like speech with AI.",
     images: [
       {
-        url: "/images/og-image.png",
+        url: "/images/og-image.webp",
         width: 1200,
         height: 630,
         alt: "Vox AI Studio",
@@ -47,7 +57,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Vox AI Studio — AI Text to Speech & Voice Cloning",
     description: "Transform any text into natural, human-like speech with AI.",
-    images: ["/images/og-image.png"],
+    images: ["/images/og-image.webp"],
   },
   robots: {
     index: true,

@@ -38,7 +38,7 @@ export async function generateMetadata(): Promise<Metadata> {
       url: "https://www.voxaistudio.com",
       images: [
         {
-          url: "/images/og-image.png",
+          url: "/images/og-image.webp",
           width: 1200,
           height: 630,
           alt: "Vox AI Studio — AI Text to Speech",
@@ -61,20 +61,36 @@ export default async function HomePage() {
             "@type": "SoftwareApplication",
             name: "Vox AI Studio",
             url: "https://www.voxaistudio.com",
-            description: "AI-powered text-to-speech and voice cloning platform.",
+            description:
+              "Free AI text to speech and voice generator online. Convert text to speech with 30+ AI voices. Create multi-speaker dialogues powered by Google Gemini.",
             applicationCategory: "MultimediaApplication",
             operatingSystem: "Web",
             offers: [
-              { "@type": "Offer", name: "Free Trial", price: "0",     priceCurrency: "USD" },
-              { "@type": "Offer", name: "Starter",    price: "4.99",  priceCurrency: "USD" },
-              { "@type": "Offer", name: "Creator",    price: "9.99",  priceCurrency: "USD" },
-              { "@type": "Offer", name: "Pro",        price: "49.99", priceCurrency: "USD" },
+              {
+                "@type": "Offer",
+                name: "Free Trial",
+                price: "0",
+                priceCurrency: "USD",
+              },
+              {
+                "@type": "Offer",
+                name: "Starter",
+                price: "4.99",
+                priceCurrency: "USD",
+              },
+              {
+                "@type": "Offer",
+                name: "Creator",
+                price: "9.99",
+                priceCurrency: "USD",
+              },
+              {
+                "@type": "Offer",
+                name: "Pro",
+                price: "49.99",
+                priceCurrency: "USD",
+              },
             ],
-            aggregateRating: {
-              "@type": "AggregateRating",
-              ratingValue: "4.8",
-              ratingCount: "5000",
-            },
           }),
         }}
       />
@@ -122,23 +138,33 @@ export default async function HomePage() {
             <div className="grid grid-cols-2 items-center justify-center gap-6 opacity-80 sm:grid-cols-5">
               <div className="text-center">
                 <div className="text-2xl font-bold text-slate-700">50K+</div>
-                <div className="text-xs text-slate-500">{t("stats.voicesGenerated")}</div>
+                <div className="text-xs text-slate-500">
+                  {t("stats.voicesGenerated")}
+                </div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-slate-700">5K+</div>
-                <div className="text-xs text-slate-500">{t("stats.activeUsers")}</div>
+                <div className="text-xs text-slate-500">
+                  {t("stats.activeUsers")}
+                </div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-slate-700">99.9%</div>
-                <div className="text-xs text-slate-500">{t("stats.uptime")}</div>
+                <div className="text-xs text-slate-500">
+                  {t("stats.uptime")}
+                </div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-amber-600">4.8★</div>
-                <div className="text-xs text-slate-500">{t("stats.userRating")}</div>
+                <div className="text-xs text-slate-500">
+                  {t("stats.userRating")}
+                </div>
               </div>
               <div className="col-span-2 text-center sm:col-span-1">
                 <div className="text-2xl font-bold text-slate-700">24/7</div>
-                <div className="text-xs text-slate-500">{t("stats.voiceSynthesis")}</div>
+                <div className="text-xs text-slate-500">
+                  {t("stats.voiceSynthesis")}
+                </div>
               </div>
             </div>
           </div>
@@ -158,21 +184,48 @@ export default async function HomePage() {
               </span>
               {t("features.titleEnd")}
             </h2>
-            <p className="mt-4 text-lg text-slate-600">{t("features.subtitle")}</p>
+            <p className="mt-4 text-lg text-slate-600">
+              {t("features.subtitle")}
+            </p>
           </div>
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {(
               [
-                { key: "cloning",   icon: <Scissors className="h-8 w-8" />, color: "text-emerald-600", bgColor: "bg-emerald-100" },
-                { key: "tts",       icon: <Expand    className="h-8 w-8" />, color: "text-blue-600",   bgColor: "bg-blue-100"   },
-                { key: "languages", icon: <Target    className="h-8 w-8" />, color: "text-purple-600", bgColor: "bg-purple-100" },
-                { key: "speed",     icon: <Zap       className="h-8 w-8" />, color: "text-amber-600",  bgColor: "bg-amber-100"  },
+                {
+                  key: "cloning",
+                  icon: <Scissors className="h-8 w-8" />,
+                  color: "text-emerald-600",
+                  bgColor: "bg-emerald-100",
+                },
+                {
+                  key: "tts",
+                  icon: <Expand className="h-8 w-8" />,
+                  color: "text-blue-600",
+                  bgColor: "bg-blue-100",
+                },
+                {
+                  key: "languages",
+                  icon: <Target className="h-8 w-8" />,
+                  color: "text-purple-600",
+                  bgColor: "bg-purple-100",
+                },
+                {
+                  key: "speed",
+                  icon: <Zap className="h-8 w-8" />,
+                  color: "text-amber-600",
+                  bgColor: "bg-amber-100",
+                },
               ] as const
             ).map((f) => (
-              <Card key={f.key} className="group relative overflow-hidden border-slate-200 bg-white/70 backdrop-blur-sm transition-all hover:shadow-lg">
+              <Card
+                key={f.key}
+                className="group relative overflow-hidden border-slate-200 bg-white/70 backdrop-blur-sm transition-all hover:shadow-lg"
+              >
                 <CardContent className="p-6">
                   <div className="mb-4 flex justify-center">
-                    <div className={`${f.bgColor} mb-4 inline-flex items-center justify-center rounded-lg p-3 ${f.color}`}>
+                    <div
+                      className={`${f.bgColor} mb-4 inline-flex items-center justify-center rounded-lg p-3 ${f.color}`}
+                    >
                       {f.icon}
                     </div>
                   </div>
@@ -197,7 +250,9 @@ export default async function HomePage() {
             <h2 className="text-3xl font-bold tracking-tight text-slate-800 sm:text-4xl">
               {t("howItWorks.title")}
             </h2>
-            <p className="mt-4 text-lg text-slate-600">{t("howItWorks.subtitle")}</p>
+            <p className="mt-4 text-lg text-slate-600">
+              {t("howItWorks.subtitle")}
+            </p>
           </div>
           <div className="grid gap-8 md:grid-cols-3">
             {(["step1", "step2", "step3"] as const).map((step, index) => (
@@ -232,15 +287,23 @@ export default async function HomePage() {
                 {t("testimonials.titleHighlight")}
               </span>
             </h2>
-            <p className="mt-4 text-lg text-slate-600">{t("testimonials.subtitle")}</p>
+            <p className="mt-4 text-lg text-slate-600">
+              {t("testimonials.subtitle")}
+            </p>
           </div>
           <div className="grid gap-6 md:grid-cols-3">
             {(["t1", "t2", "t3"] as const).map((key) => (
-              <Card key={key} className="relative border-slate-200 bg-white/70 backdrop-blur-sm">
+              <Card
+                key={key}
+                className="relative border-slate-200 bg-white/70 backdrop-blur-sm"
+              >
                 <CardContent className="p-6">
                   <div className="mb-4 flex items-center gap-1">
                     {Array.from({ length: 5 }).map((_, i) => (
-                      <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />
+                      <Star
+                        key={i}
+                        className="h-4 w-4 fill-amber-400 text-amber-400"
+                      />
                     ))}
                   </div>
                   <p className="mb-4 text-slate-600 italic">
@@ -262,7 +325,10 @@ export default async function HomePage() {
       </section>
 
       {/* ── PRICING ── */}
-      <section id="pricing" className="bg-gradient-to-br from-slate-50 to-indigo-50/50 py-20 sm:py-32">
+      <section
+        id="pricing"
+        className="bg-gradient-to-br from-slate-50 to-indigo-50/50 py-20 sm:py-32"
+      >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto mb-16 max-w-2xl text-center">
             <h2 className="text-3xl font-bold tracking-tight text-slate-800 sm:text-4xl">
@@ -271,7 +337,9 @@ export default async function HomePage() {
                 {t("pricing.titleHighlight")}
               </span>
             </h2>
-            <p className="mt-4 text-lg text-slate-600">{t("pricing.subtitle")}</p>
+            <p className="mt-4 text-lg text-slate-600">
+              {t("pricing.subtitle")}
+            </p>
           </div>
           <PricingCards variant="page" />
         </div>

@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     description:
       "Expert guides on AI TTS, voice cloning, pricing comparisons, and more.",
     url: "https://www.voxaistudio.com/blog",
-    images: [{ url: "/images/og-image.png", width: 1200, height: 630 }],
+    images: [{ url: "/images/og-image.webp", width: 1200, height: 630 }],
   },
 };
 

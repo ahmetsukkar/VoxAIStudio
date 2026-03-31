@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const post = result.data;
-  const ogImage = post.featuredImage ?? "/images/og-image.png"; // use post image if available
+  const ogImage = post.featuredImage ?? "/images/og-image.webp"; // use post image if available
 
   return {
     title: post.metaTitle ?? `${post.title} | Vox AI Studio Blog`,
@@ -106,7 +106,7 @@ export default async function BlogPostPage({ params }: Props) {
             dateModified:
               post.updatedAt?.toISOString() ?? post.publishedAt?.toISOString(),
             url: `https://www.voxaistudio.com/blog/${post.slug}`,
-            image: "/images/og-image.png",
+            image: "/images/og-image.webp",
           }),
         }}
       />
