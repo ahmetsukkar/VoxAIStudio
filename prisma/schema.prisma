@@ -30,6 +30,7 @@ model User {
     credits       Int       @default(10000)
     trialExpiresAt DateTime? // Set on sign-up for Free Trial users; null = paid plan
     audioProjects AudioProject[]
+    imageProjects  ImageProject[]
     uploadedVoices UploadedVoice[]
     blogPosts     BlogPost[]
 
@@ -77,6 +78,46 @@ model UploadedVoice {
   updatedAt DateTime @updatedAt
 
   @@map("uploaded_voice")
+}
+
+model ImageProject {
+  id          String           @id @default(cuid())
+  name        String?
+
+  // Input
+  prompt      String           @db.Text
+  negativePrompt String?       @db.Text
+  aspectRatio String           @default("1:1")  // "1:1" | "16:9" | "9:16" | "4:3" | "3:4"
+  style       String?          // e.g., "photorealistic", "illustration"
+
+  // Provider / model metadata
+  provider    String           @default("google")
+  model       String           @default("imagen-3.0-generate-001")
+
+  // Async generation tracking (images are usually sync, but we model for extensibility)
+  status      GenerationStatus @default(PENDING)
+  errorMessage String?         @db.Text
+
+  // Output
+  imageUrl    String?          // public URL once completed
+  s3Key       String?          // S3 key
+  width       Int?
+  height      Int?
+  mimeType    String?          @default("image/png")
+
+  // Billing
+  creditsSpent Int?
+
+  // Relations
+  userId      String
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@map("image_project")
 }
 
 
@@ -177,5 +218,13 @@ enum BlogStatus {
   DRAFT
   PUBLISHED
   ARCHIVED
+}
+
+enum GenerationStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  TIMED_OUT
 }
 
