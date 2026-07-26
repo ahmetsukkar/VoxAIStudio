@@ -6,11 +6,8 @@ import { useEffect, useState, useRef } from "react";
 import { generateSpeech as generateSpeechAction } from "~/actions/tts";
 import type { TTSProviderType } from "~/actions/tts/tts-factory";
 import type { EngineOptionsMap } from "~/types/engines";
-import { getUserUploadedVoices } from "~/actions/voice-upload";
 import { toast } from "sonner";
-import type { GeneratedAudio, UploadedVoice } from "~/types/tts";
-import { Languages } from "~/data/Languages";
-import { VoiceFiles } from "~/data/VoiceFiles";
+import type { GeneratedAudio } from "~/types/tts";
 import SpeechSettings from "~/components/studio/tts/speech-settings";
 import TextInput from "~/components/studio/tts/text-input";
 import RecentGenerations from "~/components/studio/recent-generations";
@@ -24,12 +21,8 @@ export default function TTSStudio() {
   const [isLoading, setIsLoading] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
   const [text, setText] = useState("");
-  const [selectedEngine, setSelectedEngine] =
-    useState<TTSProviderType>("gemini");
+  const [selectedEngine] = useState<TTSProviderType>("gemini");
   const [currentAudio, setCurrentAudio] = useState<GeneratedAudio | null>(null);
-  const [userUploadedVoices, setUserUploadedVoices] = useState<UploadedVoice[]>(
-    [],
-  );
 
   const t = useTranslations("studio.tts.toasts")
   const [refreshTrigger, setRefreshTrigger] = useState(0);
@@ -37,12 +30,6 @@ export default function TTSStudio() {
   const [showTrialExpiredModal, setShowTrialExpiredModal] = useState(false);
 
   const [engineOptions, setEngineOptions] = useState<EngineOptionsMap>({
-    chatterbox: {
-      language: "en",
-      voice: VoiceFiles[0]?.s3_key ?? "samples/voices/Charon.wav",
-      exaggeration: 0.5,
-      cfgWeight: 0.5,
-    },
     gemini: {
       voice: GeminiVoices[0]?.name ?? "Zephyr",
       model: "gemini-2.5-flash-preview-tts",
@@ -55,23 +42,10 @@ export default function TTSStudio() {
 
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  const fetchUserUploadedVoices = async () => {
-    const result = await getUserUploadedVoices("aws");
-    if (result.success) {
-      setUserUploadedVoices(result.voices as UploadedVoice[]);
-    }
-  };
-
   useEffect(() => {
     const initializeData = async () => {
       try {
-        const [, voicesResult] = await Promise.all([
-          authClient.getSession(),
-          getUserUploadedVoices(),
-        ]);
-        if (voicesResult.success) {
-          setUserUploadedVoices(voicesResult.voices);
-        }
+        await authClient.getSession();
       } catch (error) {
         console.error("Error initializing data:", error);
       } finally {
@@ -106,26 +80,15 @@ export default function TTSStudio() {
 
     setIsGenerating(true);
     try {
-      const result = await generateSpeechAction(
-        selectedEngine,
-        selectedEngine === "chatterbox"
-          ? {
-              text,
-              voice_S3_key: engineOptions.chatterbox.voice,
-              language: engineOptions.chatterbox.language,
-              exaggeration: engineOptions.chatterbox.exaggeration,
-              cfg_weight: engineOptions.chatterbox.cfgWeight,
-            }
-          : {
-              text,
-              voice_name: engineOptions.gemini.voice,
-              gemini_model: engineOptions.gemini.model,
-              gemini_emotion: engineOptions.gemini.emotion,
-              gemini_style: engineOptions.gemini.style,
-              gemini_pace: engineOptions.gemini.pace,
-              gemini_language: engineOptions.gemini.language,
-            },
-      );
+      const result = await generateSpeechAction(selectedEngine, {
+        text,
+        voice_name: engineOptions.gemini.voice,
+        gemini_model: engineOptions.gemini.model,
+        gemini_emotion: engineOptions.gemini.emotion,
+        gemini_style: engineOptions.gemini.style,
+        gemini_pace: engineOptions.gemini.pace,
+        gemini_language: engineOptions.gemini.language,
+      });
 
       if (result.error === "VERIFICATION_REQUIRED") {
         setShowVerifyModal(true);
@@ -149,7 +112,7 @@ export default function TTSStudio() {
         s3_key: result.s3_key,
         audioUrl: result.audioUrl,
         text,
-        language: engineOptions.chatterbox.language,
+        language: engineOptions.gemini.language,
         timestamp: new Date(),
       };
 
@@ -194,14 +157,9 @@ export default function TTSStudio() {
         {/* Left — Settings */}
         <div className="order-2 space-y-2 sm:space-y-3 lg:order-1 lg:col-span-1">
           <SpeechSettings
-            languages={Languages}
-            voiceFiles={VoiceFiles}
             selectedEngine={selectedEngine}
-            setSelectedEngine={setSelectedEngine}
             engineOptions={engineOptions}
             setEngineOptions={setEngineOptions}
-            userUploadedVoices={userUploadedVoices}
-            onVoiceUploaded={fetchUserUploadedVoices}
             text={text}
             isGenerating={isGenerating}
             onGenerate={generateSpeech}

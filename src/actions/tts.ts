@@ -3,8 +3,6 @@
 import type {
   TTSOptions,
   GenerateSpeechFinalResult,
-  ChatterboxRequestOptions,
-  GeminiRequestOptions,
 } from "./tts/providers/base-tts-provider";
 import { TTSFactory, type TTSProviderType } from "./tts/tts-factory";
 import { getAuthSession } from "~/lib/get-session";
@@ -60,8 +58,7 @@ export async function generateSpeech(
 
     // 5. Free Trial restrictions
     if (isOnFreeTrial(user.trialExpiresAt)) {
-      const geminiOpts = options as GeminiRequestOptions;
-      if (geminiOpts.gemini_model === "gemini-2.5-pro-preview-tts") {
+      if (options.gemini_model === "gemini-2.5-pro-preview-tts") {
         return {
           success: false,
           error:
@@ -111,31 +108,22 @@ export async function generateSpeech(
     });
 
     // 10. Save to DB
-    const isGemini = providerType === "gemini";
-    const chatterboxOpts = !isGemini
-      ? (options as ChatterboxRequestOptions)
-      : null;
-    const geminiOpts = isGemini ? (options as GeminiRequestOptions) : null;
-
     const audioProject = await db.audioProject.create({
       data: {
         text: options.text,
         audioUrl: result.audioUrl,
         s3Key: result.s3_key,
         language:
-          chatterboxOpts?.language ??
-          (geminiOpts?.gemini_language && geminiOpts.gemini_language !== "auto"
-            ? geminiOpts.gemini_language
-            : detectLanguage(options.text)),
-        voiceS3Key: chatterboxOpts?.voice_S3_key ?? null,
+          options.gemini_language && options.gemini_language !== "auto"
+            ? options.gemini_language
+            : detectLanguage(options.text),
+        voiceS3Key: null,
         name: "TTS",
-        engine: geminiOpts?.gemini_model ?? providerType,
-        exaggeration: chatterboxOpts?.exaggeration,
-        cfgWeight: chatterboxOpts?.cfg_weight,
-        geminiVoice: geminiOpts?.voice_name,
-        geminiEmotion: geminiOpts?.gemini_emotion,
-        geminiStyle: geminiOpts?.gemini_style,
-        geminiPace: geminiOpts?.gemini_pace,
+        engine: options.gemini_model ?? providerType,
+        geminiVoice: options.voice_name,
+        geminiEmotion: options.gemini_emotion,
+        geminiStyle: options.gemini_style,
+        geminiPace: options.gemini_pace,
         creditsSpent: creditsNeeded,
         userId: session.user.id,
       },

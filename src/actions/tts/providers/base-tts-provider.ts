@@ -19,15 +19,6 @@ export interface GenerateSpeechFinalResult extends GenerateSpeechResult {
   creditsRemaining?: number;
 }
 
-// Chatterbox-specific options
-export interface ChatterboxRequestOptions {
-  text: string;
-  language: string;
-  voice_S3_key: string;
-  exaggeration?: number;
-  cfg_weight?: number;
-}
-
 // Gemini-specific options
 export interface GeminiRequestOptions {
   text: string;
@@ -39,7 +30,7 @@ export interface GeminiRequestOptions {
   gemini_language?: string;
 }
 
-export type TTSOptions = ChatterboxRequestOptions | GeminiRequestOptions;
+export type TTSOptions = GeminiRequestOptions;
 
 export interface TTSProvider {
   generateSpeech(options: TTSOptions): Promise<GenerateSpeechResult>;

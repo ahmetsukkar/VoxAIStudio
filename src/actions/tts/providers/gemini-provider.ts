@@ -1,6 +1,5 @@
 import type {
   GenerateSpeechResult,
-  GeminiRequestOptions,
   TTSOptions,
   TTSProvider,
 } from "./base-tts-provider";
@@ -15,13 +14,10 @@ import { encodeWav } from "~/lib/audio/wav-encoder";
 
 export class GeminiProvider implements TTSProvider {
   getCredits(options: TTSOptions): number {
-    const o = options as GeminiRequestOptions;
-    return calcGeminiTTSCredits(o.text?.length ?? 0, o.gemini_model);
+    return calcGeminiTTSCredits(options.text?.length ?? 0, options.gemini_model);
   }
 
-  async generateSpeech(data: TTSOptions): Promise<GenerateSpeechResult> {
-    const options = data as GeminiRequestOptions;
-
+  async generateSpeech(options: TTSOptions): Promise<GenerateSpeechResult> {
     if (!options.text) {
       return { success: false, error: "Text is required" };
     }

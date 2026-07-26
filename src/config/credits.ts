@@ -20,8 +20,6 @@ export const UNVERIFIED_CREDIT_THRESHOLD = 3_000;
 // Pro multi-speaker     = 3×
 
 export const CREDITS_PER_CHAR = {
-  chatterbox:          1, // Flash-equivalent
-  googleCloud:         1,
   geminiFlashTTS:      1, // Flash single-speaker (base)
   geminiProTTS:        2, // Pro single-speaker   (2×)
   geminiFlashDialogue: 2, // Flash multi-speaker  (2×)
