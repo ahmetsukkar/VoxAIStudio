@@ -1,0 +1,7 @@
+-- AlterTable
+ALTER TABLE "user" DROP COLUMN "credits",
+DROP COLUMN "trialExpiresAt",
+ADD COLUMN     "freeCredits" INTEGER NOT NULL DEFAULT 500,
+ADD COLUMN     "freeCreditsRefreshedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN     "purchasedCredits" INTEGER NOT NULL DEFAULT 0;
+

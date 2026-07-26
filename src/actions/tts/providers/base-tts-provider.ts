@@ -12,6 +12,8 @@ export interface GenerateSpeechResult {
   s3_key?: string;
   audioUrl?: string;
   error?: string;
+  promptTokens?: number;
+  audioTokens?: number;
 }
 
 export interface GenerateSpeechFinalResult extends GenerateSpeechResult {
@@ -33,7 +35,7 @@ export interface GeminiRequestOptions {
 export type TTSOptions = GeminiRequestOptions;
 
 export interface TTSProvider {
-  generateSpeech(options: TTSOptions): Promise<GenerateSpeechResult>;
+  generateSpeech(options: TTSOptions, apiKey: string): Promise<GenerateSpeechResult>;
   getCredits(options: TTSOptions): number;
   getName(): string;
 }

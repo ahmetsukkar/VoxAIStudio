@@ -7,7 +7,6 @@ import { type TTSProviderType } from "~/actions/tts/tts-factory";
 import GeminiSettings from "./engines/gemini-settings";
 import type { EngineOptionsMap } from "~/types/engines";
 import { calcTTSCredits } from "~/lib/credits/calculate";
-import { usePlanStore } from "~/store/plan-store";
 import { useTranslations } from "next-intl";
 
 interface SpeechSettingsProps {
@@ -28,7 +27,6 @@ export default function SpeechSettings({
   onGenerate,
 }: SpeechSettingsProps) {
   const t = useTranslations("studio.tts.settings");
-  const isTrialTier = usePlanStore((s) => s.isTrialTier) ?? false;
   const creditsNeeded = calcTTSCredits(
     selectedEngine,
     text,
@@ -54,7 +52,6 @@ export default function SpeechSettings({
               setOptions={(updated) =>
                 setEngineOptions({ ...engineOptions, gemini: updated })
               }
-              isTrialTier={isTrialTier}
             />
           )}
 

@@ -1,14 +1,9 @@
 // ─── Character Limits ─────────────────────────────────────────────────────────
-/** Global maximum characters allowed per TTS request (paid plans) */
+/** Global maximum characters allowed per TTS request — same cap for every user */
 export const MAX_CHARS_ALLOWED = 3_000;
-
-/** Free Trial: max characters per TTS single-speaker request */
-export const FREE_TRIAL_MAX_CHARS = 500;
 
 /** Multi-Speaker: soft cap per individual line (UI only, for readability) */
 export const MAX_CHARS_PER_DIALOGUE_LINE = 500;
-
-export const FREE_TRIAL_INITIAL_CREDITS = 10_000;
 
 export const UNVERIFIED_CREDIT_THRESHOLD = 3_000;
 

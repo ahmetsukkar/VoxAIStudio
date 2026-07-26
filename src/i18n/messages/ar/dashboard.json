@@ -1,7 +1,13 @@
 {
   "sidebar": {
+    "navigation": "التنقل",
     "dashboard": "لوحة التحكم",
-    "studio": "الاستوديو",
+    "studio": {
+      "label": "الاستوديو",
+      "tts": "تحويل النص إلى كلام",
+      "dialogue": "حوار",
+      "image": "صورة"
+    },
     "projects": "المشاريع",
     "createBlogPost": "إنشاء مقال",
     "sendEmail": "إرسال بريد إلكتروني",

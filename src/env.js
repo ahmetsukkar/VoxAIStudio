@@ -20,7 +20,8 @@ export const env = createEnv({
     GOOGLE_CLIENT_ID: z.string(),
     GOOGLE_CLIENT_SECRET: z.string(),
     GOOGLE_ANALYTICS_ID: z.string(),
-    GenerativeLanguageAPIKey: z.string(),
+    FreeAPIKey: z.string(),
+    PaidAPIKey: z.string(),
     RESEND_API_KEY: z.string(),
     NODE_ENV: z
       .enum(["development", "test", "production"])
@@ -55,7 +56,8 @@ export const env = createEnv({
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
     GOOGLE_ANALYTICS_ID: process.env.GOOGLE_ANALYTICS_ID,
-    GenerativeLanguageAPIKey: process.env.GenerativeLanguageAPIKey,
+    FreeAPIKey: process.env.FreeAPIKey,
+    PaidAPIKey: process.env.PaidAPIKey,
     RESEND_API_KEY: process.env.RESEND_API_KEY,
   },
   /**

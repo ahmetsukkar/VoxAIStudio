@@ -8,7 +8,8 @@
       "emptyText": "Please enter some text!",
       "success": "Speech generated successfully!",
       "downloadStarted": "Download started!",
-      "failed": "Failed to generate speech"
+      "failed": "Failed to generate speech",
+      "quotaExceeded": "Daily free limit reached — try again tomorrow, or add credits to keep going."
     },
     "textInput": {
       "title": "Your Text",
@@ -168,7 +169,8 @@
       "fillLines": "Please fill in all dialogue lines before generating.",
       "success": "Dialogue generated successfully!",
       "failed": "Failed to generate dialogue",
-      "verifyFailed": "Failed to send verification email. Please try again."
+      "verifyFailed": "Failed to send verification email. Please try again.",
+      "quotaExceeded": "Daily free limit reached — try again tomorrow, or add credits to keep going."
     }
   },
   "recentGenerations": {

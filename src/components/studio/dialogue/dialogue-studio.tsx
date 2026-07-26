@@ -7,14 +7,13 @@ import {
   Settings2,
   ChevronDown,
   ChevronUp,
-  Lock,
-  Clock,
 } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
 import { toast } from "sonner";
 import { GeminiVoices } from "~/data/GeminiOptions";
 import { calcGeminiDialogueCredits } from "~/lib/credits/calculate";
+import { MAX_CHARS_ALLOWED } from "~/config/credits";
 import type {
   DialogueSpeaker,
   DialogueLine,
@@ -27,22 +26,11 @@ import DialogueSettingsPanel from "./dialogue-settings";
 import RecentGenerations from "~/components/studio/recent-generations";
 import { generateDialogue } from "~/actions/tts";
 import { useCreditsStore } from "~/store/credits-store";
-import { usePlanStore } from "~/store/plan-store";
 import { audioManager } from "~/lib/audio/audio-manager";
 import { VerifyToGenerateModal } from "~/components/verify-to-generate-modal";
-import { authClient, useSession } from "~/lib/auth-client";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "~/components/ui/tooltip";
-import PricingModal from "~/components/pricing-modal";
-import { TrialExpiredModal } from "~/components/trial-expired-modal";
 import { useTranslations } from "next-intl";
 
 export default function DialogueStudio() {
-  const { data: session } = useSession();
   const t = useTranslations("studio.dialogue");
   const [speakers, setSpeakers] = useState<DialogueSpeaker[]>([
     {
@@ -78,18 +66,10 @@ export default function DialogueStudio() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [showVerifyModal, setShowVerifyModal] = useState(false);
-  const [showTrialExpiredModal, setShowTrialExpiredModal] = useState(false);
-  const [showPricingModal, setShowPricingModal] = useState(false);
-
-  const [verifySent, setVerifySent] = useState(false);
-  const [verifyLoading, setVerifyLoading] = useState(false);
-
-  const trialExpired = usePlanStore((s) => s.trialExpired);
 
   const { setCredits } = useCreditsStore();
 
-  const isFreeTrial = usePlanStore((s) => s.isFreeTrial);
-  const maxChars = usePlanStore((s) => s.maxCharsAllowed);
+  const maxChars = MAX_CHARS_ALLOWED;
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audioRefMobile = useRef<HTMLAudioElement | null>(null);
@@ -139,22 +119,6 @@ export default function DialogueStudio() {
     });
   };
 
-  const handleResendVerification = async () => {
-    if (!session?.user?.email) return;
-    setVerifyLoading(true);
-    try {
-      await authClient.sendVerificationEmail({
-        email: session.user.email,
-        callbackURL: "/dashboard",
-      });
-      setVerifySent(true);
-    } catch {
-      toast.error(t("toasts.verifyFailed"));
-    } finally {
-      setVerifyLoading(false);
-    }
-  };
-
   const handleGenerate = async () => {
     if (lines.some((l) => !l.text.trim())) {
       toast.error(t("toasts.fillLines"));
@@ -172,8 +136,8 @@ export default function DialogueStudio() {
         return;
       }
 
-      if (result.error === "TRIAL_EXPIRED") {
-        setShowTrialExpiredModal(true);
+      if (result.error === "QUOTA_EXCEEDED") {
+        toast.error(t("toasts.quotaExceeded"));
         return;
       }
 
@@ -222,110 +186,10 @@ export default function DialogueStudio() {
     );
   };
 
-  // ── Free Trial gate ───────────────────────────────────────────────────────
-  if (isFreeTrial === true || trialExpired === true) {
-    const isVerified = session?.user?.emailVerified;
-    const isExpired = trialExpired === true;
-
-    return (
-      <div className="mx-auto max-w-7xl px-2 py-4 sm:px-4 sm:py-6">
-        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-indigo-300 bg-indigo-50/50 py-20 text-center">
-          <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-indigo-100">
-            {isExpired ? (
-              <Clock className="h-7 w-7 text-amber-500" />
-            ) : (
-              <Lock className="h-7 w-7 text-indigo-500" />
-            )}
-          </div>
-
-          <h2 className="mb-2 text-xl font-bold text-slate-800">
-            {isExpired ? t("freeTrial.expiredTitle") : t("freeTrial.title")}
-          </h2>
-          <p className="mb-6 max-w-sm text-sm text-slate-500">
-            {isExpired
-              ? t("freeTrial.expiredSubtitle")
-              : t("freeTrial.subtitle")}
-          </p>
-
-          {/* Upgrade button — same verified/unverified logic */}
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span>
-                  {isVerified ? (
-                    <Button
-                      onClick={() => setShowPricingModal(true)}
-                      className="bg-gradient-to-r from-indigo-500 to-cyan-600 hover:from-indigo-600 hover:to-cyan-700"
-                    >
-                      {t("freeTrial.upgradeButton")}
-                    </Button>
-                  ) : (
-                    <Button
-                      disabled
-                      className="cursor-not-allowed bg-gradient-to-r from-indigo-300 to-cyan-400 opacity-60"
-                    >
-                      <Lock className="mr-2 h-4 w-4" />
-                      {t("freeTrial.upgradeButton")}
-                    </Button>
-                  )}
-                </span>
-              </TooltipTrigger>
-              {!isVerified && (
-                <TooltipContent
-                  side="top"
-                  className="max-w-[200px] text-center text-xs"
-                >
-                  Please verify your email to purchase a plan
-                </TooltipContent>
-              )}
-            </Tooltip>
-          </TooltipProvider>
-
-          {/* Verify button — only if not verified */}
-          {!isVerified && (
-            <div className="mt-3">
-              {verifySent ? (
-                <div className="rounded-lg border border-green-200 bg-green-50 px-4 py-2 dark:border-green-800 dark:bg-green-900/20">
-                  <p className="text-sm font-medium text-green-700 dark:text-green-400">
-                    {t("freeTrial.verificationSent")}
-                  </p>
-                  <p className="text-muted-foreground mt-0.5 text-xs">
-                    {t("freeTrial.checkInbox")} <strong>{session?.user?.email}</strong>
-                  </p>
-                </div>
-              ) : (
-                <p className="text-xs text-slate-400">
-                  {t("freeTrial.verifyFirst")}
-                  <button
-                    onClick={handleResendVerification}
-                    disabled={verifyLoading}
-                    className="text-indigo-500 underline hover:text-indigo-700 disabled:opacity-50"
-                  >
-                    {verifyLoading ? t("freeTrial.sending") : t("freeTrial.verifyEmail")}
-                  </button>{" "}
-                  {t("freeTrial.verifyNote")}
-                </p>
-              )}
-            </div>
-          )}
-          {showPricingModal && (
-            <PricingModal
-              open={showPricingModal}
-              onClose={() => setShowPricingModal(false)}
-            />
-          )}
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="mx-auto max-w-7xl px-2 py-4 sm:px-4 sm:py-6">
       {showVerifyModal && (
         <VerifyToGenerateModal onClose={() => setShowVerifyModal(false)} />
-      )}
-      {showTrialExpiredModal && (
-        <TrialExpiredModal onClose={() => setShowTrialExpiredModal(false)} />
       )}
       <div className="grid grid-cols-1 gap-2 sm:gap-4 lg:grid-cols-3">
         {/* ── LEFT SIDEBAR — desktop only ── */}

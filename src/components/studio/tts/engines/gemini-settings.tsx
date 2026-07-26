@@ -8,7 +8,6 @@ import {
   Mic2,
   Info,
   Globe,
-  Lock,
 } from "lucide-react";
 import { Label } from "~/components/ui/label";
 import { Switch } from "~/components/ui/switch";
@@ -24,12 +23,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "~/components/ui/tooltip";
 import {
   SupportedLanguages,
   GeminiEmotions,
@@ -47,13 +40,11 @@ import { useTranslations } from "next-intl";
 interface GeminiSettingsProps {
   options: GeminiOptions;
   setOptions: (options: GeminiOptions) => void;
-  isTrialTier?: boolean;
 }
 
 export default function GeminiSettings({
   options,
   setOptions,
-  isTrialTier = false,
 }: GeminiSettingsProps) {
   const t = useTranslations("studio.tts.gemini");
   const tEmotions = useTranslations("studio.tts.emotions");
@@ -131,57 +122,31 @@ export default function GeminiSettings({
           </Popover>
         </Label>
 
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div
-                className={`flex items-center justify-between rounded-md border px-3 py-2 ${
-                  isTrialTier ? "cursor-not-allowed opacity-60" : ""
-                }`}
-              >
-                <div className="space-y-0.5">
-                  <p className="flex items-center gap-1.5 text-xs font-semibold">
-                    {isPro ? t("proLabel") : t("flashLabel")}
-                    {isTrialTier && <Lock className="h-3 w-3 text-amber-500" />}
-                  </p>
-                  <p className="text-muted-foreground text-xs">
-                    {isPro ? t("proSubLabel") : t("flashSubLabel")}
-                    <br />
-                    {isPro
-                      ? `(${CREDITS_PER_CHAR.geminiProTTS} ${t("creditsPerChar")})`
-                      : `(${CREDITS_PER_CHAR.geminiFlashTTS} ${t("creditsPerChar")})`}
-                    {isTrialTier && (
-                      <span className="ml-1 text-amber-600">
-                        {t("freeTrial")}
-                      </span>
-                    )}
-                  </p>
-                </div>
-                <Switch
-                  checked={isPro}
-                  disabled={isTrialTier}
-                  onCheckedChange={(checked) => {
-                    if (isTrialTier) return;
-                    setOptions({
-                      ...options,
-                      model: checked
-                        ? "gemini-2.5-pro-preview-tts"
-                        : "gemini-2.5-flash-preview-tts",
-                    });
-                  }}
-                />
-              </div>
-            </TooltipTrigger>
-            {isTrialTier && (
-              <TooltipContent
-                side="right"
-                className="max-w-[200px] text-center text-xs"
-              >
-                {t("proLocked")}
-              </TooltipContent>
-            )}
-          </Tooltip>
-        </TooltipProvider>
+        <div className="flex items-center justify-between rounded-md border px-3 py-2">
+          <div className="space-y-0.5">
+            <p className="flex items-center gap-1.5 text-xs font-semibold">
+              {isPro ? t("proLabel") : t("flashLabel")}
+            </p>
+            <p className="text-muted-foreground text-xs">
+              {isPro ? t("proSubLabel") : t("flashSubLabel")}
+              <br />
+              {isPro
+                ? `(${CREDITS_PER_CHAR.geminiProTTS} ${t("creditsPerChar")})`
+                : `(${CREDITS_PER_CHAR.geminiFlashTTS} ${t("creditsPerChar")})`}
+            </p>
+          </div>
+          <Switch
+            checked={isPro}
+            onCheckedChange={(checked) => {
+              setOptions({
+                ...options,
+                model: checked
+                  ? "gemini-2.5-pro-preview-tts"
+                  : "gemini-2.5-flash-preview-tts",
+              });
+            }}
+          />
+        </div>
       </div>
 
       {/* Emotion */}

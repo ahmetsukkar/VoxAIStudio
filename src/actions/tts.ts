@@ -14,21 +14,21 @@ import type {
   DialogueSettings,
 } from "~/types/dialogue";
 import { detectLanguage } from "~/lib/tts/detect-language";
+import { calcGeminiDialogueCredits } from "~/lib/credits/calculate";
+import { UNVERIFIED_CREDIT_THRESHOLD, MAX_CHARS_ALLOWED } from "~/config/credits";
 import {
-  FREE_TRIAL_INITIAL_CREDITS,
-  UNVERIFIED_CREDIT_THRESHOLD,
-  FREE_TRIAL_MAX_CHARS,
-  MAX_CHARS_ALLOWED,
-} from "~/config/credits";
+  DAILY_FREE_CREDITS,
+  getUserCreditSnapshot,
+  selectApiKeyForUser,
+  refundCredits,
+} from "~/lib/credits/select-key";
 
-function isTrialExpired(trialExpiresAt: Date | null): boolean {
-  if (!trialExpiresAt) return false;
-  return new Date() > trialExpiresAt;
-}
-
-function isOnFreeTrial(trialExpiresAt: Date | null): boolean {
-  if (!trialExpiresAt) return false;
-  return new Date() <= trialExpiresAt;
+async function creditsRemainingFor(userId: string): Promise<number> {
+  const user = await db.user.findUnique({
+    where: { id: userId },
+    select: { freeCredits: true, purchasedCredits: true },
+  });
+  return (user?.freeCredits ?? 0) + (user?.purchasedCredits ?? 0);
 }
 
 export async function generateSpeech(
@@ -39,75 +39,43 @@ export async function generateSpeech(
     // 1. Auth
     const session = await getAuthSession();
     if (!session) return { success: false, error: "Unauthorized" };
+
     // 2. Get provider + calculate credits needed
     const provider = TTSFactory.getProvider(providerType);
     const creditsNeeded = provider.getCredits(options);
 
-    // 3. Fetch user
-    const user = await db.user.findUnique({
-      where: { id: session.user.id },
-      select: { credits: true, emailVerified: true, trialExpiresAt: true },
-    });
-
-    if (!user) return { success: false, error: "User not found" };
-
-    // 4. Trial expiry check
-    if (isTrialExpired(user.trialExpiresAt)) {
-      return { success: false, error: "TRIAL_EXPIRED" };
-    }
-
-    // 5. Free Trial restrictions
-    if (isOnFreeTrial(user.trialExpiresAt)) {
-      if (options.gemini_model === "gemini-2.5-pro-preview-tts") {
-        return {
-          success: false,
-          error:
-            "Pro voice is not available on the Free Trial. Please upgrade.",
-        };
-      }
-      if (options.text.length > FREE_TRIAL_MAX_CHARS) {
-        return {
-          success: false,
-          error: `Free Trial is limited to ${FREE_TRIAL_MAX_CHARS} characters per request. Your text has ${options.text.length} characters.`,
-        };
-      }
-    } else {
-      // 6. Paid plan global limit
-      if (options.text.length > MAX_CHARS_ALLOWED) {
-        return {
-          success: false,
-          error: `Maximum ${MAX_CHARS_ALLOWED} characters allowed per request.`,
-        };
-      }
-    }
-
-    if (user.credits < creditsNeeded) {
+    // 3. Global character limit — every user, free or paid, gets the same cap
+    if (options.text.length > MAX_CHARS_ALLOWED) {
       return {
         success: false,
-        error: `Insufficient credits. Need ${creditsNeeded}, have ${String(user.credits)}`,
+        error: `Maximum ${MAX_CHARS_ALLOWED} characters allowed per request.`,
       };
     }
 
-    // 7. Verification gate — block if used more than 3000 free credits and not verified
-    const creditsUsed = FREE_TRIAL_INITIAL_CREDITS - user.credits;
-    if (!user.emailVerified && creditsUsed >= UNVERIFIED_CREDIT_THRESHOLD) {
+    // 4. Verification gate — block if an unverified user has burned through
+    // most of today's free allowance without verifying their email
+    const snapshot = await getUserCreditSnapshot(session.user.id);
+    if (!snapshot) return { success: false, error: "User not found" };
+
+    const freeUsedToday = DAILY_FREE_CREDITS - snapshot.freeCredits;
+    if (!snapshot.emailVerified && freeUsedToday >= UNVERIFIED_CREDIT_THRESHOLD) {
       return { success: false, error: "VERIFICATION_REQUIRED" };
     }
 
-    // 8. Generate audio
-    const result = await provider.generateSpeech(options);
+    // 5. Pick + reserve the key (purchased credits first, then the shared free key)
+    const keySelection = await selectApiKeyForUser(session.user.id, creditsNeeded);
+    if (!keySelection.ok) {
+      return { success: false, error: "QUOTA_EXCEEDED" };
+    }
+
+    // 6. Generate audio
+    const result = await provider.generateSpeech(options, keySelection.apiKey);
     if (!result.success || !result.audioUrl || !result.s3_key) {
+      await refundCredits(session.user.id, keySelection.source, creditsNeeded);
       return { success: false, error: result.error ?? "Generation failed" };
     }
 
-    // 9. Deduct credits
-    const updatedUser = await db.user.update({
-      where: { id: session.user.id },
-      data: { credits: { decrement: creditsNeeded } },
-      select: { credits: true },
-    });
-
-    // 10. Save to DB
+    // 7. Save to DB
     const audioProject = await db.audioProject.create({
       data: {
         text: options.text,
@@ -124,6 +92,8 @@ export async function generateSpeech(
         geminiEmotion: options.gemini_emotion,
         geminiStyle: options.gemini_style,
         geminiPace: options.gemini_pace,
+        promptTokens: result.promptTokens,
+        audioTokens: result.audioTokens,
         creditsSpent: creditsNeeded,
         userId: session.user.id,
       },
@@ -134,7 +104,7 @@ export async function generateSpeech(
       s3_key: result.s3_key,
       audioUrl: result.audioUrl,
       projectId: audioProject.id,
-      creditsRemaining: updatedUser.credits,
+      creditsRemaining: await creditsRemainingFor(session.user.id),
     };
   } catch (error) {
     console.error("Speech generation error:", error);
@@ -162,26 +132,16 @@ export async function generateMultiSpeaker({
     const session = await getAuthSession();
     if (!session) return { success: false, error: "Unauthorized" };
 
-    // 2. Fetch user
-    const user = await db.user.findUnique({
-      where: { id: session.user.id },
-      select: { credits: true, emailVerified: true, trialExpiresAt: true },
-    });
-
-    if (!user) return { success: false, error: "User not found" };
-
-    // 3. Trial expiry check
-    if (isTrialExpired(user.trialExpiresAt)) {
-      return { success: false, error: "TRIAL_EXPIRED" };
-    }
-
-    // 4. Free Trial: Multi-Speaker is not available on trial
-    if (isOnFreeTrial(user.trialExpiresAt)) {
+    // 2. Input validation — fail fast, before spending anything
+    const filledLines = lines.filter((l) => l.text.trim().length > 0);
+    if (filledLines.length === 0) {
       return {
         success: false,
-        error:
-          "Multi-Speaker is not available on the Free Trial. Please upgrade.",
+        error: "Add at least one dialogue line with text.",
       };
+    }
+    if (speakers.length < 2) {
+      return { success: false, error: "At least 2 speakers are required." };
     }
 
     const totalChars = lines.reduce((sum, l) => sum + l.text.length, 0);
@@ -192,35 +152,38 @@ export async function generateMultiSpeaker({
       };
     }
 
-    const result = await generateDialogueAudio({ speakers, lines, settings });
+    const creditsNeeded = calcGeminiDialogueCredits(filledLines, settings);
+
+    // 3. Verification gate — same daily-pool anchor as single-speaker TTS
+    const snapshot = await getUserCreditSnapshot(session.user.id);
+    if (!snapshot) return { success: false, error: "User not found" };
+
+    const freeUsedToday = DAILY_FREE_CREDITS - snapshot.freeCredits;
+    if (!snapshot.emailVerified && freeUsedToday >= UNVERIFIED_CREDIT_THRESHOLD) {
+      return { success: false, error: "VERIFICATION_REQUIRED" };
+    }
+
+    // 4. Pick + reserve the key before making the Gemini call
+    const keySelection = await selectApiKeyForUser(session.user.id, creditsNeeded);
+    if (!keySelection.ok) {
+      return { success: false, error: "QUOTA_EXCEEDED" };
+    }
+
+    const result = await generateDialogueAudio({
+      speakers,
+      lines,
+      settings,
+      apiKey: keySelection.apiKey,
+    });
     if (
       !result.success ||
       !result.audioUrl ||
       !result.s3Key ||
       !result.fullText
     ) {
+      await refundCredits(session.user.id, keySelection.source, creditsNeeded);
       return { success: false, error: result.error ?? "Generation failed" };
     }
-
-    const creditsNeeded = result.creditsNeeded ?? 0;
-
-    if (user.credits < creditsNeeded) {
-      return {
-        success: false,
-        error: `Insufficient credits. Need ${creditsNeeded}, have ${String(user.credits)}`,
-      };
-    }
-
-    const creditsUsed = FREE_TRIAL_INITIAL_CREDITS - user.credits;
-    if (!user.emailVerified && creditsUsed >= UNVERIFIED_CREDIT_THRESHOLD) {
-      return { success: false, error: "VERIFICATION_REQUIRED" };
-    }
-
-    const updatedUser = await db.user.update({
-      where: { id: session.user.id },
-      data: { credits: { decrement: creditsNeeded } },
-      select: { credits: true },
-    });
 
     await db.audioProject.create({
       data: {
@@ -239,6 +202,8 @@ export async function generateMultiSpeaker({
         geminiStyle: settings.style,
         geminiPace: settings.pace,
         geminiVoice: speakers.map((s) => `${s.name}: ${s.voice}`).join(" / "),
+        promptTokens: result.promptTokens,
+        audioTokens: result.audioTokens,
         creditsSpent: creditsNeeded,
         userId: session.user.id,
       },
@@ -248,7 +213,7 @@ export async function generateMultiSpeaker({
       success: true,
       audioUrl: result.audioUrl,
       s3_key: result.s3Key,
-      creditsRemaining: updatedUser.credits,
+      creditsRemaining: await creditsRemainingFor(session.user.id),
     };
   } catch (error) {
     console.error("Multi-Speaker generation error:", error);
@@ -341,11 +306,11 @@ export async function getUserCredits() {
 
     const user = await db.user.findUnique({
       where: { id: session.user.id },
-      select: { credits: true },
+      select: { freeCredits: true, purchasedCredits: true },
     });
 
     if (!user) return { success: false, error: "User not found", credits: 0 };
-    return { success: true, credits: user.credits };
+    return { success: true, credits: user.freeCredits + user.purchasedCredits };
   } catch (error) {
     console.error("Error fetching user credits:", error);
     return { success: false, error: "Failed to fetch credits", credits: 0 };

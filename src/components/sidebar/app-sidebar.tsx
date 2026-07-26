@@ -12,7 +12,7 @@ import {
 } from "../ui/sidebar";
 import Link from "next/link";
 import { AudioWaveform, Settings, User } from "lucide-react";
-import SidebarMenuItems from "./sidebar-menu-items";
+import { SidebarMenuItems } from "./sidebar-menu-items";
 import MobileSidebarClose from "./mobile-sidebar-close";
 import Credits from "./credits";
 import Upgrade from "./upgrade";

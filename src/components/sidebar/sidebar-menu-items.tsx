@@ -1,122 +1,126 @@
 "use client";
 
-import {
-  LayoutDashboard,
-  Wand2,
-  FolderOpen,
-  Settings,
-  Rss,
-  Mail,
-} from "lucide-react";
-import { usePathname } from "next/navigation";
-import { SidebarMenuButton, SidebarMenuItem, useSidebar } from "../ui/sidebar";
 import Link from "next/link";
-import { cn } from "~/lib/utils";
-import { useEffect, useState } from "react";
-import { authClient } from "~/lib/auth-client";
+import { usePathname } from "next/navigation";
+import {
+  ChevronRight,
+  Clapperboard,
+  Gauge,
+  Image,
+  MessageSquare,
+  Mic,
+  Settings,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
+import {
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+} from "~/components/ui/sidebar";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "~/components/ui/collapsible";
+import { STUDIO_NAV_ITEMS } from "~/config/studio-nav";
 
-export default function SidebarMenuItems() {
-  const path = usePathname();
-  const { setOpenMobile, isMobile } = useSidebar();
-  const [isAdmin, setIsAdmin] = useState(false);
+const ICON_MAP = {
+  Mic,
+  MessageSquare,
+  Image,
+} as const;
+
+type IconName = keyof typeof ICON_MAP;
+
+function StudioIcon({ name }: { name: string }) {
+  const Icon = ICON_MAP[name as IconName] ?? Mic;
+  return <Icon className="size-4" />;
+}
+
+export function SidebarMenuItems() {
+  const pathname = usePathname();
   const t = useTranslations("dashboard.sidebar");
 
-  useEffect(() => {
-    const checkAdmin = async () => {
-      const session = await authClient.getSession();
-      const role = (session?.data?.user as { role?: string } | undefined)?.role;
-      setIsAdmin(role === "admin");
-    };
-    void checkAdmin();
-  }, []);
+  // Studio is "active" if the pathname starts with /dashboard/studio
+  const isStudioActive = pathname.startsWith("/dashboard/studio");
 
-  const baseItems = [
-    {
-      title: t("dashboard"),
-      url: "/dashboard",
-      icon: LayoutDashboard,
-      adminOnly: false,
-    },
-    {
-      title: t("studio"),
-      url: "/dashboard/studio",
-      icon: Wand2,
-      adminOnly: false,
-    },
-    {
-      title: t("projects"),
-      url: "/dashboard/projects",
-      icon: FolderOpen,
-      adminOnly: false,
-    },
-    {
-      title: t("createBlogPost"),
-      url: "/dashboard/blog/create",
-      icon: Rss,
-      adminOnly: true,
-    },
-    {
-      title: t("sendEmail"),
-      url: "/dashboard/send-email",
-      icon: Mail,
-      adminOnly: true,
-    },
-    {
-      title: t("settings"),
-      url: "/dashboard/settings",
-      icon: Settings,
-      adminOnly: false,
-    },
-  ];
-
-  const items = baseItems
-    .filter((item) => !item.adminOnly || isAdmin)
-    .map((item) => ({
-      ...item,
-      active: path === item.url,
-    }));
-
-  const handleMenuClick = () => {
-    if (isMobile) {
-      setOpenMobile(false);
-    }
-  };
+  // Default studio open state — true if any studio sub-route is active
+  const studioDefaultOpen = isStudioActive;
 
   return (
     <>
-      {items.map((item) => (
-        <SidebarMenuItem key={item.title}>
-          <SidebarMenuButton
-            asChild
-            isActive={item.active}
-            className={cn(
-              "group relative h-10 w-full justify-start rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200",
-              "hover:bg-purple-600/10 hover:text-purple-600",
-              item.active && "bg-purple-600/15 text-purple-600 shadow-sm",
-            )}
-          >
-            <Link
-              href={item.url}
-              onClick={handleMenuClick}
-              className="flex cursor-pointer items-center gap-3"
+      {/* Main nav */}
+      <SidebarGroup>
+        <SidebarGroupLabel>{t("navigation")}</SidebarGroupLabel>
+        <SidebarMenu>
+          {/* Dashboard */}
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              isActive={pathname === "/dashboard"}
+              tooltip={t("dashboard")}
             >
-              <item.icon
-                className={cn(
-                  "h-5 w-5 transition-colors duration-200",
-                  item.active
-                    ? "text-primary"
-                    : "text-muted-foreground group-hover:text-primary",
-                )}
-              />
-              <span className="truncate">{item.title}</span>
-              {item.active && (
-                <div className="bg-primary absolute top-1/2 left-0 h-6 w-1 -translate-y-1/2 rounded-r-full" />
-              )}
-            </Link>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-      ))}
+              <Link href="/dashboard">
+                <Gauge className="size-4" />
+                <span>{t("dashboard")}</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+
+          {/* Studio — collapsible group */}
+          <Collapsible defaultOpen={studioDefaultOpen} asChild className="group/collapsible">
+            <SidebarMenuItem>
+              <CollapsibleTrigger asChild>
+                <SidebarMenuButton
+                  tooltip={t("studio.label")}
+                  isActive={isStudioActive}
+                >
+                  <Clapperboard className="size-4" />
+                  <span>{t("studio.label")}</span>
+                  <ChevronRight className="ml-auto size-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                </SidebarMenuButton>
+              </CollapsibleTrigger>
+
+              <CollapsibleContent>
+                <SidebarMenuSub>
+                  {STUDIO_NAV_ITEMS.map((item) => {
+                    const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+                    return (
+                      <SidebarMenuSubItem key={item.key}>
+                        <SidebarMenuSubButton asChild isActive={isActive}>
+                          <Link href={item.href}>
+                            <StudioIcon name={item.icon} />
+                            <span>{t(`studio.${item.labelKey}`)}</span>
+                          </Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                    );
+                  })}
+                </SidebarMenuSub>
+              </CollapsibleContent>
+            </SidebarMenuItem>
+          </Collapsible>
+
+          {/* Settings */}
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              isActive={pathname.startsWith("/dashboard/settings")}
+              tooltip={t("settings")}
+            >
+              <Link href="/dashboard/settings">
+                <Settings className="size-4" />
+                <span>{t("settings")}</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarGroup>
     </>
   );
 }
