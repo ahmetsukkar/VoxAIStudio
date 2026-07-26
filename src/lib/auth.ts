@@ -24,8 +24,6 @@ const polarClient = new Polar({
   server: "production",
 });
 
-const FREE_TRIAL_DAYS = 7;
-
 export const auth = betterAuth({
   session: {
     expiresIn: 60 * 60 * 24 * 30, // 30 days
@@ -48,7 +46,7 @@ export const auth = betterAuth({
     useSecureCookies: true,
   },
   trustedOrigins: [env.BETTER_AUTH_WWWURL, env.BETTER_AUTH_URL],
-  database: prismaAdapter(db, { 
+  database: prismaAdapter(db, {
     provider: "postgresql",
   }),
   emailAndPassword: {
@@ -91,21 +89,6 @@ export const auth = betterAuth({
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    },
-  },
-  databaseHooks: {
-    user: {
-      create: {
-        after: async (user) => {
-          // Set trial expiry for every new sign-up
-          const trialExpiresAt = new Date();
-          trialExpiresAt.setDate(trialExpiresAt.getDate() + FREE_TRIAL_DAYS);
-          await db.user.update({
-            where: { id: user.id },
-            data: { trialExpiresAt },
-          });
-        },
-      },
     },
   },
   plugins: [
@@ -157,11 +140,9 @@ export const auth = betterAuth({
             await db.user.update({
               where: { id: externalCustomerId },
               data: {
-                credits: {
+                purchasedCredits: {
                   increment: creditsToAdd,
                 },
-                // Clear trial expiry when user upgrades to a paid plan
-                trialExpiresAt: null,
               },
             });
           },

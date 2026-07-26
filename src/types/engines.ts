@@ -5,13 +5,6 @@ import type {
   GeminiStyle,
 } from "~/data/GeminiOptions";
 
-export interface ChatterboxOptions {
-  language: string;
-  voice: string;
-  exaggeration: number;
-  cfgWeight: number;
-}
-
 export interface GeminiOptions {
   voice: string;
   model: GeminiModel;
@@ -22,6 +15,5 @@ export interface GeminiOptions {
 }
 
 export interface EngineOptionsMap {
-  chatterbox: ChatterboxOptions;
   gemini: GeminiOptions;
 }

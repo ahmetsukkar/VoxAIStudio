@@ -12,20 +12,13 @@ export interface GenerateSpeechResult {
   s3_key?: string;
   audioUrl?: string;
   error?: string;
+  promptTokens?: number;
+  audioTokens?: number;
 }
 
 export interface GenerateSpeechFinalResult extends GenerateSpeechResult {
   projectId?: string;
   creditsRemaining?: number;
-}
-
-// Chatterbox-specific options
-export interface ChatterboxRequestOptions {
-  text: string;
-  language: string;
-  voice_S3_key: string;
-  exaggeration?: number;
-  cfg_weight?: number;
 }
 
 // Gemini-specific options
@@ -39,10 +32,10 @@ export interface GeminiRequestOptions {
   gemini_language?: string;
 }
 
-export type TTSOptions = ChatterboxRequestOptions | GeminiRequestOptions;
+export type TTSOptions = GeminiRequestOptions;
 
 export interface TTSProvider {
-  generateSpeech(options: TTSOptions): Promise<GenerateSpeechResult>;
+  generateSpeech(options: TTSOptions, apiKey: string): Promise<GenerateSpeechResult>;
   getCredits(options: TTSOptions): number;
   getName(): string;
 }

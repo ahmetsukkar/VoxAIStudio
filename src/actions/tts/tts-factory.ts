@@ -1,17 +1,11 @@
 import type { TTSProvider } from "./providers/base-tts-provider";
-import { ChatterboxProvider } from "./providers/chatterbox-provider";
 import { GeminiProvider } from "./providers/gemini-provider";
-import { GoogleCloudProvider } from "./providers/google-cloud-provider";
 
-export type TTSProviderType = "chatterbox" | "googleCloud" | "gemini";
+export type TTSProviderType = "gemini";
 
 export class TTSFactory {
   static getProvider(providerType: TTSProviderType): TTSProvider {
     switch (providerType) {
-      case "chatterbox":
-        return new ChatterboxProvider();
-      case "googleCloud":
-        return new GoogleCloudProvider();
       case "gemini":
         return new GeminiProvider();
       default:

@@ -3,44 +3,30 @@
 import { Settings, Loader2 } from "lucide-react";
 import { Card, CardContent } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
-import type { Language, VoiceFile, UploadedVoice } from "~/types/tts";
 import { type TTSProviderType } from "~/actions/tts/tts-factory";
-import ChatterboxSettings from "./engines/chatterbox-settings";
 import GeminiSettings from "./engines/gemini-settings";
 import type { EngineOptionsMap } from "~/types/engines";
 import { calcTTSCredits } from "~/lib/credits/calculate";
-import { usePlanStore } from "~/store/plan-store";
 import { useTranslations } from "next-intl";
 
 interface SpeechSettingsProps {
-  languages: Language[];
-  voiceFiles: VoiceFile[];
   selectedEngine: TTSProviderType;
-  setSelectedEngine: (engine: TTSProviderType) => void;
   engineOptions: EngineOptionsMap;
   setEngineOptions: (options: EngineOptionsMap) => void;
-  userUploadedVoices: UploadedVoice[];
-  onVoiceUploaded: () => void;
   text: string;
   isGenerating: boolean;
   onGenerate: () => void;
 }
 
 export default function SpeechSettings({
-  languages,
-  voiceFiles,
   selectedEngine,
-  setSelectedEngine,
   engineOptions,
   setEngineOptions,
-  userUploadedVoices,
-  onVoiceUploaded,
   text,
   isGenerating,
   onGenerate,
 }: SpeechSettingsProps) {
   const t = useTranslations("studio.tts.settings");
-  const isTrialTier = usePlanStore((s) => s.isTrialTier) ?? false;
   const creditsNeeded = calcTTSCredits(
     selectedEngine,
     text,
@@ -60,25 +46,12 @@ export default function SpeechSettings({
             </div>
           </div>
 
-          {selectedEngine === "chatterbox" && (
-            <ChatterboxSettings
-              languages={languages}
-              voiceFiles={voiceFiles}
-              options={engineOptions.chatterbox}
-              setOptions={(updated) =>
-                setEngineOptions({ ...engineOptions, chatterbox: updated })
-              }
-              userUploadedVoices={userUploadedVoices}
-              onVoiceUploaded={onVoiceUploaded}
-            />
-          )}
           {selectedEngine === "gemini" && (
             <GeminiSettings
               options={engineOptions.gemini}
               setOptions={(updated) =>
                 setEngineOptions({ ...engineOptions, gemini: updated })
               }
-              isTrialTier={isTrialTier}
             />
           )}
 

@@ -5,7 +5,7 @@ import { Card, CardContent } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import type { GeneratedAudio } from "~/types/tts";
 import { audioManager } from "~/lib/audio/audio-manager";
-import { usePlanStore } from "~/store/plan-store";
+import { MAX_CHARS_ALLOWED } from "~/config/credits";
 import { useTranslations } from "next-intl";
 
 interface TextInputProps {
@@ -24,8 +24,7 @@ export default function TextInput({
   onDownload,
 }: TextInputProps) {
   const t = useTranslations("studio.tts.textInput");
-  const maxChars = usePlanStore((s) => s.maxCharsAllowed);
-  const isTrialTier = usePlanStore((s) => s.isTrialTier);
+  const maxChars = MAX_CHARS_ALLOWED;
   const isOverLimit = text.length > maxChars;
 
   return (
@@ -36,11 +35,6 @@ export default function TextInput({
             <h3 className="mb-0.5 text-sm font-bold">{t("title")}</h3>
             <p className="text-muted-foreground text-xs">{t("subtitle")}</p>
           </div>
-          {isTrialTier && (
-            <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">
-              {t("freeTrial")}
-            </span>
-          )}
         </div>
         <div className="space-y-3">
           <textarea
@@ -65,9 +59,6 @@ export default function TextInput({
             >
               {text.length.toLocaleString()} / {maxChars.toLocaleString()}{" "}
               {t("characters")}
-              {isTrialTier && (
-                <span className="ml-1 text-amber-600">{t("trialLimit")}</span>
-              )}
             </span>
             {text.length > 0 && (
               <Button

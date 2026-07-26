@@ -3,14 +3,11 @@
 import { HandCoins } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getUserCredits } from "~/actions/tts";
-import { getUserPlanStatus } from "~/actions/user-plan";
 import { useCreditsStore } from "~/store/credits-store";
-import { usePlanStore } from "~/store/plan-store";
 import { useTranslations } from "next-intl";
 
 export default function Credits() {
   const { credits, setCredits } = useCreditsStore();
-  const { setPlan } = usePlanStore();
   const [mounted, setMounted] = useState(false);
   const t = useTranslations("dashboard.sidebar");
 
@@ -22,13 +19,7 @@ export default function Credits() {
         if (r.success) setCredits(r.credits);
       })
       .catch(console.error);
-
-    getUserPlanStatus()
-      .then((r) => {
-        if (r.success && r.plan) setPlan(r.plan);
-      })
-      .catch(console.error);
-  }, [setCredits, setPlan]);
+  }, [setCredits]);
 
   return (
     <div className="group flex items-center gap-2">

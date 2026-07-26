@@ -1,7 +1,6 @@
 "use server";
 
 import { GoogleGenAI, Modality } from "@google/genai";
-import { env } from "~/env";
 import { uploadGeneratedAudio } from "~/actions/tts/providers/s3-upload-helper";
 import { v4 as uuidv4 } from "uuid";
 import type {
@@ -9,7 +8,6 @@ import type {
   DialogueLine,
   DialogueSettings,
 } from "~/types/dialogue";
-import { calcGeminiDialogueCredits } from "~/lib/credits/calculate";
 import { buildDialoguePrompt } from "~/lib/tts/prompt-builder";
 import { encodeWav } from "~/lib/audio/wav-encoder";
 
@@ -18,18 +16,21 @@ export interface DialogueGenerateResult {
   audioUrl?: string;
   s3Key?: string;
   fullText?: string;
-  creditsNeeded?: number;
   error?: string;
+  promptTokens?: number;
+  audioTokens?: number;
 }
 
 export async function generateDialogueAudio({
   speakers,
   lines,
   settings,
+  apiKey,
 }: {
   speakers: DialogueSpeaker[];
   lines: DialogueLine[];
   settings: DialogueSettings;
+  apiKey: string;
 }): Promise<DialogueGenerateResult> {
   const filledLines = lines.filter((l) => l.text.trim().length > 0);
 
@@ -44,8 +45,6 @@ export async function generateDialogueAudio({
     return { success: false, error: "At least 2 speakers are required." };
   }
 
-  const creditsNeeded = calcGeminiDialogueCredits(filledLines, settings);
-
   // Always use Latin aliases — works for all models (flash, pro, future)
   // Speaker names are only for UI/DB, not for the Gemini prompt mapping
   const speakerIdToAlias = new Map(
@@ -59,7 +58,7 @@ export async function generateDialogueAudio({
     speakerIdToAlias,
   );
 
-  const ai = new GoogleGenAI({ apiKey: env.GenerativeLanguageAPIKey });
+  const ai = new GoogleGenAI({ apiKey });
 
   try {
     const response = await ai.models.generateContent({
@@ -99,7 +98,23 @@ export async function generateDialogueAudio({
       .map((l) => `${speakerMap[l.speakerId]?.name ?? "Speaker"}: ${l.text}`)
       .join("\n");
 
-    return { success: true, audioUrl, s3Key, fullText, creditsNeeded };
+    const promptTokens = response.usageMetadata?.promptTokenCount;
+    const audioTokens = response.usageMetadata?.candidatesTokenCount;
+    console.log("[gemini-dialogue] usageMetadata", {
+      chars: fullText.length,
+      promptTokens,
+      audioTokens,
+      totalTokens: response.usageMetadata?.totalTokenCount,
+    });
+
+    return {
+      success: true,
+      audioUrl,
+      s3Key,
+      fullText,
+      promptTokens,
+      audioTokens,
+    };
   } catch (error) {
     console.error("Gemini dialogue error:", JSON.stringify(error));
     return {

@@ -1,7 +1,13 @@
 {
   "sidebar": {
+    "navigation": "Navigation",
     "dashboard": "Dashboard",
-    "studio": "Studio",
+    "studio": {
+      "label": "Studio",
+      "tts": "TTS",
+      "dialogue": "Dialogue",
+      "image": "Image"
+    },
     "projects": "Projects",
     "createBlogPost": "Create Blog Post",
     "sendEmail": "Send Email",

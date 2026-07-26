@@ -1,10 +1,8 @@
 import type {
   GenerateSpeechResult,
-  GeminiRequestOptions,
   TTSOptions,
   TTSProvider,
 } from "./base-tts-provider";
-import { env } from "~/env";
 import { GoogleGenAI, Modality } from "@google/genai";
 import { v4 as uuidv4 } from "uuid";
 import { uploadGeneratedAudio } from "./s3-upload-helper";
@@ -15,13 +13,13 @@ import { encodeWav } from "~/lib/audio/wav-encoder";
 
 export class GeminiProvider implements TTSProvider {
   getCredits(options: TTSOptions): number {
-    const o = options as GeminiRequestOptions;
-    return calcGeminiTTSCredits(o.text?.length ?? 0, o.gemini_model);
+    return calcGeminiTTSCredits(options.text?.length ?? 0, options.gemini_model);
   }
 
-  async generateSpeech(data: TTSOptions): Promise<GenerateSpeechResult> {
-    const options = data as GeminiRequestOptions;
-
+  async generateSpeech(
+    options: TTSOptions,
+    apiKey: string,
+  ): Promise<GenerateSpeechResult> {
     if (!options.text) {
       return { success: false, error: "Text is required" };
     }
@@ -35,7 +33,7 @@ export class GeminiProvider implements TTSProvider {
       options.gemini_pace,
     );
 
-    const ai = new GoogleGenAI({ apiKey: env.GenerativeLanguageAPIKey });
+    const ai = new GoogleGenAI({ apiKey });
 
     const response = await ai.models.generateContent({
       model,
@@ -62,7 +60,22 @@ export class GeminiProvider implements TTSProvider {
     const s3Key     = `generated/gemini/${uuidv4()}.wav`;
     const audioUrl  = await uploadGeneratedAudio(wavBuffer, s3Key);
 
-    return { success: true, s3_key: s3Key, audioUrl };
+    const promptTokens = response.usageMetadata?.promptTokenCount;
+    const audioTokens = response.usageMetadata?.candidatesTokenCount;
+    console.log("[gemini-tts] usageMetadata", {
+      chars: options.text.length,
+      promptTokens,
+      audioTokens,
+      totalTokens: response.usageMetadata?.totalTokenCount,
+    });
+
+    return {
+      success: true,
+      s3_key: s3Key,
+      audioUrl,
+      promptTokens,
+      audioTokens,
+    };
   }
 
   getName(): string { return "gemini"; }
