@@ -4,10 +4,9 @@
 product open and usable for everyone. Optional paid credits stay architected but
 switched off until real demand appears.
 
-**Status:** Phases 0–5 done, live on `main`. Phase 7 code done (2026-07-27,
-not yet committed) but blocked on real Cloudflare R2 credentials before it
-can deploy. Phase 6 not started (comes after Phase 7 lands). Phase 8 scoped
-down per owner decision — see §8.
+**Status:** Phases 0, 1, 2, 3, 4, 5, 7 done and verified live in production
+(2026-07-27). Phase 6 not started — next up. Phase 8 scoped down per owner
+decision — see §8.
 **Written:** 2026-07-26. **Branch at time of writing:** `staging`.
 
 ---
@@ -338,7 +337,7 @@ Do this **after** Phase 7 so the delete logic is written against R2 directly.
 
 ---
 
-## Phase 7 — Migrate storage to Cloudflare R2 ✅ code done (2026-07-27), blocked on real credentials
+## Phase 7 — Migrate storage to Cloudflare R2 ✅ done (2026-07-27)
 
 R2 is S3-API-compatible, so the existing `@aws-sdk/client-s3` code stayed —
 it was an **endpoint + credentials change**, not a rewrite.
@@ -352,20 +351,24 @@ it was an **endpoint + credentials change**, not a rewrite.
 - `env.js`, `.env`, `.env.example`: `AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY`/
   `AWS_REGION`/`AWS_S3_BUCKET_NAME` replaced with `R2_ACCOUNT_ID`/
   `R2_ACCESS_KEY_ID`/`R2_SECRET_ACCESS_KEY`/`R2_BUCKET_NAME`/`R2_PUBLIC_URL`.
-  Local `.env` has placeholders; old `AWS_*` values kept commented alongside
-  purely so the bucket can still be emptied later.
+  Old `AWS_*` values kept commented in local `.env` purely so the bucket can
+  still be emptied later.
+- Bucket `vox-ai-studio` created, API token issued (Account API token,
+  Object Read & Write, scoped to this bucket only), all 5 `R2_*` vars live
+  in Vercel Production.
 
-**Owner still needs to (same pattern as Phase 0/4's dual keys):**
-1. Create the R2 bucket in the Cloudflare dashboard, enable public access
-   (or attach a custom domain) to get the `R2_PUBLIC_URL`.
-2. Create an R2 API token scoped to that bucket → `R2_ACCOUNT_ID` /
-   `R2_ACCESS_KEY_ID` / `R2_SECRET_ACCESS_KEY`.
-3. Add all 5 `R2_*` vars to Vercel Production **before** deploying this —
-   `env.js` requires them, same failure mode as the `FreeAPIKey`/`PaidAPIKey`
-   outage. Do not deploy without them set.
-4. Existing S3 objects: with 7-day retention there is nothing worth
-   migrating — let them age out, then empty and delete the `vox-ai-studio`
-   S3 bucket.
+**Gotcha hit and fixed:** R2's free `pub-*.r2.dev` "Public Development URL"
+returned `net::ERR_CONNECTION_RESET` on every request — confirmed via curl
+from an unrelated network too, so not a local/CORS issue (a CORS policy was
+added regardless, doesn't hurt). Cloudflare's own UI flags that URL as "not
+recommended for production" and it lived up to that. Fixed by connecting a
+**custom domain** instead — `audio.voxaistudio.com` (the zone was already on
+Cloudflare) — which worked immediately once DNS/cert finished initializing.
+`R2_PUBLIC_URL` is `https://audio.voxaistudio.com`.
+
+**Still open:** existing S3 objects — with 7-day retention (Phase 6) there is
+nothing worth migrating; let them age out, then empty and delete the
+`vox-ai-studio` S3 bucket.
 
 **Capacity check:** MP3 output ~1.4 MB per 3-minute generation. 10 GB free ÷
 1.4 MB × (7-day window) ≈ **~1,000 generations/day sustained at $0**. Far beyond
