@@ -4,9 +4,9 @@
 product open and usable for everyone. Optional paid credits stay architected but
 switched off until real demand appears.
 
-**Status:** Phases 0, 1, 2, 3, 4, 5, 7 done and verified live in production
-(2026-07-27). Phase 6 not started — next up. Phase 8 scoped down per owner
-decision — see §8.
+**Status:** Phases 0–7 all done (2026-07-27, code + Cloudflare-side config
+both landed). Only remaining cleanup: empty/delete the old AWS S3 bucket.
+Phase 8 scoped down per owner decision — see §8.
 **Written:** 2026-07-26. **Branch at time of writing:** `staging`.
 
 ---
@@ -320,20 +320,33 @@ paths with `.mp3` extensions. `public/` is now ~5.4MB total.
 
 ---
 
-## Phase 6 — File retention: delete after 7 days 🟢
+## Phase 6 — File retention: delete after 7 days ✅ done (2026-07-27)
 
 Applies to **all** users. Rationale: the business model is prepaid credits, not
 subscription — the credit is the product, the file is just its output.
 
-- Add `expiresAt DateTime?` to `AudioProject`, set to `now() + 7 days` on create.
-- Implement the real delete path — `src/actions/voice-upload/storage/aws-storage-provider.ts:112`
-  is currently `throw new Error("Method not implemented.")`, which is why nothing
-  has ever been cleaned up.
-- Add a Vercel Cron (free tier) hitting a protected route that deletes expired
-  objects from storage and marks the rows expired (keep rows for history).
-- Surface it in the UI: "download within 7 days".
+**Done:**
+- `AudioProject.expiresAt` added, set to `now() + 7 days` on every new
+  generation. Existing rows backfilled to `createdAt + 7 days` (legacy S3-era
+  rows are immediately marked expired — nothing was worth preserving there).
+- **No custom cron needed for storage deletion** — R2 has native
+  [Object Lifecycle Rules](phase 6 discovery, see below) that delete objects
+  under a given prefix after N days, entirely on Cloudflare's side. Simpler
+  and more reliable than a Vercel Cron calling `DeleteObjectCommand`
+  ourselves, so that part of the original plan was dropped.
+- `deleteGeneratedAudio()` added to `s3-upload-helper.ts`; wired into the
+  existing manual "delete project" action so a user-initiated delete removes
+  the R2 object immediately, not just the DB row (best-effort — a
+  lifecycle-expired or legacy-S3 object failing to delete doesn't block
+  removing the row).
+- UI (`/dashboard/projects`): each row shows an expiry badge ("Expires in N
+  days" / "Expired"), and the player/download button is replaced with a
+  "this file has expired" message once past `expiresAt` — since the R2
+  lifecycle rule will have actually removed the underlying object by then.
 
-Do this **after** Phase 7 so the delete logic is written against R2 directly.
+- Object Lifecycle Rule (`delete-generated-audio-7d`) added on the R2 bucket:
+  delete objects under prefix `generated/` after 7 days. This is the piece
+  that actually removes files from storage.
 
 ---
 

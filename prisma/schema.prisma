@@ -64,6 +64,7 @@ model AudioProject {
   audioTokens  Int?
 
   creditsSpent  Int?
+  expiresAt DateTime? // 7-day retention (Phase 6) — file removed from storage after this, row kept for history
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())

@@ -28,6 +28,13 @@
   "details": {
     "credits": "credits"
   },
+  "expiry": {
+    "expiresToday": "Expires today",
+    "expiresTomorrow": "Expires tomorrow",
+    "expiresInDays": "Expires in {days} days",
+    "expired": "Expired",
+    "fileExpired": "This file has expired and is no longer available for playback or download."
+  },
   "empty": {
     "noMatches": "No audio matches your filters",
     "noProjects": "No audio projects yet",

@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { env } from "~/env";
 import { S3_BUCKET_URL } from "./base-tts-provider";
 
@@ -26,4 +26,13 @@ export async function uploadGeneratedAudio(
   );
 
   return `${S3_BUCKET_URL}/${s3Key}`;
+}
+
+export async function deleteGeneratedAudio(s3Key: string): Promise<void> {
+  await s3Client.send(
+    new DeleteObjectCommand({
+      Bucket: env.R2_BUCKET_NAME,
+      Key: s3Key,
+    }),
+  );
 }

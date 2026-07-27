@@ -15,6 +15,7 @@ import {
   MessageSquare,
   ChevronDown,
   Coins,
+  Clock,
 } from "lucide-react";
 import { authClient } from "~/lib/auth-client";
 import { useEffect, useState, useCallback, useRef } from "react";
@@ -78,6 +79,45 @@ function ModelBadge({ engine, label }: { engine: string; label: string }) {
   );
 }
 
+function isExpired(expiresAt: Date | null): boolean {
+  return expiresAt != null && expiresAt.getTime() <= Date.now();
+}
+
+function ExpiryBadge({
+  expiresAt,
+  t,
+}: {
+  expiresAt: Date | null;
+  t: ReturnType<typeof useTranslations>;
+}) {
+  if (!expiresAt) return null;
+
+  const msLeft = expiresAt.getTime() - Date.now();
+  const expired = msLeft <= 0;
+  const daysLeft = Math.max(1, Math.ceil(msLeft / (24 * 60 * 60 * 1000)));
+
+  const label = expired
+    ? t("expiry.expired")
+    : daysLeft === 1
+      ? t("expiry.expiresTomorrow")
+      : t("expiry.expiresInDays", { days: daysLeft });
+
+  const styles = expired
+    ? "bg-red-100 text-red-700 border-red-200"
+    : daysLeft <= 2
+      ? "bg-amber-100 text-amber-700 border-amber-200"
+      : "bg-gray-100 text-gray-600 border-gray-200";
+
+  return (
+    <span
+      className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold ${styles}`}
+    >
+      <Clock className="h-2.5 w-2.5" />
+      {label}
+    </span>
+  );
+}
+
 function DetailTag({ icon, label }: { icon: React.ReactNode; label: string }) {
   return (
     <span className="text-muted-foreground inline-flex items-center gap-1 text-xs capitalize">
@@ -106,6 +146,7 @@ function ProjectDetails({
         label={t(`types.${getTypeLabel(project.name)}`)}
       />
       <ModelBadge engine={project.engine} label={engineLabel} />
+      <ExpiryBadge expiresAt={project.expiresAt} t={t} />
 
       {project.language && project.language !== "autodetect" && (
         <DetailTag
@@ -543,21 +584,29 @@ export default function Projects() {
                         </div>
 
                         <div className="mt-3 flex items-center gap-2">
-                          <audio
-                            controls
-                            className="h-8 flex-1"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <source src={project.audioUrl} type="audio/wav" />
-                          </audio>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-8 w-8 shrink-0 p-0"
-                            onClick={(e) => handleDownload(project.audioUrl, e)}
-                          >
-                            <Download className="h-4 w-4" />
-                          </Button>
+                          {isExpired(project.expiresAt) ? (
+                            <p className="text-muted-foreground h-8 flex-1 truncate text-xs italic">
+                              {t("expiry.fileExpired")}
+                            </p>
+                          ) : (
+                            <>
+                              <audio
+                                controls
+                                className="h-8 flex-1"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <source src={project.audioUrl} type="audio/wav" />
+                              </audio>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-8 w-8 shrink-0 p-0"
+                                onClick={(e) => handleDownload(project.audioUrl, e)}
+                              >
+                                <Download className="h-4 w-4" />
+                              </Button>
+                            </>
+                          )}
                           <Button
                             variant="ghost"
                             size="sm"

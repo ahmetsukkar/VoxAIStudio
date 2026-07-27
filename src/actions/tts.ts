@@ -8,6 +8,7 @@ import { TTSFactory, type TTSProviderType } from "./tts/tts-factory";
 import { getAuthSession } from "~/lib/get-session";
 import { db } from "~/server/db";
 import { generateDialogueAudio } from "./tts/dialogue";
+import { deleteGeneratedAudio } from "./tts/providers/s3-upload-helper";
 import type {
   DialogueSpeaker,
   DialogueLine,
@@ -29,6 +30,12 @@ async function creditsRemainingFor(userId: string): Promise<number> {
     select: { freeCredits: true, purchasedCredits: true },
   });
   return (user?.freeCredits ?? 0) + (user?.purchasedCredits ?? 0);
+}
+
+const RETENTION_DAYS = 7;
+
+function retentionExpiresAt(): Date {
+  return new Date(Date.now() + RETENTION_DAYS * 24 * 60 * 60 * 1000);
 }
 
 export async function generateSpeech(
@@ -95,6 +102,7 @@ export async function generateSpeech(
         promptTokens: result.promptTokens,
         audioTokens: result.audioTokens,
         creditsSpent: creditsNeeded,
+        expiresAt: retentionExpiresAt(),
         userId: session.user.id,
       },
     });
@@ -205,6 +213,7 @@ export async function generateMultiSpeaker({
         promptTokens: result.promptTokens,
         audioTokens: result.audioTokens,
         creditsSpent: creditsNeeded,
+        expiresAt: retentionExpiresAt(),
         userId: session.user.id,
       },
     });
@@ -325,6 +334,14 @@ export async function deleteAudioProject(id: string) {
     const project = await db.audioProject.findUnique({ where: { id } });
     if (project?.userId !== session.user.id) {
       return { success: false, error: "Not found or unauthorized" };
+    }
+
+    try {
+      await deleteGeneratedAudio(project.s3Key);
+    } catch (error) {
+      // Storage delete is best-effort — an already-expired (lifecycle-deleted)
+      // or legacy S3 object shouldn't block removing the DB row.
+      console.error("Failed to delete storage object:", error);
     }
 
     await db.audioProject.delete({ where: { id } });
