@@ -313,10 +313,9 @@ export async function getUserCredits() {
     const session = await getAuthSession();
     if (!session) return { success: false, error: "Unauthorized", credits: 0 };
 
-    const user = await db.user.findUnique({
-      where: { id: session.user.id },
-      select: { freeCredits: true, purchasedCredits: true },
-    });
+    // Ensures the daily free-credit refill has run before reading the
+    // balance, so the displayed number is never stale on a new day.
+    const user = await getUserCreditSnapshot(session.user.id);
 
     if (!user) return { success: false, error: "User not found", credits: 0 };
     return { success: true, credits: user.freeCredits + user.purchasedCredits };
