@@ -2,16 +2,20 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import {
   ChevronRight,
   Clapperboard,
   Gauge,
   Image,
+  Mail,
   MessageSquare,
   Mic,
+  Rss,
   Settings,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { authClient } from "~/lib/auth-client";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -45,6 +49,16 @@ function StudioIcon({ name }: { name: string }) {
 export function SidebarMenuItems() {
   const pathname = usePathname();
   const t = useTranslations("dashboard.sidebar");
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const checkAdmin = async () => {
+      const session = await authClient.getSession();
+      const role = (session?.data?.user as { role?: string } | undefined)?.role;
+      setIsAdmin(role === "admin");
+    };
+    void checkAdmin();
+  }, []);
 
   // Studio is "active" if the pathname starts with /dashboard/studio
   const isStudioActive = pathname.startsWith("/dashboard/studio");
@@ -105,6 +119,37 @@ export function SidebarMenuItems() {
               </CollapsibleContent>
             </SidebarMenuItem>
           </Collapsible>
+
+          {/* Admin-only */}
+          {isAdmin && (
+            <>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={pathname.startsWith("/dashboard/blog")}
+                  tooltip={t("createBlogPost")}
+                >
+                  <Link href="/dashboard/blog/create">
+                    <Rss className="size-4" />
+                    <span>{t("createBlogPost")}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={pathname.startsWith("/dashboard/send-email")}
+                  tooltip={t("sendEmail")}
+                >
+                  <Link href="/dashboard/send-email">
+                    <Mail className="size-4" />
+                    <span>{t("sendEmail")}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </>
+          )}
 
           {/* Settings */}
           <SidebarMenuItem>
