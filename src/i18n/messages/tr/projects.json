@@ -1,0 +1,75 @@
+{
+  "title": "Ses Projeleriniz",
+  "loading": "Projeleriniz yükleniyor...",
+  "newAudio": "Yeni Ses",
+  "audios": "ses dosyası",
+  "audio": "ses dosyası",
+  "loadMoreBelow": "· aşağıdan daha fazla yükle",
+  "filtered": "{total} ses dosyasından (filtrelendi)",
+  "filters": {
+    "searchPlaceholder": "Metne göre ara...",
+    "allTypes": "Tüm Türler",
+    "allModels": "Tüm Modeller",
+    "allLanguages": "Tüm Diller",
+    "newestFirst": "Önce En Yeni",
+    "oldestFirst": "Önce En Eski",
+    "textAZ": "Metin A-Z",
+    "clear": "Temizle",
+    "typeOptions": {
+        "TTS": "Metin Okuma",
+        "Dialogue": "Diyalog"
+    }
+  },
+  "badges": {
+    "voiceCloning": "Ses Klonlama",
+    "aiVoiceFlash": "AI Ses · Flash",
+    "aiVoicePro": "AI Ses · Pro"
+  },
+  "details": {
+    "credits": "kredi"
+  },
+  "expiry": {
+    "expiresToday": "Bugün sona eriyor",
+    "expiresTomorrow": "Yarın sona eriyor",
+    "expiresInDays": "{days} gün içinde sona eriyor",
+    "expired": "Süresi Doldu",
+    "fileExpired": "Bu dosyanın süresi doldu ve artık oynatma veya indirme için kullanılamıyor."
+  },
+  "empty": {
+    "noMatches": "Filtrelerinize uyan ses bulunamadı",
+    "noProjects": "Henüz ses projesi yok",
+    "noMatchesSub": "Filtrelerinizi ayarlamayı veya temizlemeyi deneyin.",
+    "noProjectsSub": "Burada görmek için metinden konuşmaya ses oluşturmaya başlayın.",
+    "clearFilters": "Filtreleri Temizle",
+    "createFirst": "İlk Sesinizi Oluşturun"
+  },
+  "deleteConfirm": "Bu ses projesini silmek istediğinizden emin misiniz?",
+  "loadMore": "Daha Fazla Yükle",
+  "loadingMore": "Yükleniyor...",
+  "pace": {
+  "normal": "Normal",
+  "slow": "Yavaş",
+  "fast": "Hızlı"
+},
+"style": {
+  "conversational": "Sohbet Tarzı",
+  "newsreader": "Haber Spikeri",
+  "storytelling": "Hikaye Anlatımı",
+  "podcast": "Podcast",
+  "audiobook": "Sesli Kitap",
+  "customer-support": "Müşteri Desteği"
+},
+"emotion": {
+  "neutral": "Nötr",
+  "cheerful": "Neşeli",
+  "sad": "Üzgün",
+  "angry": "Kızgın",
+  "excited": "Heyecanlı",
+  "whispering": "Fısıltı",
+  "emotional": "Duygusal"
+},
+"types": {
+  "TTS": "Metin Okuma",
+  "Dialogue": "Diyalog"
+}
+}

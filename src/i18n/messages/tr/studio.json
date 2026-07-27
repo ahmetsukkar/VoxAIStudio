@@ -1,0 +1,194 @@
+{
+  "tabs": {
+    "tts": "🎙️ Metinden Konuşmaya",
+    "dialogue": "🎭 Diyalog Stüdyosu"
+  },
+  "tts": {
+    "toasts": {
+      "emptyText": "Lütfen bir metin girin!",
+      "success": "Konuşma başarıyla oluşturuldu!",
+      "downloadStarted": "İndirme başladı!",
+      "failed": "Konuşma oluşturulamadı",
+      "quotaExceeded": "Günlük ücretsiz limite ulaşıldı — yarın tekrar deneyin veya devam etmek için kredi ekleyin."
+    },
+    "textInput": {
+      "title": "Metniniz",
+      "subtitle": "Konuşmaya dönüştürmek istediğiniz metni girin",
+      "freeTrial": "Ücretsiz Deneme",
+      "placeholder": "Metninizi buraya yazın veya yapıştırın… En fazla {max} karakter.",
+      "characters": "karakter",
+      "trialLimit": "(Ücretsiz Deneme sınırı)",
+      "clear": "Temizle",
+      "latestGeneration": "Son Üretim",
+      "download": "İndir"
+    },
+    "settings": {
+      "title": "Ayarlar",
+      "subtitle": "Konuşmanızı özelleştirin",
+      "cost": "Maliyet:",
+      "credit": "kredi",
+      "credits": "kredi",
+      "characters": "karakter",
+      "generating": "Oluşturuluyor...",
+      "generate": "Konuşma Oluştur"
+    },
+    "gemini": {
+      "language": "Dil",
+      "autoDetect": "🌐 Otomatik Algıla",
+      "model": "Model",
+      "flashVsPro": "Flash mi Pro mu",
+      "flash": "⚡ Flash — Hızlı ve Uygun Fiyatlı",
+      "flashDesc": "kredi / karakter · Kısa klipler, diyaloglar ve hızlı üretimler için en iyisi.",
+      "pro": "✨ Pro — En Yüksek Kalite",
+      "proDesc": "kredi / karakter · Sesli kitaplar, uzun anlatımlar ve profesyonel içerik için en iyisi.",
+      "flashLabel": "Flash — Önerilen",
+      "proLabel": "Pro — Uzun İçerik",
+      "flashSubLabel": "Diyaloglar ve kısa satırlar için en iyisi",
+      "proSubLabel": "Sesli kitaplar ve konuşmalar için daha iyi",
+      "creditsPerChar": "kredi / karakter",
+      "freeTrial": "(Ücretsiz Deneme)",
+      "proLocked": "Pro ses yalnızca ücretli planlarda kullanılabilir. Kilidini açmak için yükseltin.",
+      "emotion": "Duygu",
+      "voice": "Ses",
+      "style": "Stil",
+      "pace": "Tempo"
+    },
+    "voicePicker": {
+      "all": "Tümü",
+      "recommended": "Önerilen",
+      "male": "Erkek",
+      "female": "Kadın",
+      "voices": "ses",
+      "stopPreview": "Önizlemeyi durdur",
+      "previewVoice": "Sesi önizle",
+      "tip": "💡",
+      "tipTone": "tonu için şunu deneyin:"
+    },
+    "emotions": {
+      "neutral": "Nötr",
+      "cheerful": "Neşeli",
+      "sad": "Üzgün",
+      "angry": "Kızgın",
+      "excited": "Heyecanlı",
+      "whispering": "Fısıltı",
+      "emotional": "Duygusal"
+    },
+    "styles": {
+      "conversational": "Sohbet Tarzı",
+      "newsreader": "Haber Spikeri",
+      "storytelling": "Hikaye Anlatımı",
+      "podcast": "Podcast",
+      "audiobook": "Sesli Kitap",
+      "customer-support": "Müşteri Desteği"
+    },
+    "paces": {
+      "normal": "Normal",
+      "slow": "Yavaş",
+      "fast": "Hızlı"
+    },
+    "voiceDescriptions": {
+      "Bright": "Parlak",
+      "Upbeat": "Neşeli",
+      "Informative": "Bilgilendirici",
+      "Firm": "Kararlı",
+      "Excitable": "Coşkulu",
+      "Youthful": "Genç",
+      "Breezy": "Rahat",
+      "Easy-going": "Sakin",
+      "Breathy": "Nefesli",
+      "Clear": "Net",
+      "Smooth": "Akıcı",
+      "Gravelly": "Kalın",
+      "Soft": "Yumuşak",
+      "Even": "Dengeli",
+      "Mature": "Olgun",
+      "Forward": "Atılgan",
+      "Friendly": "Samimi",
+      "Casual": "Rahat",
+      "Gentle": "Nazik",
+      "Lively": "Canlı",
+      "Knowledgeable": "Bilgili",
+      "Warm": "Sıcak"
+    }
+  },
+  "dialogue": {
+    "player": "Oynatıcı",
+    "waitingForGeneration": "İlk üretim bekleniyor...",
+    "settings": {
+      "title": "Ayarlar",
+      "subtitle": "Tüm diyaloga uygulanır",
+      "language": "Dil",
+      "autoDetect": "🌐 Otomatik Algıla",
+      "model": "Model",
+      "flashVsPro": "Flash mi Pro mu",
+      "flash": "⚡ Flash — Hızlı ve Uygun Fiyatlı",
+      "flashDesc": "kredi / karakter · Kısa klipler, diyaloglar ve hızlı üretimler için en iyisi.",
+      "pro": "✨ Pro — En Yüksek Kalite",
+      "proDesc": "kredi / karakter · Sesli kitaplar, uzun anlatımlar ve profesyonel içerik için en iyisi.",
+      "flashLabel": "Flash — Önerilen",
+      "proLabel": "Pro — Uzun İçerik",
+      "flashSubLabel": "Diyaloglar ve kısa satırlar için en iyisi",
+      "proSubLabel": "Sesli kitaplar ve konuşmalar için daha iyi",
+      "style": "Stil",
+      "pace": "Tempo",
+      "estimatedCost": "Tahmini maliyet",
+      "credit": "kredi",
+      "credits": "kredi",
+      "chars": "karakter"
+    },
+    "speakerCard": {
+      "name": "İsim",
+      "emotion": "Duygu",
+      "voice": "Ses"
+    },
+    "lineItem": {
+      "placeholder": "Diyalog metnini girin…"
+    },
+    "totalConversationLength": "Toplam konuşma uzunluğu",
+    "characters": "karakter",
+    "addLine": "Satır Ekle",
+    "generate": "🎭 Tam Konuşmayı Oluştur",
+    "generating": "Oluşturuluyor…",
+    "fillLines": "Ses oluşturmak için yukarıdaki satırları doldurun",
+    "overLimit": "Toplam {max} karakteri aşıyor. Lütfen bazı satırları kısaltın.",
+    "settingsToggle": "Ayarlar",
+    "freeTrial": {
+      "title": "Çoklu Konuşmacı Ücretsiz Denemede Kullanılamaz",
+      "subtitle": "Çoklu Konuşmacı sohbetlerinin, Pro seslerin ve daha fazlasının kilidini açmak için herhangi bir ücretli plana yükseltin.",
+      "expiredTitle": "Ücretsiz Denemenizin Süresi Doldu",
+      "expiredSubtitle": "7 günlük deneme süreniz sona erdi. Çoklu Konuşmacı ve tüm özelliklere erişmek için ücretli bir plana yükseltin.",
+      "upgradeButton": "Yükselt — $4.99'dan başlayan fiyatlarla",
+      "verifyEmail": "e-postanızı doğrulayın",
+      "verifyNote": "satın almanın kilidini açmak için.",
+      "sending": "Gönderiliyor...",
+      "verifyFirst": "Önce",
+      "verificationSent": "✓ Doğrulama e-postası gönderildi!",
+      "checkInbox": "Gelen kutunuzu kontrol edin:"
+    },
+    "toasts": {
+      "fillLines": "Lütfen oluşturmadan önce tüm diyalog satırlarını doldurun.",
+      "success": "Diyalog başarıyla oluşturuldu!",
+      "failed": "Diyalog oluşturulamadı",
+      "verifyFailed": "Doğrulama e-postası gönderilemedi. Lütfen tekrar deneyin.",
+      "quotaExceeded": "Günlük ücretsiz limite ulaşıldı — yarın tekrar deneyin veya devam etmek için kredi ekleyin."
+    }
+  },
+  "recentGenerations": {
+    "ttsTitle": "Son Üretimler",
+    "ttsSub": "Konuşma üretim geçmişiniz",
+    "dialogueTitle": "Son Üretimler",
+    "dialogueSub": "Çoklu konuşmacı üretim geçmişiniz",
+    "defaultTitle": "Son Ses Projeleri",
+    "defaultSub": "En son üretilen sesiniz",
+    "noProjectsYet": "Henüz ses projesi yok",
+    "noGenerationsYet": "Henüz üretim yok",
+    "startDialogue": "İlk çoklu konuşmacı sesinizi oluşturarak başlayın",
+    "startTts": "Bir metin girip ilk konuşmanızı oluşturarak başlayın",
+    "startTtsAlt": "Yapay zeka ses klonlama ile konuşma üretmeye başlayın",
+    "createFirstAudio": "İlk Sesinizi Oluşturun",
+    "viewAll": "Projelerde tümünü görüntüle →",
+    "viewAllLink": "Tümünü görüntüle",
+    "play": "Oynat",
+    "pause": "Duraklat"
+  }
+}

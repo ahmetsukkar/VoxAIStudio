@@ -1,0 +1,40 @@
+{
+  "navigation": {
+    "features": "Özellikler",
+    "pricing": "Fiyatlandırma",
+    "reviews": "Yorumlar",
+    "blog": "Blog",
+    "about": "Hakkımızda",
+    "signIn": "Giriş Yap",
+    "myDashboard": "Panelim",
+    "tryItFree": "Ücretsiz Dene"
+  },
+  "footer": {
+    "tagline": "Yapay zeka destekli, profesyonel kalitede ses üretimi. Herhangi bir metni gelişmiş ses teknolojisiyle akıcı, doğal bir konuşmaya dönüştürün.",
+    "product": "Ürün",
+    "resources": "Kaynaklar",
+    "legal": "Yasal",
+    "features": "Özellikler",
+    "pricing": "Fiyatlandırma",
+    "reviews": "Yorumlar",
+    "blog": "Blog",
+    "helpFaq": "Yardım ve SSS",
+    "contactUs": "Bize Ulaşın",
+    "aboutUs": "Hakkımızda",
+    "privacyPolicy": "Gizlilik Politikası",
+    "termsOfService": "Kullanım Şartları",
+    "cookiePolicy": "Çerez Politikası",
+    "copyright": "© 2026 Vox AI Studio. Tüm hakları saklıdır."
+  },
+  "cookie": {
+    "message": "Deneyiminizi geliştirmek için çerezler kullanıyoruz. Bu siteyi ziyaret etmeye devam ederek çerez kullanımımızı kabul etmiş olursunuz.",
+    "accept": "Kabul Et",
+    "decline": "Reddet"
+  },
+  "language": {
+    "select": "Dil",
+    "en": "English",
+    "ar": "العربية",
+    "tr": "Türkçe"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "title": "Hesap Ayarları",
+  "subtitle": "Hesap tercihlerinizi ve güvenlik ayarlarınızı yönetin",
+  "loading": "Ayarlarınız yükleniyor...",
+  "emailVerification": {
+    "title": "E-posta Doğrulama",
+    "verified": "E-postanız doğrulandı",
+    "notVerified": "⚠️ Doğrulanmadı — satın alımların kilidini açmak için doğrulayın",
+    "resend": "Doğrulama e-postasını tekrar gönder",
+    "sending": "Gönderiliyor...",
+    "toastSuccess": "Doğrulama e-postası gönderildi! Gelen kutunuzu kontrol edin.",
+    "toastError": "Gönderilemedi. Lütfen tekrar deneyin."
+  }
+}

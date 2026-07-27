@@ -1,0 +1,12 @@
+{
+  "title": "Bize Ulaşın",
+  "subtitle": "Sizden haber almak isteriz",
+  "name": "Ad Soyad",
+  "email": "E-posta Adresi",
+  "subject": "Konu",
+  "message": "Mesaj",
+  "submit": "Mesaj Gönder",
+  "successTitle": "Mesaj gönderildi!",
+  "successMessage": "En kısa sürede size geri döneceğiz.",
+  "errorMessage": "Bir şeyler ters gitti. Lütfen tekrar deneyin."
+}

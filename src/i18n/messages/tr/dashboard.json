@@ -1,0 +1,75 @@
+{
+  "sidebar": {
+    "navigation": "Gezinme",
+    "dashboard": "Panel",
+    "studio": {
+      "label": "Stüdyo",
+      "tts": "Metin Okuma",
+      "dialogue": "Diyalog",
+      "image": "Görsel"
+    },
+    "projects": "Projeler",
+    "createBlogPost": "Blog Yazısı Oluştur",
+    "sendEmail": "E-posta Gönder",
+    "settings": "Ayarlar",
+    "credits": "Krediler",
+    "upgrade": "Kredi Satın Al",
+    "upgradeDescription": "Daha fazla kredi edinin ve tüm özelliklerin kilidini açın.",
+    "upgradeButton": "Şimdi Yükselt",
+    "manageSubscription": "Aboneliği Yönet"
+  },
+  "verifyBanner": {
+    "message": "Tüm özelliklerin kilidini açmak için lütfen e-posta adresinizi doğrulayın.",
+    "resend": "Doğrulama e-postasını tekrar gönder",
+    "sending": "Gönderiliyor...",
+    "sent": "E-posta gönderildi!"
+  },
+  "trials": {
+    "expiredTitle": "Deneme Süreniz Sona Erdi",
+    "expiredDescription": "Vox AI Studio ile ses üretmeye devam etmek için yükseltin.",
+    "upgradeButton": "Şimdi Yükselt",
+    "dismiss": "Belki sonra"
+  },
+  "modals": {
+    "verifyToGenerate": {
+      "title": "Önce E-postanızı Doğrulayın",
+      "description": "Ses üretmeden önce e-posta adresinizi doğrulamanız gerekiyor.",
+      "resend": "Doğrulama E-postasını Tekrar Gönder",
+      "close": "Kapat"
+    },
+    "upgrade": {
+      "title": "Planınızı Yükseltin",
+      "description": "Krediniz bitti. Devam etmek için yükseltin.",
+      "button": "Planları Görüntüle",
+      "close": "Kapat"
+    }
+  },
+  "page": {
+    "welcome": "Tekrar hoş geldiniz",
+    "subtitle": "Metinden konuşmaya çalışma alanınıza genel bakış",
+    "loading": "Panonuz yükleniyor...",
+    "stats": {
+      "totalAudio": "Toplam Ses",
+      "ttsGenerations": "Metin okuma üretimi",
+      "thisMonth": "Bu Ay",
+      "projectsCreated": "Oluşturulan proje",
+      "thisWeek": "Bu Hafta",
+      "recentActivity": "Son etkinlik",
+      "memberSince": "Üyelik Tarihi",
+      "accountCreated": "Hesap oluşturuldu"
+    },
+    "quickActions": {
+      "title": "Hızlı İşlemler",
+      "tts": "Metinden Konuşmaya",
+      "ttsDesc": "Ses klonlama ile ses üretin",
+      "viewAudio": "Tüm Sesleri Görüntüle",
+      "viewAudioDesc": "Ses kitaplığınıza göz atın",
+      "settings": "Hesap Ayarları",
+      "settingsDesc": "Profilinizi yönetin"
+    },
+    "recentProjects": {
+      "title": "Son Ses Projeleri",
+      "viewAll": "Tümünü Görüntüle"
+    }
+  }
+}

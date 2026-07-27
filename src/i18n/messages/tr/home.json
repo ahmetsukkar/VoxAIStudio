@@ -1,0 +1,182 @@
+{
+  "meta": {
+    "title": "Vox AI Studio — Yapay Zeka ile Metin Okuma ve Ses Klonlama",
+    "description": "Metni anında doğal, insan sesine benzer konuşmaya dönüştürün. Sesleri klonlayın, 50'den fazla yapay zeka sesi arasından seçim yapın, birden fazla dili destekleyin. Ücretsiz deneyin — kredi kartı gerekmez."
+  },
+  "hero": {
+    "badge": "Gelişmiş Yapay Zeka ile Çalışır",
+    "title": "Metni Şuna Dönüştürün:",
+    "titleHighlight": "Doğal Konuşma",
+    "description": "Profesyonel sonuçlar için yapay zeka destekli ses sentezi. Metni doğal tonlama, çoklu dil desteği ve gerçekçi vurgu ile saniyeler içinde canlı bir konuşmaya dönüştürün.",
+    "tryFree": "Şimdi Ücretsiz Dene",
+    "listenDemo": "Demoyu Dinle",
+    "trustedBy": "Dünya çapında binlerce içerik üreticisi tarafından güveniliyor"
+  },
+  "stats": {
+    "voicesGenerated": "Üretilen Ses",
+    "activeUsers": "Aktif Kullanıcı",
+    "uptime": "Çalışma Süresi",
+    "userRating": "Kullanıcı Puanı",
+    "voiceSynthesis": "Ses Sentezi"
+  },
+  "features": {
+    "title": "Yüksek Performanslı Yapay Zeka Sesleri,",
+    "titleHighlight": "Her Zaman",
+    "titleEnd": "Hazır.",
+    "subtitle": "İhtiyacınız olan her şeyle gerçekçi, insan benzeri konuşmalar oluşturun — yapay zeka ile desteklenir.",
+    "items": {
+      "cloning": {
+        "title": "Yapay Zeka Ses Klonlama",
+        "description": "Kendi sesinizi klonlayarak benzersiz bir ses oluşturun veya kullanıma hazır profesyonel sesler kütüphanesinden seçin."
+      },
+      "tts": {
+        "title": "Gerçekçi Metin Okuma",
+        "description": "Yazılı metni doğal ritim, etkileyici tonlama ve insan benzeri anlatımla konuşmaya dönüştürün."
+      },
+      "languages": {
+        "title": "Diller, Aksanlar ve Sesler",
+        "description": "Bölgesel aksanlar ve farklı konuşma tarzları dahil olmak üzere birçok dilde geniş bir ses yelpazesinden seçim yapın."
+      },
+      "speed": {
+        "title": "Ultra Hızlı Üretim",
+        "description": "Anlar içinde yüksek kaliteli konuşma oluşturun. Akıcı yapay zeka motorumuz minimum bekleme süresiyle sonuç üretir."
+      }
+    }
+  },
+  "demo": {
+    "title": "Farkı",
+    "titleHighlight": "Duyun",
+    "subtitle": "Yapay zeka ses teknolojimizin gerçek demolarını dinleyin.",
+    "naturalSpeech": {
+      "heading": "Gerçekçi ve Duygu Dolu Konuşma.",
+      "colText": "Metin Örneği",
+      "colVoice": "Ses Türü",
+      "colAudio": "Ses Çıkışı"
+    },
+    "multilingual": {
+      "heading": "Çoklu Dil Desteği",
+      "colLanguage": "Dil",
+      "colText": "Metin Örneği",
+      "colAudio": "Ses Çıkışı"
+    },
+    "play": "Oynat",
+    "pause": "Duraklat",
+    "ctaText": "Kendi yapay zeka seslerinizi oluşturmaya hazır mısınız?",
+    "ctaButton": "Şimdi Ücretsiz Dene"
+  },
+  "howItWorks": {
+    "title": "Akıcı. Hızlı. Profesyonel Kalite.",
+    "subtitle": "Sadece üç kolay adımda kusursuz sonuçlar elde edin.",
+    "steps": {
+      "step1": {
+        "title": "Metninizi Ekleyin",
+        "description": "İçeriğinizi yazın veya yapıştırın. Editör birden fazla dili destekler ve gelişmiş biçimlendirmeyle bile sorunsuz çalışır."
+      },
+      "step2": {
+        "title": "Bir Ses Stili Seçin",
+        "description": "Geniş bir yapay zeka sesi kataloğuna göz atın — kendi sesinizi klonlayın, hazır ayarları kullanın veya ihtiyaçlarınıza göre ses ayarlarını ince ayarlayın."
+      },
+      "step3": {
+        "title": "Ses Oluşturun ve Kaydedin",
+        "description": "Saniyeler içinde doğal sesli konuşma üretin, ardından her proje için hazır yüksek kaliteli bir dosya indirin."
+      }
+    }
+  },
+  "testimonials": {
+    "title": "İçerik Üreticileri",
+    "titleHighlight": "Tarafından Güveniliyor",
+    "subtitle": "İnsanların Vox AI Studio hakkında neler söylediğini keşfedin.",
+    "items": {
+      "t1": {
+        "name": "Aylin Demir",
+        "role": "E-Öğrenme Yapımcısı",
+        "content": "Vox AI Studio, kurs anlatım süremizi ciddi şekilde kısalttı. Dersleri yeniden kaydetmeden aynı gün içinde güncelleyip sesi yeniden oluşturabiliyoruz."
+      },
+      "t2": {
+        "name": "Noah Patel",
+        "role": "Pazarlama Müdürü",
+        "content": "Sesler kampanyalar arasında kaliteli ve tutarlı geliyor. Reklamları daha hızlı yayınlıyor ve marka tonunu her yerde aynı tutuyoruz."
+      },
+      "t3": {
+        "name": "Lina Haddad",
+        "role": "YouTube İçerik Üreticisi",
+        "content": "Dilleri ve stilleri değiştirebilmek büyük bir avantaj. Videolarım, ekstra prodüksiyon çalışması olmadan farklı kitleler için daha yerel hissettiriyor."
+      }
+    }
+  },
+  "pricing": {
+    "title": "Basit, Şeffaf",
+    "titleHighlight": "Fiyatlandırma",
+    "subtitle": "Ücretsiz başlayın. Büyüdükçe ölçeklendirin. Gizli ücret yok.",
+    "mostPopular": "En Popüler",
+    "modal": {
+      "title": "Planınızı Seçin",
+      "subtitle": "Tek seferlik satın alma · Krediler asla sona ermez",
+      "verifyPrompt": "Kredi satın almak için lütfen e-postanızı doğrulayın",
+      "verifyHint": "Doğrulama bağlantısı için gelen kutunuzu kontrol edin.",
+      "resendEmail": "Doğrulama e-postasını tekrar gönder",
+      "resendSent": "✓ Doğrulama e-postası gönderildi!",
+      "verifyFirst": "Önce E-postayı Doğrula",
+      "getplan": "{name} Al"
+    },
+    "freeTrial": {
+      "name": "Ücretsiz Deneme",
+      "price": "$0",
+      "period": "7 günlük deneme · Kart gerekmez",
+      "cta": "Ücretsiz Dene",
+      "features": [
+        "10.000 kredi dahil",
+        "Sadece Flash ses",
+        "Tek konuşmacı (çoklu konuşmacı yok)",
+        "İstek başına en fazla 500 karakter",
+        "7 gün sonra sona erer"
+      ]
+    },
+    "starter": {
+      "name": "Başlangıç",
+      "price": "$4.99",
+      "period": "Hafif kullanıcılar · Krediler asla sona ermez",
+      "cta": "Başlayın",
+      "features": [
+        "40.000 kredi",
+        "Tüm sesler (Flash + Pro)",
+        "Çoklu konuşmacı etkin",
+        "İstek başına karakter sınırı yok",
+        "Krediler asla sona ermez"
+      ]
+    },
+    "creator": {
+      "name": "İçerik Üretici",
+      "price": "$9.99",
+      "period": "Düzenli içerik üreticileri · Krediler asla sona ermez",
+      "cta": "İçerik Üretici Al",
+      "features": [
+        "125.000 kredi",
+        "Tüm sesler (Flash + Pro)",
+        "Çoklu konuşmacı etkin",
+        "Tüm özellikler dahil",
+        "Krediler asla sona ermez"
+      ]
+    },
+    "pro": {
+      "name": "Pro",
+      "price": "$49.99",
+      "period": "Ajanslar ve yoğun kullanıcılar · Krediler asla sona ermez",
+      "cta": "Pro Al",
+      "features": [
+        "400.000 kredi",
+        "Tüm sesler (Flash + Pro)",
+        "Çoklu konuşmacı etkin",
+        "Tüm özellikler dahil",
+        "Öncelikli kuyruk",
+        "Krediler asla sona ermez"
+      ]
+    }
+  },
+  "cta": {
+    "title": "Kelimelerinizi Sese Dönüştürmeye Hazır mısınız?",
+    "subtitle": "İçeriği doğal ve canlı kılmak için yapay zeka kullanan binlerce içerik üreticisine katılın.",
+    "startFree": "Ücretsiz Başla",
+    "playSamples": "Örnekleri dinle"
+  }
+}
