@@ -6,7 +6,7 @@ import {
 } from "./voice-upload/storage-factory";
 
 export async function uploadVoice(
-  storageProvider: StorageProviderType = "aws", // Default provider
+  storageProvider: StorageProviderType = "r2", // Default provider
   formData: FormData,
 ) {
   const provider = StorageFactory.getProvider(storageProvider);
@@ -16,7 +16,7 @@ export async function uploadVoice(
 }
 
 export async function getUserUploadedVoices(
-  storageProvider: StorageProviderType = "aws",
+  storageProvider: StorageProviderType = "r2",
 ) {
   const provider = StorageFactory.getProvider(storageProvider);
   const result = await provider.getUserUploadedVoices();

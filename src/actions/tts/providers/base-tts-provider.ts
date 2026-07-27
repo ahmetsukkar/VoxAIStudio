@@ -1,4 +1,6 @@
-export const S3_BUCKET_URL = "https://vox-ai-studio.s3.us-east-1.amazonaws.com";
+import { env } from "~/env";
+
+export const S3_BUCKET_URL = env.R2_PUBLIC_URL;
 
 import type {
   GeminiEmotion,

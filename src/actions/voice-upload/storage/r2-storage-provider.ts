@@ -15,25 +15,26 @@ import { cache } from "react";
 import { getAuthSession } from "~/lib/get-session";
 
 const s3Client = new S3Client({
-  region: env.AWS_REGION ?? "us-east-1",
+  region: "auto",
+  endpoint: `https://${env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
   credentials: {
-    accessKeyId: env.AWS_ACCESS_KEY_ID ?? "",
-    secretAccessKey: env.AWS_SECRET_ACCESS_KEY ?? "",
+    accessKeyId: env.R2_ACCESS_KEY_ID ?? "",
+    secretAccessKey: env.R2_SECRET_ACCESS_KEY ?? "",
   },
 });
 
-export class AWSStorageProvider implements StorageProvider {
+export class R2StorageProvider implements StorageProvider {
   async uploadVoice(formData: FormData): Promise<UploadVoiceResult> {
     try {
       const session = await getAuthSession();
       if (!session) return { success: false, error: "Unauthorized" };
 
       if (
-        !env.AWS_ACCESS_KEY_ID ||
-        !env.AWS_SECRET_ACCESS_KEY ||
-        !env.AWS_S3_BUCKET_NAME
+        !env.R2_ACCESS_KEY_ID ||
+        !env.R2_SECRET_ACCESS_KEY ||
+        !env.R2_BUCKET_NAME
       ) {
-        return { success: false, error: "AWS S3 not configured" };
+        return { success: false, error: "R2 storage not configured" };
       }
 
       const file = formData.get("voice") as File;
@@ -48,7 +49,7 @@ export class AWSStorageProvider implements StorageProvider {
 
       await s3Client.send(
         new PutObjectCommand({
-          Bucket: env.AWS_S3_BUCKET_NAME ?? "",
+          Bucket: env.R2_BUCKET_NAME ?? "",
           Key: fileName,
           Body: Buffer.from(await file.arrayBuffer()),
           ContentType: file.type,
@@ -58,7 +59,7 @@ export class AWSStorageProvider implements StorageProvider {
       const signedUrl = await getSignedUrl(
         s3Client,
         new GetObjectCommand({
-          Bucket: env.AWS_S3_BUCKET_NAME ?? "",
+          Bucket: env.R2_BUCKET_NAME ?? "",
           Key: fileName,
         }),
         { expiresIn: 3600 * 24 * 7 },
@@ -114,6 +115,6 @@ export class AWSStorageProvider implements StorageProvider {
   }
 
   getName(): string {
-    return "aws";
+    return "r2";
   }
 }
