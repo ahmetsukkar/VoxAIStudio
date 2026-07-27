@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import {
   ChevronRight,
   Clapperboard,
+  FolderOpen,
   Gauge,
   Image,
   Mail,
@@ -119,6 +120,20 @@ export function SidebarMenuItems() {
               </CollapsibleContent>
             </SidebarMenuItem>
           </Collapsible>
+
+          {/* Projects */}
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              isActive={pathname.startsWith("/dashboard/projects")}
+              tooltip={t("projects")}
+            >
+              <Link href="/dashboard/projects">
+                <FolderOpen className="size-4" />
+                <span>{t("projects")}</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
 
           {/* Admin-only */}
           {isAdmin && (

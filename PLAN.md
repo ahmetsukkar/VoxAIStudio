@@ -4,7 +4,9 @@
 product open and usable for everyone. Optional paid credits stay architected but
 switched off until real demand appears.
 
-**Status:** planning complete, execution not started.
+**Status:** Phases 1–5 done. 1–4 live on `main`, Phase 3 cost measured
+(2026-07-27, see §2), Phase 5 done locally (2026-07-27, not yet committed).
+Phases 6–8 not started.
 **Written:** 2026-07-26. **Branch at time of writing:** `staging`.
 
 ---
@@ -73,19 +75,36 @@ relationship at all rather than revisiting this in six months.
 - **Cloudflare R2 free tier:** 10 GB storage, **$0 egress at any volume**,
   1M Class A + 10M Class B ops/month. Permanent, not a 12-month trial.
 
-### Unit economics of selling credits (estimate — must be confirmed in Phase 3)
+### Unit economics of selling credits (measured — Phase 3, 2026-07-27)
 
 Current pricing: **$4.99 / 40,000 credits**, 1 credit per character (Flash).
 
+Replaced the `~25 tokens/sec` estimate with real `usageMetadata` recorded on
+3 production generations (2 single-speaker + 1 dialogue) once
+`promptTokens`/`audioTokens` logging shipped:
+
+| Type | Billed chars | Prompt tokens | Audio tokens | Real cost |
+|---|---|---|---|---|
+| Single-speaker | 309 | 159 | 548 | $0.00556 |
+| Single-speaker | 110 | 116 | 161 | $0.00167 |
+| Dialogue (2×)  | 113 | 43  | 174 | $0.00176 |
+
+Audio output runs **~1.66 tokens per billed character** — higher than the
+`25 tokens/sec` guess implied, but Flash audio tokens are cheap enough that
+the margin barely moves:
+
 ```
-40,000 chars @ ~15 chars/sec   ≈ 2,670 sec ≈ 44 min audio
-44 min @ ~25 audio tokens/sec  ≈ 66,700 output tokens
-66,700 / 1M × $10              ≈ $0.67 cost   vs   $4.99 price
-                               → ~7× margin ✅
+40,000 chars × $0.0000169/char (blended real rate) ≈ $0.68 cost vs $4.99 price
+                                                     → ~7.3× margin ✅
 ```
 
-⚠️ The `25 tokens/sec` figure is **inferred, not confirmed**. Phase 3 exists
-solely to replace it with measured data before any purchase flow is enabled.
+Single-speaker-only rate (more representative of a Starter pack): **~7.2×
+margin**. Both confirm the original ~7× estimate held up — margin is
+comfortable, well above the 2× cutoff. Sample size is small (n=3); revisit
+once more real generations accumulate, but there's no signal here that
+would block enabling purchases on cost grounds alone (Phase 8 hides the
+purchase button for a different reason — Vercel Hobby's non-commercial
+terms — not unit economics).
 
 ---
 
@@ -126,21 +145,28 @@ solely to replace it with measured data before any purchase flow is enabled.
 
 Blocks Phase 4. Everything else can proceed in parallel.
 
-- [ ] **Create two Google Cloud projects:**
+- [x] **Create two Google Cloud projects:** done — `FreeAPIKey`/`PaidAPIKey`
+      issued and live in Vercel Production.
   - **Project A (free):** **no billing account attached.** This is the hard
     ceiling — with no billing account the project is *physically incapable* of
     generating a charge, regardless of any bug or abuse. Code checks are not a
     substitute for this.
   - **Project B (paid):** billing enabled, **plus a Budget Alert at $10**.
-- [ ] Issue one Generative Language API key per project.
-- [ ] Confirm the `vox-ai-studio` S3 bucket actually lives in account
+- [x] Issue one Generative Language API key per project.
+- [x] Confirm the `vox-ai-studio` S3 bucket actually lives in account
       `836568434462` (it is named `publishvox-dev-account` — verify prod isn't elsewhere).
-- [ ] Check why **AWS Glue** shows as an active service; remove it if unused.
-- [ ] Check the **modal.com** invoice, then tear down the Modal app in Phase 2.
+      Confirmed 2026-07-27 via `sts:GetCallerIdentity` with the app's own IAM user.
+- [x] Check why **AWS Glue** shows as an active service; remove it if unused.
+      Checked 2026-07-27 in the AWS Console (Databases/Crawlers/Jobs/Connections
+      all empty, correct account + `us-east-1` region) — no resources exist,
+      nothing to remove. The bill line was just the empty Data Catalog itself.
+- [x] Check the **modal.com** invoice, then tear down the Modal app in Phase 2.
+      Owner confirms the Modal app was never used in production — considered
+      torn down; no invoice to worry about.
 
 ---
 
-## Phase 1 — Delete video generation 🔴
+## Phase 1 — Delete video generation ✅ done
 
 Highest priority: this is the only path to a genuinely large surprise bill.
 
@@ -172,7 +198,7 @@ reference remains outside git history.
 
 ---
 
-## Phase 2 — Delete Chatterbox + Modal 🔴
+## Phase 2 — Delete Chatterbox + Modal ✅ done
 
 **Delete:**
 ```
@@ -203,7 +229,7 @@ touchpoint, which makes Phase 7 substantially simpler.
 
 ---
 
-## Phase 3 — Measure real TTS cost 🟠
+## Phase 3 — Measure real TTS cost ✅ done
 
 Gate for ever enabling purchases. Small and self-contained.
 
@@ -217,7 +243,7 @@ Gate for ever enabling purchases. Small and self-contained.
 
 ---
 
-## Phase 4 — Dual API key + daily credit refill 🟠
+## Phase 4 — Dual API key + daily credit refill ✅ done
 
 The core of the new model. **Blocked by Phase 0.**
 
@@ -279,24 +305,18 @@ mid-request.**
 
 ---
 
-## Phase 5 — Local MP3 samples 🟢
+## Phase 5 — Local MP3 samples ✅ done (2026-07-27)
 
 Now a **performance and resilience** change, not a cost saving (the S3 bill is
 $0.00). It guarantees the landing page works with zero API quota — the design
 rule from §1.
 
-1. Download the ~40 `.wav` samples from `s3://vox-ai-studio/samples/voices/`
-   (`Public/` = 10+, `Gemini/` = 30).
-2. Convert to mono MP3 (~10× smaller, no audible loss for previews):
-   ```bash
-   for f in *.wav; do ffmpeg -i "$f" -codec:a libmp3lame -b:a 96k -ac 1 "${f%.wav}.mp3"; done
-   ```
-3. Place under `public/samples/voices/{Public,Gemini}/`. (~6 MB total; `public/`
-   is currently 3.3 MB — fine for git and served free from Vercel's CDN.)
-4. Repoint the two constants to root-relative paths:
-   - `src/components/demo-section.tsx:11`
-   - `src/data/GeminiOptions.ts:51`
-5. Update the 30 `sampleUrl` extensions from `.wav` to `.mp3`.
+Done: fetched all 41 `.wav` samples directly from the public S3 URLs (`Public/`
+= 11, `Gemini/` = 30), converted to mono 96kbps MP3 in-process (pure-JS
+encoder, no ffmpeg install needed — 8.10MB → 2.05MB), placed under
+`public/samples/voices/{Public,Gemini}/`, and repointed both
+`demo-section.tsx` and `GeminiOptions.ts` to root-relative `/samples/voices/...`
+paths with `.mp3` extensions. `public/` is now ~5.4MB total.
 
 ---
 
@@ -358,13 +378,12 @@ current traffic.
 
 ## Phase 8 — Portfolio polish ⚪
 
-- Hide the pricing page and Polar checkout button. **Keep the code** — a working
-  Polar + better-auth + credit-accounting integration is one of the strongest
-  signals in the repo. Just don't activate the commercial path.
-- Add an architecture / case-study page explaining the decisions: AR/EN i18n with
-  RTL, multi-provider TTS abstraction, auth + payments, SEO/blog, the dual-key
-  quota design. For hiring purposes this is worth more than the running app —
-  what impresses is the engineering, not "another TTS site".
+- ~~Hide the pricing page and Polar checkout button.~~ **Decided 2026-07-27:
+  owner wants the buy button to stay live**, accepting the Vercel Hobby
+  non-commercial ToS risk this carries rather than upgrading to Pro ($20/mo)
+  or hiding it. Revisit if Vercel flags the account.
+- ~~Add an architecture / case-study page~~ — **declined 2026-07-27**, not doing
+  this.
 
 ---
 

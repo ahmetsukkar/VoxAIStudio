@@ -48,7 +48,7 @@ export const GeminiPaces: { value: GeminiPace }[] = [
   { value: "fast" },
 ];
 
-const S3_VOICE_SAMPLES = "https://vox-ai-studio.s3.us-east-1.amazonaws.com/samples/voices/Gemini";
+const S3_VOICE_SAMPLES = "/samples/voices/Gemini";
 
 export const GeminiVoices: {
   name: string;
@@ -56,36 +56,36 @@ export const GeminiVoices: {
   category: GeminiVoiceCategory;
   sampleUrl: string;
 }[] = [
-  { name: "Zephyr",        description: "Bright",        category: "Female", sampleUrl: `${S3_VOICE_SAMPLES}/Zephyr-Bright.wav` },
-  { name: "Puck",          description: "Upbeat",        category: "Male",   sampleUrl: `${S3_VOICE_SAMPLES}/Puck-Upbeat.wav` },
-  { name: "Charon",        description: "Informative",   category: "Male",   sampleUrl: `${S3_VOICE_SAMPLES}/Charon-Informative.wav` },
-  { name: "Kore",          description: "Firm",          category: "Female", sampleUrl: `${S3_VOICE_SAMPLES}/Kore-Firm.wav` },
-  { name: "Fenrir",        description: "Excitable",     category: "Male",   sampleUrl: `${S3_VOICE_SAMPLES}/Fenrir-Excitable.wav` },
-  { name: "Leda",          description: "Youthful",      category: "Female", sampleUrl: `${S3_VOICE_SAMPLES}/Leda-Youthful.wav` },
-  { name: "Orus",          description: "Firm",          category: "Male",   sampleUrl: `${S3_VOICE_SAMPLES}/Orus-Firm.wav` },
-  { name: "Aoede",         description: "Breezy",        category: "Female", sampleUrl: `${S3_VOICE_SAMPLES}/Aoede-Breezy.wav` },
-  { name: "Callirrhoe",    description: "Easy-going",    category: "Female", sampleUrl: `${S3_VOICE_SAMPLES}/Callirrhoe-Easy-going.wav` },
-  { name: "Autonoe",       description: "Bright",        category: "Female", sampleUrl: `${S3_VOICE_SAMPLES}/Autonoe-Bright.wav` },
-  { name: "Enceladus",     description: "Breathy",       category: "Male",   sampleUrl: `${S3_VOICE_SAMPLES}/Enceladus-Breathy.wav` },
-  { name: "Iapetus",       description: "Clear",         category: "Male",   sampleUrl: `${S3_VOICE_SAMPLES}/Iapetus-Clear.wav` },
-  { name: "Umbriel",       description: "Easy-going",    category: "Male",   sampleUrl: `${S3_VOICE_SAMPLES}/Umbriel-Easy-going.wav` },
-  { name: "Algieba",       description: "Smooth",        category: "Male",   sampleUrl: `${S3_VOICE_SAMPLES}/Algieba-Smooth.wav` },
-  { name: "Despina",       description: "Smooth",        category: "Female", sampleUrl: `${S3_VOICE_SAMPLES}/Despina-Smooth.wav` },
-  { name: "Erinome",       description: "Clear",         category: "Female", sampleUrl: `${S3_VOICE_SAMPLES}/Erinome-Clear.wav` },
-  { name: "Algenib",       description: "Gravelly",      category: "Male",   sampleUrl: `${S3_VOICE_SAMPLES}/Algenib-Gravelly.wav` },
-  { name: "Rasalgethi",    description: "Informative",   category: "Male",   sampleUrl: `${S3_VOICE_SAMPLES}/Rasalgethi-Informative.wav` },
-  { name: "Laomedeia",     description: "Upbeat",        category: "Female", sampleUrl: `${S3_VOICE_SAMPLES}/Laomedeia-Upbeat.wav` },
-  { name: "Achernar",      description: "Soft",          category: "Female", sampleUrl: `${S3_VOICE_SAMPLES}/Achernar-Soft.wav` },
-  { name: "Alnilam",       description: "Firm",          category: "Male",   sampleUrl: `${S3_VOICE_SAMPLES}/Alnilam-Firm.wav` },
-  { name: "Schedar",       description: "Even",          category: "Male",   sampleUrl: `${S3_VOICE_SAMPLES}/Schedar-Even.wav` },
-  { name: "Gacrux",        description: "Mature",        category: "Female", sampleUrl: `${S3_VOICE_SAMPLES}/Gacrux-Mature.wav` },
-  { name: "Pulcherrima",   description: "Forward",       category: "Female", sampleUrl: `${S3_VOICE_SAMPLES}/Pulcherrima-Forward.wav` },
-  { name: "Achird",        description: "Friendly",      category: "Male",   sampleUrl: `${S3_VOICE_SAMPLES}/Achird-Friendly.wav` },
-  { name: "Zubenelgenubi", description: "Casual",        category: "Male",   sampleUrl: `${S3_VOICE_SAMPLES}/Zubenelgenubi-Casual.wav` },
-  { name: "Vindemiatrix",  description: "Gentle",        category: "Female", sampleUrl: `${S3_VOICE_SAMPLES}/Vindemiatrix-Gentle.wav` },
-  { name: "Sadachbia",     description: "Lively",        category: "Male",   sampleUrl: `${S3_VOICE_SAMPLES}/Sadachbia-Lively.wav` },
-  { name: "Sadaltager",    description: "Knowledgeable", category: "Male",   sampleUrl: `${S3_VOICE_SAMPLES}/Sadaltager-Knowledgeable.wav` },
-  { name: "Sulafat",       description: "Warm",          category: "Female", sampleUrl: `${S3_VOICE_SAMPLES}/Sulafat-Warm.wav` },
+  { name: "Zephyr",        description: "Bright",        category: "Female", sampleUrl: `${S3_VOICE_SAMPLES}/Zephyr-Bright.mp3` },
+  { name: "Puck",          description: "Upbeat",        category: "Male",   sampleUrl: `${S3_VOICE_SAMPLES}/Puck-Upbeat.mp3` },
+  { name: "Charon",        description: "Informative",   category: "Male",   sampleUrl: `${S3_VOICE_SAMPLES}/Charon-Informative.mp3` },
+  { name: "Kore",          description: "Firm",          category: "Female", sampleUrl: `${S3_VOICE_SAMPLES}/Kore-Firm.mp3` },
+  { name: "Fenrir",        description: "Excitable",     category: "Male",   sampleUrl: `${S3_VOICE_SAMPLES}/Fenrir-Excitable.mp3` },
+  { name: "Leda",          description: "Youthful",      category: "Female", sampleUrl: `${S3_VOICE_SAMPLES}/Leda-Youthful.mp3` },
+  { name: "Orus",          description: "Firm",          category: "Male",   sampleUrl: `${S3_VOICE_SAMPLES}/Orus-Firm.mp3` },
+  { name: "Aoede",         description: "Breezy",        category: "Female", sampleUrl: `${S3_VOICE_SAMPLES}/Aoede-Breezy.mp3` },
+  { name: "Callirrhoe",    description: "Easy-going",    category: "Female", sampleUrl: `${S3_VOICE_SAMPLES}/Callirrhoe-Easy-going.mp3` },
+  { name: "Autonoe",       description: "Bright",        category: "Female", sampleUrl: `${S3_VOICE_SAMPLES}/Autonoe-Bright.mp3` },
+  { name: "Enceladus",     description: "Breathy",       category: "Male",   sampleUrl: `${S3_VOICE_SAMPLES}/Enceladus-Breathy.mp3` },
+  { name: "Iapetus",       description: "Clear",         category: "Male",   sampleUrl: `${S3_VOICE_SAMPLES}/Iapetus-Clear.mp3` },
+  { name: "Umbriel",       description: "Easy-going",    category: "Male",   sampleUrl: `${S3_VOICE_SAMPLES}/Umbriel-Easy-going.mp3` },
+  { name: "Algieba",       description: "Smooth",        category: "Male",   sampleUrl: `${S3_VOICE_SAMPLES}/Algieba-Smooth.mp3` },
+  { name: "Despina",       description: "Smooth",        category: "Female", sampleUrl: `${S3_VOICE_SAMPLES}/Despina-Smooth.mp3` },
+  { name: "Erinome",       description: "Clear",         category: "Female", sampleUrl: `${S3_VOICE_SAMPLES}/Erinome-Clear.mp3` },
+  { name: "Algenib",       description: "Gravelly",      category: "Male",   sampleUrl: `${S3_VOICE_SAMPLES}/Algenib-Gravelly.mp3` },
+  { name: "Rasalgethi",    description: "Informative",   category: "Male",   sampleUrl: `${S3_VOICE_SAMPLES}/Rasalgethi-Informative.mp3` },
+  { name: "Laomedeia",     description: "Upbeat",        category: "Female", sampleUrl: `${S3_VOICE_SAMPLES}/Laomedeia-Upbeat.mp3` },
+  { name: "Achernar",      description: "Soft",          category: "Female", sampleUrl: `${S3_VOICE_SAMPLES}/Achernar-Soft.mp3` },
+  { name: "Alnilam",       description: "Firm",          category: "Male",   sampleUrl: `${S3_VOICE_SAMPLES}/Alnilam-Firm.mp3` },
+  { name: "Schedar",       description: "Even",          category: "Male",   sampleUrl: `${S3_VOICE_SAMPLES}/Schedar-Even.mp3` },
+  { name: "Gacrux",        description: "Mature",        category: "Female", sampleUrl: `${S3_VOICE_SAMPLES}/Gacrux-Mature.mp3` },
+  { name: "Pulcherrima",   description: "Forward",       category: "Female", sampleUrl: `${S3_VOICE_SAMPLES}/Pulcherrima-Forward.mp3` },
+  { name: "Achird",        description: "Friendly",      category: "Male",   sampleUrl: `${S3_VOICE_SAMPLES}/Achird-Friendly.mp3` },
+  { name: "Zubenelgenubi", description: "Casual",        category: "Male",   sampleUrl: `${S3_VOICE_SAMPLES}/Zubenelgenubi-Casual.mp3` },
+  { name: "Vindemiatrix",  description: "Gentle",        category: "Female", sampleUrl: `${S3_VOICE_SAMPLES}/Vindemiatrix-Gentle.mp3` },
+  { name: "Sadachbia",     description: "Lively",        category: "Male",   sampleUrl: `${S3_VOICE_SAMPLES}/Sadachbia-Lively.mp3` },
+  { name: "Sadaltager",    description: "Knowledgeable", category: "Male",   sampleUrl: `${S3_VOICE_SAMPLES}/Sadaltager-Knowledgeable.mp3` },
+  { name: "Sulafat",       description: "Warm",          category: "Female", sampleUrl: `${S3_VOICE_SAMPLES}/Sulafat-Warm.mp3` },
 ];
 
 export const GeminiVoiceEmotionMap: Record<GeminiEmotion, string[]> = {

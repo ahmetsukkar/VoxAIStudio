@@ -7,8 +7,7 @@ import { Play, Pause } from "lucide-react";
 import AuthCTA from "./auth-cta";
 import { useTranslations } from "next-intl";
 
-const S3_VOICE_SAMPLES =
-  "https://vox-ai-studio.s3.us-east-1.amazonaws.com/samples/voices/Public";
+const S3_VOICE_SAMPLES = "/samples/voices/Public";
 
 export default function DemoSection() {
   const t = useTranslations("home.demo");
@@ -19,37 +18,37 @@ export default function DemoSection() {
       id: "warm-narrator",
       text: "Welcome back. In the next minute, I'll guide you through a simple story that feels natural and clear.",
       voiceType: "Warm Narrator (Neutral English)",
-      audioUrl: `${S3_VOICE_SAMPLES}/warm-narrator.wav`,
+      audioUrl: `${S3_VOICE_SAMPLES}/warm-narrator.mp3`,
     },
     {
       id: "energetic-host",
       text: "Alright everyone—big news today! We're kicking off with the fastest updates and a quick takeaway you can use.",
       voiceType: "Energetic Male Host",
-      audioUrl: `${S3_VOICE_SAMPLES}/energetic-host.wav`,
+      audioUrl: `${S3_VOICE_SAMPLES}/energetic-host.mp3`,
     },
     {
       id: "calm-meditation",
       text: "Take a slow breath in, hold for a moment, and let your shoulders drop as you exhale gently.",
       voiceType: "Calm Meditation Guide (Soft Female)",
-      audioUrl: `${S3_VOICE_SAMPLES}/calm-meditation.wav`,
+      audioUrl: `${S3_VOICE_SAMPLES}/calm-meditation.mp3`,
     },
     {
       id: "customer-support",
       text: "Thanks for reaching out—let's sort this out together. First, I'll confirm a couple of details and then fix it.",
       voiceType: "Customer Support Agent (Professional)",
-      audioUrl: `${S3_VOICE_SAMPLES}/customer-support.wav`,
+      audioUrl: `${S3_VOICE_SAMPLES}/customer-support.mp3`,
     },
     {
       id: "audiobook-british",
       text: "At precisely midnight, the old clock chimed once, and the hallway seemed to hold its breath.",
       voiceType: "Audiobook Reader (British RP)",
-      audioUrl: `${S3_VOICE_SAMPLES}/audiobook-british.wav`,
+      audioUrl: `${S3_VOICE_SAMPLES}/audiobook-british.mp3`,
     },
     {
       id: "turkish-friendly",
       text: "Merhaba! Bugün sana doğal ve anlaşılır bir ses örneği dinleteceğim; hazır olduğunda başlayalım.",
       voiceType: "Turkish Friendly (Istanbul Accent)",
-      audioUrl: `${S3_VOICE_SAMPLES}/turkish-friendly.wav`,
+      audioUrl: `${S3_VOICE_SAMPLES}/turkish-friendly.mp3`,
     },
   ];
 
@@ -58,31 +57,31 @@ export default function DemoSection() {
       id: "hindi",
       language: "Indian 🇮🇳",
       text: "नमस्ते! हमें खुशी है कि आप आज यहाँ हैं।",
-      audioUrl: `${S3_VOICE_SAMPLES}/hindi.wav`,
+      audioUrl: `${S3_VOICE_SAMPLES}/hindi.mp3`,
     },
     {
       id: "spanish",
       language: "Spanish 🇪🇸",
       text: "¡Hola! Gracias por visitarnos, empecemos cuando quieras.",
-      audioUrl: `${S3_VOICE_SAMPLES}/spanish.wav`,
+      audioUrl: `${S3_VOICE_SAMPLES}/spanish.mp3`,
     },
     {
       id: "french",
       language: "French 🇫🇷",
       text: "Bonjour ! Ravi de vous voir ici, commençons ensemble.",
-      audioUrl: `${S3_VOICE_SAMPLES}/french.wav`,
+      audioUrl: `${S3_VOICE_SAMPLES}/french.mp3`,
     },
     {
       id: "japanese",
       language: "Japanese 🇯🇵",
       text: "はじめまして！ここで一緒に始めましょう。",
-      audioUrl: `${S3_VOICE_SAMPLES}/japanese.wav`,
+      audioUrl: `${S3_VOICE_SAMPLES}/japanese.mp3`,
     },
     {
       id: "arabic",
       language: "Arabic 🇸🇦",
       text: "مرحبًا! يسعدنا انضمامك إلينا، فلنبدأ الآن.",
-      audioUrl: `${S3_VOICE_SAMPLES}/arabic.wav`,
+      audioUrl: `${S3_VOICE_SAMPLES}/arabic.mp3`,
     },
   ];
 
