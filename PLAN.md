@@ -381,7 +381,11 @@ Cloudflare) — which worked immediately once DNS/cert finished initializing.
 
 **Still open:** existing S3 objects — with 7-day retention (Phase 6) there is
 nothing worth migrating; let them age out, then empty and delete the
-`vox-ai-studio` S3 bucket.
+`vox-ai-studio` S3 bucket. **Owner decision (2026-07-28): wait ~1 week before
+deleting** — real customers generated files today, and the owner wants a
+safety margin before doing anything irreversible on the old bucket. Not
+urgent regardless since S3 cost is already ~$0/month (verified in §2) and
+nothing writes to it anymore. Revisit around 2026-08-04.
 
 **Capacity check:** MP3 output ~1.4 MB per 3-minute generation. 10 GB free ÷
 1.4 MB × (7-day window) ≈ **~1,000 generations/day sustained at $0**. Far beyond

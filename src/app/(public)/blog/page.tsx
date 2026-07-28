@@ -217,7 +217,7 @@ export default async function BlogPage() {
                 Transform your text into natural-sounding speech in seconds.
               </p>
               <AuthCTA
-                label="Start Free Trial"                
+                label="Start Free"
                 size="lg"
                 className="w-full bg-white text-purple-600 hover:bg-purple-50"
               />

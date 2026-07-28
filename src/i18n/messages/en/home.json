@@ -120,16 +120,16 @@
       "getplan": "Get {name}"
     },
     "freeTrial": {
-      "name": "Free Trial",
+      "name": "Free",
       "price": "$0",
-      "period": "7-day trial · No card needed",
-      "cta": "Try for Free",
+      "period": "500 credits/day · renews daily · no card needed",
+      "cta": "Start Free",
       "features": [
-        "10,000 credits included",
-        "Flash voice only",
-        "Single-speaker (no multi-speaker)",
-        "Max 500 chars / request",
-        "Expires after 7 days"
+        "500 credits every day, forever",
+        "All voices (Flash + Pro)",
+        "Multi-speaker included",
+        "Up to 3,000 characters / request",
+        "Never expires — no trial, no time limit"
       ]
     },
     "starter": {

@@ -68,7 +68,7 @@ export default async function HomePage() {
             offers: [
               {
                 "@type": "Offer",
-                name: "Free Trial",
+                name: "Free Plan",
                 price: "0",
                 priceCurrency: "USD",
               },

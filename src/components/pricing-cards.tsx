@@ -85,7 +85,7 @@ export default function PricingCards({ variant }: Props) {
                   <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-slate-100">
                     <Image
                       src="/plans/free.png"
-                      alt="Free Trial"
+                      alt="Free plan"
                       width={64}
                       height={64}
                       className="object-cover"

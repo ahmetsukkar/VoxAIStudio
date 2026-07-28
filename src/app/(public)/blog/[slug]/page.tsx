@@ -283,7 +283,7 @@ export default async function BlogPostPage({ params }: Props) {
               speech in seconds.
             </p>
             <AuthCTA
-              label="Start Free Trial"
+              label="Start Free"
               icon="AudioWaveform"
               size="lg"
               className="bg-white px-8 font-bold text-purple-600 hover:bg-purple-50"

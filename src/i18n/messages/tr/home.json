@@ -120,16 +120,16 @@
       "getplan": "{name} Al"
     },
     "freeTrial": {
-      "name": "Ücretsiz Deneme",
+      "name": "Ücretsiz",
       "price": "$0",
-      "period": "7 günlük deneme · Kart gerekmez",
-      "cta": "Ücretsiz Dene",
+      "period": "günde 500 kredi · her gün yenilenir · kart gerekmez",
+      "cta": "Ücretsiz Başla",
       "features": [
-        "10.000 kredi dahil",
-        "Sadece Flash ses",
-        "Tek konuşmacı (çoklu konuşmacı yok)",
-        "İstek başına en fazla 500 karakter",
-        "7 gün sonra sona erer"
+        "Her gün 500 kredi, süresiz",
+        "Tüm sesler (Flash + Pro)",
+        "Çoklu konuşmacı dahil",
+        "İstek başına 3.000 karaktere kadar",
+        "Asla sona ermez — deneme yok, süre sınırı yok"
       ]
     },
     "starter": {

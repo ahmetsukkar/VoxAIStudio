@@ -1,9 +1,15 @@
 "use client";
 
-import { HandCoins } from "lucide-react";
+import { HandCoins, Info } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getUserCredits } from "~/actions/tts";
 import { useCreditsStore } from "~/store/credits-store";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
 import { useTranslations } from "next-intl";
 
 export default function Credits() {
@@ -29,8 +35,18 @@ export default function Credits() {
           <span className="text-foreground text-sm font-bold transition-colors duration-200 group-hover:text-yellow-600">
             {mounted ? (credits ?? "...") : "..."}
           </span>
-          <span className="text-muted-foreground text-xs leading-tight">
+          <span className="text-muted-foreground flex items-center gap-1 text-xs leading-tight">
             {t("credits")}
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info className="h-3 w-3 cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent side="top" className="max-w-[220px] text-xs">
+                  {t("creditsInfo")}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </span>
         </div>
       </div>

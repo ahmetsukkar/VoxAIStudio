@@ -53,10 +53,10 @@ export default function FAQPage() {
               },
               {
                 "@type": "Question",
-                name: "Is there a free trial?",
+                name: "Is there a free plan?",
                 acceptedAnswer: {
                   "@type": "Answer",
-                  text: "Yes. Vox AI Studio offers a 7-day free trial with 10,000 credits included. No credit card is required to start.",
+                  text: "Yes. Every account gets 500 free credits every day, automatically renewed, with full access to every voice (Flash and Pro) and multi-speaker conversations. No credit card is required, and it never expires.",
                 },
               },
             ],
@@ -103,10 +103,12 @@ export default function FAQPage() {
               Is there a free plan?
             </h3>
             <p className="text-slate-600">
-              Yes! New users get a 7-day Free Trial with 10,000 credits — no
-              credit card required. The trial includes Flash voice only, with a
-              maximum of 500 characters per request, and is limited to
-              single-speaker generation.
+              Yes! Every account gets 500 free credits every day, automatically
+              renewed — no credit card required, no trial period, no expiry.
+              Free accounts have full access to every voice (Flash and Pro)
+              and multi-speaker conversations. If your usage regularly exceeds
+              the daily free amount, you can buy a one-time credit pack that
+              never expires.
             </p>
           </div>
 
