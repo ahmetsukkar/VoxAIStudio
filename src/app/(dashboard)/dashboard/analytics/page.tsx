@@ -8,6 +8,7 @@ import {
   getUsageDepth,
   getConversionFunnel,
   getAtRiskUsers,
+  getGenerationDiagnostics,
 } from "~/lib/analytics/queries";
 import { SignupTrendChart } from "~/components/analytics/signup-trend-chart";
 import { FunnelChart } from "~/components/analytics/funnel-chart";
@@ -22,15 +23,28 @@ function formatDate(date: Date): string {
 }
 
 export default async function AnalyticsPage() {
-  const [signupTrend, activation, retention, usageDepth, funnel, atRiskUsers] =
-    await Promise.all([
-      getSignupTrend(30),
-      getActivationStats(),
-      getRetention(),
-      getUsageDepth(),
-      getConversionFunnel(),
-      getAtRiskUsers(),
-    ]);
+  const [
+    signupTrend,
+    activation,
+    retention,
+    usageDepth,
+    funnel,
+    atRiskUsers,
+    diagnostics,
+  ] = await Promise.all([
+    getSignupTrend(30),
+    getActivationStats(),
+    getRetention(),
+    getUsageDepth(),
+    getConversionFunnel(),
+    getAtRiskUsers(),
+    getGenerationDiagnostics(),
+  ]);
+
+  const totalFailureEvents = diagnostics.failuresByReason.reduce(
+    (sum, r) => sum + r.events,
+    0,
+  );
 
   const conversionRate =
     funnel.signedUp === 0 ? 0 : funnel.purchased / funnel.signedUp;
@@ -112,6 +126,69 @@ export default async function AnalyticsPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* First-run diagnostics */}
+      <Card>
+        <CardHeader>
+          <CardTitle>First-run diagnostics</CardTitle>
+          <p className="text-sm text-gray-500">
+            Did users who reached the product actually try to generate — and
+            what stopped them? Counts only activity since this shipped.
+          </p>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <div className="rounded-lg border p-4">
+              <p className="text-sm text-gray-500">Users who tried</p>
+              <p className="text-2xl font-bold text-gray-900">
+                {diagnostics.attemptedUsers.toLocaleString()}
+              </p>
+            </div>
+            <div className="rounded-lg border p-4">
+              <p className="text-sm text-gray-500">Users who hit a failure</p>
+              <p className="text-2xl font-bold text-gray-900">
+                {diagnostics.failedUsers.toLocaleString()}
+              </p>
+            </div>
+            <div className="rounded-lg border p-4">
+              <p className="text-sm text-gray-500">Total failure events</p>
+              <p className="text-2xl font-bold text-gray-900">
+                {totalFailureEvents.toLocaleString()}
+              </p>
+            </div>
+          </div>
+
+          {diagnostics.failuresByReason.length === 0 ? (
+            <p className="text-sm text-gray-500">
+              No generation events recorded yet — check back after a day or two
+              of live traffic.
+            </p>
+          ) : (
+            <table className="w-full text-left text-sm">
+              <thead>
+                <tr className="border-b text-gray-500">
+                  <th className="py-2 font-medium">Failure reason</th>
+                  <th className="py-2 font-medium">Events</th>
+                  <th className="py-2 font-medium">Share</th>
+                </tr>
+              </thead>
+              <tbody>
+                {diagnostics.failuresByReason.map((r) => (
+                  <tr key={r.reason} className="border-b last:border-0">
+                    <td className="py-2">{r.reason}</td>
+                    <td className="py-2">{r.events.toLocaleString()}</td>
+                    <td className="py-2 font-semibold">
+                      {totalFailureEvents === 0
+                        ? "—"
+                        : `${((r.events / totalFailureEvents) * 100).toFixed(1)}%`}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Retention table */}
       <Card>

@@ -4,7 +4,9 @@ import type { Prisma } from "@prisma/client";
 export type AnalyticsEventType =
   | "QUOTA_EXCEEDED"
   | "CHECKOUT_STARTED"
-  | "PURCHASE_COMPLETED";
+  | "PURCHASE_COMPLETED"
+  | "GENERATION_ATTEMPTED"
+  | "GENERATION_FAILED";
 
 /** Fire-and-forget analytics logging — must never break the caller's flow. */
 export async function logAnalyticsEvent(

@@ -23,6 +23,7 @@ import {
   selectApiKeyForUser,
   refundCredits,
 } from "~/lib/credits/select-key";
+import { logAnalyticsEvent } from "~/lib/analytics/log-event";
 
 async function creditsRemainingFor(userId: string): Promise<number> {
   const user = await db.user.findUnique({
@@ -42,10 +43,16 @@ export async function generateSpeech(
   providerType: TTSProviderType,
   options: TTSOptions,
 ): Promise<GenerateSpeechFinalResult> {
+  let userId: string | null = null;
   try {
     // 1. Auth
     const session = await getAuthSession();
     if (!session) return { success: false, error: "Unauthorized" };
+    userId = session.user.id;
+
+    void logAnalyticsEvent("GENERATION_ATTEMPTED", session.user.id, {
+      kind: "tts",
+    });
 
     // 2. Get provider + calculate credits needed
     const provider = TTSFactory.getProvider(providerType);
@@ -53,6 +60,10 @@ export async function generateSpeech(
 
     // 3. Global character limit — every user, free or paid, gets the same cap
     if (options.text.length > MAX_CHARS_ALLOWED) {
+      void logAnalyticsEvent("GENERATION_FAILED", session.user.id, {
+        kind: "tts",
+        reason: "char_limit",
+      });
       return {
         success: false,
         error: `Maximum ${MAX_CHARS_ALLOWED} characters allowed per request.`,
@@ -66,6 +77,10 @@ export async function generateSpeech(
 
     const freeUsedToday = DAILY_FREE_CREDITS - snapshot.freeCredits;
     if (!snapshot.emailVerified && freeUsedToday >= UNVERIFIED_CREDIT_THRESHOLD) {
+      void logAnalyticsEvent("GENERATION_FAILED", session.user.id, {
+        kind: "tts",
+        reason: "verification_required",
+      });
       return { success: false, error: "VERIFICATION_REQUIRED" };
     }
 
@@ -79,6 +94,10 @@ export async function generateSpeech(
     const result = await provider.generateSpeech(options, keySelection.apiKey);
     if (!result.success || !result.audioUrl || !result.s3_key) {
       await refundCredits(session.user.id, keySelection.source, creditsNeeded);
+      void logAnalyticsEvent("GENERATION_FAILED", session.user.id, {
+        kind: "tts",
+        reason: "provider",
+      });
       return { success: false, error: result.error ?? "Generation failed" };
     }
 
@@ -116,6 +135,10 @@ export async function generateSpeech(
     };
   } catch (error) {
     console.error("Speech generation error:", error);
+    void logAnalyticsEvent("GENERATION_FAILED", userId, {
+      kind: "tts",
+      reason: "internal",
+    });
     return { success: false, error: "Internal server error" };
   }
 }
@@ -135,25 +158,43 @@ export async function generateMultiSpeaker({
   creditsRemaining?: number;
   error?: string;
 }> {
+  let userId: string | null = null;
   try {
     // 1. Auth
     const session = await getAuthSession();
     if (!session) return { success: false, error: "Unauthorized" };
+    userId = session.user.id;
+
+    void logAnalyticsEvent("GENERATION_ATTEMPTED", session.user.id, {
+      kind: "dialogue",
+    });
 
     // 2. Input validation — fail fast, before spending anything
     const filledLines = lines.filter((l) => l.text.trim().length > 0);
     if (filledLines.length === 0) {
+      void logAnalyticsEvent("GENERATION_FAILED", session.user.id, {
+        kind: "dialogue",
+        reason: "validation",
+      });
       return {
         success: false,
         error: "Add at least one dialogue line with text.",
       };
     }
     if (speakers.length < 2) {
+      void logAnalyticsEvent("GENERATION_FAILED", session.user.id, {
+        kind: "dialogue",
+        reason: "validation",
+      });
       return { success: false, error: "At least 2 speakers are required." };
     }
 
     const totalChars = lines.reduce((sum, l) => sum + l.text.length, 0);
     if (totalChars > MAX_CHARS_ALLOWED) {
+      void logAnalyticsEvent("GENERATION_FAILED", session.user.id, {
+        kind: "dialogue",
+        reason: "char_limit",
+      });
       return {
         success: false,
         error: `Total conversation length exceeds the maximum of ${MAX_CHARS_ALLOWED} characters. Current total: ${totalChars}.`,
@@ -168,6 +209,10 @@ export async function generateMultiSpeaker({
 
     const freeUsedToday = DAILY_FREE_CREDITS - snapshot.freeCredits;
     if (!snapshot.emailVerified && freeUsedToday >= UNVERIFIED_CREDIT_THRESHOLD) {
+      void logAnalyticsEvent("GENERATION_FAILED", session.user.id, {
+        kind: "dialogue",
+        reason: "verification_required",
+      });
       return { success: false, error: "VERIFICATION_REQUIRED" };
     }
 
@@ -190,6 +235,10 @@ export async function generateMultiSpeaker({
       !result.fullText
     ) {
       await refundCredits(session.user.id, keySelection.source, creditsNeeded);
+      void logAnalyticsEvent("GENERATION_FAILED", session.user.id, {
+        kind: "dialogue",
+        reason: "provider",
+      });
       return { success: false, error: result.error ?? "Generation failed" };
     }
 
@@ -226,6 +275,10 @@ export async function generateMultiSpeaker({
     };
   } catch (error) {
     console.error("Multi-Speaker generation error:", error);
+    void logAnalyticsEvent("GENERATION_FAILED", userId, {
+      kind: "dialogue",
+      reason: "internal",
+    });
     return { success: false, error: "Internal server error" };
   }
 }

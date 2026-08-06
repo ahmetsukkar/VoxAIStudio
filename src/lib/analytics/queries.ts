@@ -166,6 +166,52 @@ export async function getConversionFunnel(): Promise<ConversionFunnel> {
   };
 }
 
+export type GenerationDiagnostics = {
+  attemptedUsers: number;
+  failedUsers: number;
+  failuresByReason: { reason: string; events: number }[];
+};
+
+/**
+ * First-run diagnostic: did users who reached the product actually try to
+ * generate, and if so what stopped them? Populated from GENERATION_ATTEMPTED /
+ * GENERATION_FAILED events, so it only reflects activity since these shipped.
+ */
+export async function getGenerationDiagnostics(): Promise<GenerationDiagnostics> {
+  const attemptedUsers = await db.analyticsEvent
+    .findMany({
+      where: { type: "GENERATION_ATTEMPTED", userId: { not: null } },
+      distinct: ["userId"],
+      select: { userId: true },
+    })
+    .then((rows) => rows.length);
+
+  const failedUsers = await db.analyticsEvent
+    .findMany({
+      where: { type: "GENERATION_FAILED", userId: { not: null } },
+      distinct: ["userId"],
+      select: { userId: true },
+    })
+    .then((rows) => rows.length);
+
+  const reasonRows = await db.$queryRaw<{ reason: string; events: bigint }[]>`
+    SELECT COALESCE(metadata->>'reason', 'unknown') AS reason, COUNT(*) AS events
+    FROM analytics_event
+    WHERE type = 'GENERATION_FAILED'
+    GROUP BY 1
+    ORDER BY 2 DESC
+  `;
+
+  return {
+    attemptedUsers,
+    failedUsers,
+    failuresByReason: reasonRows.map((r) => ({
+      reason: r.reason,
+      events: Number(r.events),
+    })),
+  };
+}
+
 export type AtRiskUser = {
   id: string;
   email: string;
