@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   Send,
   Eye,
@@ -16,12 +17,13 @@ import { cn } from "~/lib/utils";
 type Mode = "custom" | "credits-gift";
 
 export default function SendEmailPage() {
+  const searchParams = useSearchParams();
   const [mode, setMode] = useState<Mode>("credits-gift");
   const [subject, setSubject] = useState("");
   const [content, setContent] = useState("");
   const [name, setName] = useState("");
   const [credits, setCredits] = useState("40000");
-  const [to, setTo] = useState("");
+  const [to, setTo] = useState(searchParams.get("to") ?? "");
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");

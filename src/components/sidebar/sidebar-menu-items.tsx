@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
+  BarChart3,
   ChevronRight,
   Clapperboard,
   FolderOpen,
@@ -138,6 +139,19 @@ export function SidebarMenuItems() {
           {/* Admin-only */}
           {isAdmin && (
             <>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={pathname.startsWith("/dashboard/analytics")}
+                  tooltip={t("analytics")}
+                >
+                  <Link href="/dashboard/analytics">
+                    <BarChart3 className="size-4" />
+                    <span>{t("analytics")}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
               <SidebarMenuItem>
                 <SidebarMenuButton
                   asChild

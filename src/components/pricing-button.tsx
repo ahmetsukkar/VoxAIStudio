@@ -7,6 +7,7 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { getPlanBySlug } from "~/config/plans";
 import type { PlanSlug } from "~/config/plans";
+import { logCheckoutStarted } from "~/actions/analytics";
 
 type Props = {
   slug: PlanSlug;
@@ -34,6 +35,7 @@ export default function PricingButton({ slug, label, className }: Props) {
 
     const plan = getPlanBySlug(slug);
     setLoading(true);
+    void logCheckoutStarted(slug);
     await authClient.checkout({ products: [plan.productId] });
     setLoading(false);
   };

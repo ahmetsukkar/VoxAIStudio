@@ -18,6 +18,7 @@ import {
 import { verifyEmailTemplate } from "~/lib/email/templates/verify-email";
 import { resetPasswordTemplate } from "~/lib/email/templates/reset-password";
 import { PLAN_CREDITS } from "~/config/plans";
+import { logAnalyticsEvent } from "~/lib/analytics/log-event";
 
 const polarClient = new Polar({
   accessToken: env.POLAR_ACCESS_TOKEN,
@@ -144,6 +145,11 @@ export const auth = betterAuth({
                   increment: creditsToAdd,
                 },
               },
+            });
+
+            void logAnalyticsEvent("PURCHASE_COMPLETED", externalCustomerId, {
+              productId,
+              creditsAdded: creditsToAdd,
             });
           },
         }),

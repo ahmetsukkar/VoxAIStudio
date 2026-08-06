@@ -220,6 +220,18 @@ model BlogPost {
   @@map("blogpost")
 }
 
+model AnalyticsEvent {
+  id        String   @id @default(cuid())
+  type      String   // "QUOTA_EXCEEDED" | "CHECKOUT_STARTED" | "PURCHASE_COMPLETED"
+  userId    String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  @@index([type, createdAt])
+  @@index([userId])
+  @@map("analytics_event")
+}
+
 enum BlogStatus {
   DRAFT
   PUBLISHED

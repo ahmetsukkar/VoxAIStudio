@@ -1,5 +1,6 @@
 import { db } from "~/server/db";
 import { env } from "~/env";
+import { logAnalyticsEvent } from "~/lib/analytics/log-event";
 
 // Placeholder daily allowance — revisit once Phase 3's real Gemini TTS
 // free-tier quota is confirmed (PLAN.md §2, open question #3).
@@ -64,6 +65,7 @@ export async function selectApiKeyForUser(
     return { ok: true, apiKey: env.FreeAPIKey, source: "free" };
   }
 
+  void logAnalyticsEvent("QUOTA_EXCEEDED", userId, { cost });
   return { ok: false, error: "QUOTA_EXCEEDED" };
 }
 

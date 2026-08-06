@@ -10,7 +10,8 @@ export async function middleware(request: NextRequest) {
   // Admin-only routes
   if (
     pathname.startsWith("/dashboard/blog") ||
-    pathname.startsWith("/dashboard/send-email")
+    pathname.startsWith("/dashboard/send-email") ||
+    pathname.startsWith("/dashboard/analytics")
   ) {
     const authResult = authGuard(request);
     if (authResult) return authResult;
@@ -36,6 +37,7 @@ export const config = {
   matcher: [
     "/dashboard/blog/:path*",
     "/dashboard/send-email/:path*",
+    "/dashboard/analytics/:path*",
     "/((?!_next|_vercel|.*\\..*).*)",
   ],
 };
